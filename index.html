@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko" class="dark">
 <head>
@@ -255,6 +256,10 @@
                         </div>
                     </div>
                     <div class="flex items-center space-x-1.5">
+                        <button onclick="toggleDayProgramLock()" id="btnProgramLock" class="step-btn bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-extrabold px-2.5 py-2 rounded-xl transition flex items-center space-x-1 whitespace-nowrap" title="오늘 선택한 프로그램(Day A/B/C) 변경 잠금">
+                            <i id="iconProgramLock" class="fa-solid fa-lock-open text-neutral-400"></i>
+                            <span id="textProgramLock">루틴고정</span>
+                        </button>
                         <button onclick="completeAllSetsInDay()" class="step-btn bg-white hover:bg-neutral-200 text-black text-xs font-extrabold px-2.5 py-2 rounded-xl transition flex items-center space-x-1 whitespace-nowrap shadow">
                             <i class="fa-solid fa-check-double text-orange-600"></i>
                             <span>전체완료</span>
@@ -262,7 +267,7 @@
                         <button onclick="uncheckAllSetsInDay()" class="step-btn bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-bold px-2.5 py-2 rounded-xl transition whitespace-nowrap" title="체크 모두 해제">
                             <span>체크해제</span>
                         </button>
-                        <button onclick="resetCurrentDayRoutine()" class="step-btn bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border border-neutral-700 text-xs font-bold px-2.5 py-2 rounded-xl transition" title="30분 컷 기본 루틴으로 초기화">
+                        <button onclick="resetCurrentDayRoutine()" class="step-btn bg-neutral-900 hover:bg-neutral-800 text-neutral-300 border border-neutral-700 text-xs font-bold px-2.5 py-2 rounded-xl transition" title="현재 보고 있는 루틴만 기본값으로 초기화">
                             <i class="fa-solid fa-rotate-left"></i>
                         </button>
                     </div>
@@ -1119,10 +1124,16 @@ pub extern "C" fn calc_cardio_kcal(body_w: f64, mins: f64, met: f64) -> f64 {
         // Check if a date log actually has meaningful user activity
         function isLogActive(log) {
             if (!log) return false;
-            const hasDoneSet = Array.isArray(log.exercises) && log.exercises.some(ex => ex.sets.some(s => s.done));
+            const hasDoneInActive = Array.isArray(log.exercises) && log.exercises.some(ex => ex.sets.some(s => s.done));
+            let hasDoneInArchive = false;
+            if (log.programsByDay && typeof log.programsByDay === 'object') {
+                hasDoneInArchive = Object.values(log.programsByDay).some(exList =>
+                    Array.isArray(exList) && exList.some(ex => ex.sets && ex.sets.some(s => s.done))
+                );
+            }
             const hasNote = Boolean(log.note && log.note.trim().length > 0);
             const hasExplicitRecord = Boolean(log.userSaved);
-            return hasDoneSet || hasNote || hasExplicitRecord;
+            return hasDoneInActive || hasDoneInArchive || hasNote || hasExplicitRecord;
         }
 
         function ensureDateLogExists(dateStr) {
@@ -1130,16 +1141,82 @@ pub extern "C" fn calc_cardio_kcal(body_w: f64, mins: f64, met: f64) -> f64 {
                 const prog = getDefaultDayProgramByDate(dateStr);
                 const latestWeight = getLatestRecordedWeight(dateStr);
                 const latestWaist = getLatestRecordedWaist(dateStr);
+                const initialPrograms = {
+                    'A': cloneRoutineTemplate('A'),
+                    'B': cloneRoutineTemplate('B'),
+                    'C': cloneRoutineTemplate('C'),
+                    'REST': []
+                };
                 DAILY_LOGS[dateStr] = {
                     dayProgram: prog,
                     weight: latestWeight,
                     waist: latestWaist,
                     note: '',
                     userSaved: false,
-                    exercises: cloneRoutineTemplate(prog)
+                    lockedProgram: false,
+                    programsByDay: initialPrograms,
+                    exercises: initialPrograms[prog]
                 };
+            } else {
+                const log = DAILY_LOGS[dateStr];
+                if (!log.programsByDay || typeof log.programsByDay !== 'object') {
+                    log.programsByDay = {
+                        'A': cloneRoutineTemplate('A'),
+                        'B': cloneRoutineTemplate('B'),
+                        'C': cloneRoutineTemplate('C'),
+                        'REST': []
+                    };
+                    const curProg = log.dayProgram || 'A';
+                    if (Array.isArray(log.exercises)) {
+                        log.programsByDay[curProg] = log.exercises;
+                    }
+                }
+                ['A', 'B', 'C', 'REST'].forEach(k => {
+                    if (!Array.isArray(log.programsByDay[k])) {
+                        log.programsByDay[k] = cloneRoutineTemplate(k);
+                    }
+                });
+                const activeKey = log.dayProgram || 'A';
+                log.exercises = log.programsByDay[activeKey];
             }
             return DAILY_LOGS[dateStr];
+        }
+
+        function syncCurrentProgramToArchive(dateStr = selectedDateStr) {
+            const log = DAILY_LOGS[dateStr];
+            if (!log) return;
+            if (!log.programsByDay) log.programsByDay = {};
+            const key = log.dayProgram || currentDay || 'A';
+            log.programsByDay[key] = log.exercises;
+        }
+
+        function toggleDayProgramLock() {
+            const log = ensureDateLogExists(selectedDateStr);
+            log.lockedProgram = !log.lockedProgram;
+            saveLogsToStorage();
+            updateProgramLockButtonUI();
+            const label = log.dayProgram === 'REST' ? '유산소/휴식' : `DAY ${log.dayProgram}`;
+            showToast(log.lockedProgram
+                ? `🔒 [${selectedDateStr} · ${label}] 루틴이 고정되었습니다! 다른 버튼을 눌러도 바뀌지 않습니다.`
+                : `🔓 루틴 고정이 해제되었습니다. (전환해도 기존 기록은 자동 보존됩니다)`);
+        }
+
+        function updateProgramLockButtonUI() {
+            const log = ensureDateLogExists(selectedDateStr);
+            const btn = document.getElementById('btnProgramLock');
+            const icon = document.getElementById('iconProgramLock');
+            const txt = document.getElementById('textProgramLock');
+            if (!btn || !icon || !txt) return;
+
+            if (log.lockedProgram) {
+                btn.className = 'step-btn bg-orange-600 hover:bg-orange-500 text-white border border-orange-400 text-xs font-extrabold px-2.5 py-2 rounded-xl transition flex items-center space-x-1 whitespace-nowrap shadow';
+                icon.className = 'fa-solid fa-lock text-white';
+                txt.innerText = '루틴잠김';
+            } else {
+                btn.className = 'step-btn bg-neutral-900 hover:bg-neutral-800 text-neutral-200 border border-neutral-700 text-xs font-extrabold px-2.5 py-2 rounded-xl transition flex items-center space-x-1 whitespace-nowrap';
+                icon.className = 'fa-solid fa-lock-open text-neutral-400';
+                txt.innerText = '루틴고정';
+            }
         }
 
         function deleteSelectedDateLog(targetDateStr = selectedDateStr) {
@@ -1232,6 +1309,7 @@ pub extern "C" fn calc_cardio_kcal(body_w: f64, mins: f64, met: f64) -> f64 {
             if (noteInput) noteInput.value = log.note || '';
 
             updateDayButtonsUI();
+            updateProgramLockButtonUI();
             renderWorkoutList();
             syncAllMetrics(false);
             renderCalendarAndHistory();
@@ -1486,18 +1564,43 @@ pub extern "C" fn calc_cardio_kcal(body_w: f64, mins: f64, met: f64) -> f64 {
         }
 
         function selectDay(day) {
-            currentDay = day;
             const log = ensureDateLogExists(selectedDateStr);
+
+            if (log.lockedProgram && day !== currentDay) {
+                const lockedLabel = currentDay === 'REST' ? '유산소/휴식' : `DAY ${currentDay}`;
+                showToast(`🔒 현재 [${lockedLabel}] 루틴이 잠겨 있습니다! 우측의 [루틴잠김] 버튼을 눌러 해제 후 변경하세요.`);
+                return;
+            }
+
+            // 1. Save current program's exact sets/weights/checks into its own slot before switching
+            syncCurrentProgramToArchive(selectedDateStr);
+
+            // 2. Switch to target program and restore its saved state (NEVER overwrite!)
+            currentDay = day;
             log.dayProgram = day;
-            log.exercises = cloneRoutineTemplate(day);
+            if (!Array.isArray(log.programsByDay[day])) {
+                log.programsByDay[day] = cloneRoutineTemplate(day);
+            }
+            log.exercises = log.programsByDay[day];
+
             if (day === 'REST') {
                 log.userSaved = true;
             }
             saveLogsToStorage();
+
+            const savedPrograms = ['A', 'B', 'C', 'REST'].filter(k =>
+                Array.isArray(log.programsByDay[k]) && log.programsByDay[k].some(ex => ex.sets && ex.sets.some(s => s.done))
+            );
+            const savedNotice = savedPrograms.length > 0
+                ? ` (오늘 기록된 ${savedPrograms.map(k => k === 'REST' ? '유산소' : 'DAY ' + k).join(', ')} 데이터 안전 보존중)`
+                : '';
+
             showToast(day === 'REST'
-                ? `${selectedDateStr}이 [유산소/휴식일]로 설정되었습니다. 원하시는 유산소를 추가해 보세요!`
-                : `${selectedDateStr} 프로그램이 30분 컷 DAY ${day}로 설정되었습니다.`);
+                ? `${selectedDateStr} [유산소/휴식] 화면으로 전환되었습니다.${savedNotice}`
+                : `${selectedDateStr} [DAY ${day}] 루틴을 불러왔습니다.${savedNotice}`);
+
             updateDayButtonsUI();
+            updateProgramLockButtonUI();
             renderWorkoutList();
             renderCalendarAndHistory();
         }
@@ -2000,15 +2103,36 @@ pub extern "C" fn calc_cardio_kcal(body_w: f64, mins: f64, met: f64) -> f64 {
                 estMinEl.innerText = activeExercises.length === 0 ? '휴식일' : `약 ${estMin}분`;
             }
 
-            ['A', 'B', 'C'].forEach(d => {
+            ['A', 'B', 'C', 'REST'].forEach(d => {
                 const badge = document.getElementById(`badge-day-${d}`);
                 if (!badge) return;
-                if (d === currentDay) {
-                    badge.innerText = `${curDone}/${curTotal}`;
+                const progList = (log.programsByDay && Array.isArray(log.programsByDay[d]))
+                    ? log.programsByDay[d]
+                    : (d === currentDay ? activeExercises : (ROUTINE_DATA[d] ? ROUTINE_DATA[d].exercises : []));
+
+                let dTotal = 0, dDone = 0;
+                progList.forEach(ex => {
+                    if (ex.sets) {
+                        ex.sets.forEach(s => {
+                            dTotal++;
+                            if (s.done) dDone++;
+                        });
+                    }
+                });
+
+                if (d === 'REST') {
+                    badge.innerText = dDone > 0 ? `${dDone}건 완료✓` : '유산소·체중';
+                    badge.className = dDone > 0
+                        ? 'text-[10px] bg-orange-500 text-black px-1.5 py-0.5 rounded font-black whitespace-nowrap'
+                        : 'text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap';
+                } else if (dDone > 0) {
+                    badge.innerText = `${dDone}/${dTotal} 기록됨✓`;
+                    badge.className = 'text-[10px] bg-orange-500 text-black px-1.5 py-0.5 rounded font-black whitespace-nowrap';
+                } else if (d === currentDay) {
+                    badge.innerText = `${dDone}/${dTotal}`;
                     badge.className = 'text-[10px] bg-orange-500/20 text-orange-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap';
                 } else {
-                    const tmplCount = ROUTINE_DATA[d].exercises.reduce((acc, e) => acc + e.sets.length, 0);
-                    badge.innerText = `총 ${tmplCount}세트`;
+                    badge.innerText = `총 ${dTotal}세트`;
                     badge.className = 'text-[10px] bg-neutral-800 text-neutral-400 px-1.5 py-0.5 rounded font-bold whitespace-nowrap';
                 }
             });
@@ -2408,6 +2532,12 @@ pub extern "C" fn calc_cardio_kcal(body_w: f64, mins: f64, met: f64) -> f64 {
                 };
 
                 Object.values(ROUTINE_DATA).forEach(dayObj => applyToExercises(dayObj.exercises));
+                const log = ensureDateLogExists(selectedDateStr);
+                if (log.programsByDay) {
+                    ['A', 'B', 'C'].forEach(k => {
+                        if (Array.isArray(log.programsByDay[k])) applyToExercises(log.programsByDay[k]);
+                    });
+                }
                 applyToExercises(getActiveExercises());
                 saveLogsToStorage();
                 renderWorkoutList();
