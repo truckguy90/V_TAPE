@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ko" class="dark">
 <head>
@@ -146,6 +147,10 @@
                         <i class="fa-solid fa-clock-rotate-left"></i>
                         <span>이전기록 복사</span>
                     </button>
+                    <button onclick="deleteSelectedDateLog()" class="step-btn text-[11px] bg-rose-950/70 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/30 font-bold px-2.5 py-1.5 rounded-xl transition flex items-center space-x-1 whitespace-nowrap" title="선택한 날짜의 운동/체중 기록 완전 삭제">
+                        <i class="fa-regular fa-trash-can"></i>
+                        <span>이 날짜 기록삭제</span>
+                    </button>
                 </div>
 
                 <!-- Daily Weight, Waist & Daily Memo Input -->
@@ -176,38 +181,38 @@
                 <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 flex-1">
                     <button onclick="selectDay('A')" id="day-btn-A" class="px-3 py-2 rounded-xl text-left border-2 border-blue-500 bg-blue-950/40 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-extrabold text-blue-400 whitespace-nowrap">DAY A</span>
-                            <span id="badge-day-A" class="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">0/13</span>
+                            <span class="text-[11px] font-extrabold text-blue-400 whitespace-nowrap">DAY A (30분컷)</span>
+                            <span id="badge-day-A" class="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">0/9</span>
                         </div>
-                        <p class="font-extrabold text-xs text-white truncate mt-0.5">등상부 두께 & 전신</p>
+                        <p class="font-extrabold text-xs text-white truncate mt-0.5">등상부 두께 & 하체</p>
                     </button>
                     <button onclick="selectDay('B')" id="day-btn-B" class="px-3 py-2 rounded-xl text-left border border-slate-800 bg-slate-900/60 opacity-80 hover:opacity-100 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-extrabold text-indigo-400 whitespace-nowrap">DAY B</span>
-                            <span id="badge-day-B" class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">0/13</span>
+                            <span class="text-[11px] font-extrabold text-indigo-400 whitespace-nowrap">DAY B (30분컷)</span>
+                            <span id="badge-day-B" class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">0/9</span>
                         </div>
                         <p class="font-extrabold text-xs text-white truncate mt-0.5">V-테이퍼 프레임</p>
                     </button>
                     <button onclick="selectDay('C')" id="day-btn-C" class="px-3 py-2 rounded-xl text-left border border-slate-800 bg-slate-900/60 opacity-80 hover:opacity-100 transition-all">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-extrabold text-purple-400 whitespace-nowrap">DAY C</span>
-                            <span id="badge-day-C" class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">0/13</span>
+                            <span class="text-[11px] font-extrabold text-purple-400 whitespace-nowrap">DAY C (30분컷)</span>
+                            <span id="badge-day-C" class="text-[10px] bg-slate-800 text-slate-400 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">0/9</span>
                         </div>
-                        <p class="font-extrabold text-xs text-white truncate mt-0.5">등상부 고립 & 완성</p>
+                        <p class="font-extrabold text-xs text-white truncate mt-0.5">등상부 고립 & 어깨</p>
                     </button>
                     <button onclick="selectDay('REST')" id="day-btn-REST" class="px-3 py-2 rounded-xl text-left border border-slate-800 bg-slate-900/60 opacity-80 hover:opacity-100 transition-all">
                         <div class="flex items-center justify-between">
                             <span class="text-[11px] font-extrabold text-emerald-400 whitespace-nowrap">휴식일</span>
-                            <span id="badge-day-REST" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">체중기록</span>
+                            <span id="badge-day-REST" class="text-[10px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded font-bold whitespace-nowrap">체중만 기록</span>
                         </div>
-                        <p class="font-extrabold text-xs text-white truncate mt-0.5">회복 / 경사걷기</p>
+                        <p class="font-extrabold text-xs text-white truncate mt-0.5">운동 안함 / 체중기록</p>
                     </button>
                 </div>
 
                 <!-- Volume (Calculated via Rust Wasm) & Quick Actions -->
                 <div class="flex flex-wrap items-center justify-between sm:justify-end gap-2 pt-2 lg:pt-0 lg:pl-3 border-t lg:border-t-0 lg:border-l border-slate-800">
                     <div class="text-left sm:text-right mr-1">
-                        <span class="text-[10px] text-slate-400 block whitespace-nowrap">선택일 완료 볼륨 (<span id="completionRateDisplay" class="text-emerald-400 font-bold">0%</span>)</span>
+                        <span class="text-[10px] text-slate-400 block whitespace-nowrap">예상 소요 <strong id="estWorkoutMinutes" class="text-amber-400">26분</strong> · 볼륨 (<span id="completionRateDisplay" class="text-emerald-400 font-bold">0%</span>)</span>
                         <span class="text-base font-black text-blue-400"><span id="totalVolumeDisplay">0</span> kg</span>
                     </div>
                     <div class="flex items-center space-x-1.5">
@@ -215,7 +220,10 @@
                             <i class="fa-solid fa-check-double"></i>
                             <span>전체완료</span>
                         </button>
-                        <button onclick="resetCurrentDayRoutine()" class="step-btn bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-700 text-xs font-bold px-2.5 py-2 rounded-xl transition" title="선택일 루틴 초기화">
+                        <button onclick="uncheckAllSetsInDay()" class="step-btn bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-2.5 py-2 rounded-xl transition whitespace-nowrap" title="체크 모두 해제">
+                            <span>체크해제</span>
+                        </button>
+                        <button onclick="resetCurrentDayRoutine()" class="step-btn bg-slate-800 hover:bg-rose-950 text-slate-300 hover:text-rose-300 border border-slate-700 text-xs font-bold px-2.5 py-2 rounded-xl transition" title="30분 컷 기본 루틴으로 초기화">
                             <i class="fa-solid fa-rotate-left"></i>
                         </button>
                         <button onclick="addNewExerciseToDay()" class="step-btn bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold px-3 py-2 rounded-xl transition shadow flex items-center space-x-1 whitespace-nowrap">
@@ -305,15 +313,21 @@
 
                     <!-- Selected Date Workout & Weight Detail Card -->
                     <div class="glass-panel rounded-2xl p-4 border border-blue-500/30 space-y-3">
-                        <div class="flex items-center justify-between border-b border-slate-800 pb-2.5">
+                        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
                             <div>
                                 <span class="text-[10px] font-extrabold text-blue-400 uppercase">Selected Date Log</span>
                                 <h4 id="calDetailDateTitle" class="text-sm font-black text-white">2026-10-26 기록 상세</h4>
                             </div>
-                            <button onclick="switchMainTab('workout')" class="step-btn bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow flex items-center space-x-1 whitespace-nowrap">
-                                <i class="fa-solid fa-pen"></i>
-                                <span>이 날짜 일지 수정</span>
-                            </button>
+                            <div class="flex items-center space-x-1.5">
+                                <button onclick="switchMainTab('workout')" class="step-btn bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold px-2.5 py-1.5 rounded-xl shadow flex items-center space-x-1 whitespace-nowrap">
+                                    <i class="fa-solid fa-pen"></i>
+                                    <span>기록/수정</span>
+                                </button>
+                                <button onclick="deleteSelectedDateLog()" class="step-btn bg-rose-950/80 hover:bg-rose-600 text-rose-300 hover:text-white border border-rose-500/40 text-xs font-extrabold px-2.5 py-1.5 rounded-xl flex items-center space-x-1 whitespace-nowrap">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                    <span>이 날 삭제</span>
+                                </button>
+                            </div>
                         </div>
 
                         <div id="calDetailSummaryBody" class="space-y-2 text-xs">
@@ -856,36 +870,33 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                     '내려올 때도 팔꿈치가 바벨 바로 아래에 위치하도록 수직 궤적을 유지합니다.'
                 ],
                 mistake: '허리를 과도하게 뒤로 젖혀 서서 하는 인클라인 프레스가 되지 않게 주의하세요.',
-                restSec: 120
+                restSec: 90
             }
         };
 
         // =========================================================================
-        // 2. 3-DAY ROUTINE DATA
+        // 2. 30-MINUTE CUT HIGH-EFFICIENCY 3-DAY ROUTINE DATA (9 SETS TOTAL = ~26 MIN)
         // =========================================================================
         const ROUTINE_DATA = {
             'A': {
                 exercises: [
-                    { exId: 'wide_row', customName: '체스트 서포티드 와이드 로우', targetReps: '8~10회', rpe: 'RPE 8', restSec: 120, sets: [{ weight: 55, reps: 10, done: false }, { weight: 55, reps: 10, done: false }, { weight: 55, reps: 9, done: false }, { weight: 55, reps: 8, done: false }] },
-                    { exId: 'squat', customName: '바벨 백 스쿼트', targetReps: '8~10회', rpe: 'RPE 8', restSec: 150, sets: [{ weight: 75, reps: 10, done: false }, { weight: 80, reps: 8, done: false }, { weight: 80, reps: 8, done: false }] },
-                    { exId: 'incline_press', customName: '30° 인클라인 덤벨 프레스', targetReps: '10~12회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 22.5, reps: 12, done: false }, { weight: 22.5, reps: 10, done: false }, { weight: 22.5, reps: 10, done: false }] },
-                    { exId: 'face_pull', customName: '케이블 페이스 풀 (등상부/후면)', targetReps: '12~15회', rpe: 'RPE 8.5', restSec: 60, sets: [{ weight: 25, reps: 15, done: false }, { weight: 25, reps: 15, done: false }, { weight: 25, reps: 12, done: false }] }
+                    { exId: 'wide_row', customName: '체스트 서포티드 와이드 로우 (등상부 메인)', targetReps: '8~10회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 55, reps: 10, done: false }, { weight: 55, reps: 10, done: false }, { weight: 55, reps: 9, done: false }] },
+                    { exId: 'squat', customName: '바벨 백 스쿼트 / 레그프레스 (대사량 폭발)', targetReps: '8~10회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 75, reps: 10, done: false }, { weight: 80, reps: 8, done: false }, { weight: 80, reps: 8, done: false }] },
+                    { exId: 'incline_press', customName: '30° 인클라인 프레스 + 페이스풀 (슈퍼세트)', targetReps: '10~12회', rpe: 'RPE 8.5', restSec: 60, sets: [{ weight: 22.5, reps: 12, done: false }, { weight: 22.5, reps: 10, done: false }, { weight: 22.5, reps: 10, done: false }] }
                 ]
             },
             'B': {
                 exercises: [
-                    { exId: 'rdl', customName: '루마니안 데드리프트 (RDL)', targetReps: '6~8회', rpe: 'RPE 8', restSec: 150, sets: [{ weight: 85, reps: 8, done: false }, { weight: 90, reps: 8, done: false }, { weight: 90, reps: 8, done: false }] },
-                    { exId: 'lat_pulldown', customName: '와이드 그립 랫 풀다운', targetReps: '8~10회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 55, reps: 10, done: false }, { weight: 60, reps: 10, done: false }, { weight: 60, reps: 9, done: false }, { weight: 60, reps: 8, done: false }] },
-                    { exId: 'incline_press', customName: '플랫 바벨/덤벨 벤치프레스', targetReps: '8~10회', rpe: 'RPE 8', restSec: 120, sets: [{ weight: 60, reps: 10, done: false }, { weight: 65, reps: 8, done: false }, { weight: 65, reps: 8, done: false }] },
-                    { exId: 'lateral_raise', customName: '사이드 레터럴 레이즈', targetReps: '12~15회', rpe: 'RPE 8.5', restSec: 60, sets: [{ weight: 9, reps: 15, done: false }, { weight: 9, reps: 15, done: false }, { weight: 9, reps: 12, done: false }] }
+                    { exId: 'lat_pulldown', customName: '와이드 그립 랫 풀다운 (V-테이퍼 프레임)', targetReps: '8~10회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 55, reps: 10, done: false }, { weight: 60, reps: 10, done: false }, { weight: 60, reps: 9, done: false }] },
+                    { exId: 'rdl', customName: '루마니안 데드리프트 (등상부 지지+후면)', targetReps: '6~8회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 85, reps: 8, done: false }, { weight: 90, reps: 8, done: false }, { weight: 90, reps: 8, done: false }] },
+                    { exId: 'lateral_raise', customName: '사이드 레터럴 레이즈 (어깨 프레임 확장)', targetReps: '12~15회', rpe: 'RPE 8.5', restSec: 60, sets: [{ weight: 9, reps: 15, done: false }, { weight: 9, reps: 15, done: false }, { weight: 9, reps: 12, done: false }] }
                 ]
             },
             'C': {
                 exercises: [
-                    { exId: 'wide_row', customName: '시티드 케이블 와이드 로우', targetReps: '10~12회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 55, reps: 12, done: false }, { weight: 60, reps: 10, done: false }, { weight: 60, reps: 10, done: false }, { weight: 60, reps: 10, done: false }] },
-                    { exId: 'squat', customName: '불가리안 스플릿 스쿼트 / 레그프레스', targetReps: '8~10회', rpe: 'RPE 8', restSec: 120, sets: [{ weight: 40, reps: 10, done: false }, { weight: 45, reps: 10, done: false }, { weight: 45, reps: 8, done: false }] },
-                    { exId: 'ohp', customName: '스탠딩 오버헤드 프레스 (OHP)', targetReps: '6~8회', rpe: 'RPE 8', restSec: 120, sets: [{ weight: 40, reps: 8, done: false }, { weight: 42.5, reps: 8, done: false }, { weight: 42.5, reps: 7, done: false }] },
-                    { exId: 'face_pull', customName: '리어 델토이드 플라이 / 페이스풀', targetReps: '12~15회', rpe: 'RPE 8.5', restSec: 60, sets: [{ weight: 25, reps: 15, done: false }, { weight: 30, reps: 15, done: false }, { weight: 30, reps: 12, done: false }] }
+                    { exId: 'wide_row', customName: '시티드 케이블 와이드 로우 (등상부 두께)', targetReps: '10~12회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 55, reps: 12, done: false }, { weight: 60, reps: 10, done: false }, { weight: 60, reps: 10, done: false }] },
+                    { exId: 'ohp', customName: '오버헤드 프레스 / 숄더프레스 (상체 프레임)', targetReps: '8~10회', rpe: 'RPE 8', restSec: 90, sets: [{ weight: 40, reps: 8, done: false }, { weight: 42.5, reps: 8, done: false }, { weight: 42.5, reps: 8, done: false }] },
+                    { exId: 'face_pull', customName: '케이블 페이스 풀 (후면삼각근/승모 중하부)', targetReps: '12~15회', rpe: 'RPE 8.5', restSec: 60, sets: [{ weight: 25, reps: 15, done: false }, { weight: 30, reps: 15, done: false }, { weight: 30, reps: 12, done: false }] }
                 ]
             }
         };
@@ -899,7 +910,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
         let remainingSeconds = 0;
         let timerSoundEnabled = true;
 
-        const STORAGE_KEY = 'vtaper_recomp_daily_logs_v2';
+        const STORAGE_KEY = 'vtaper_recomp_daily_logs_v3_30min';
         const PROFILE_STORAGE_KEY = 'vtaper_recomp_profile_v2';
 
         function getLocalTodayStr() {
@@ -959,6 +970,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             } catch (e) {}
         }
 
+        // Only load real user records; NO pre-checked fake workout dates!
         function initSampleLogsIfEmpty() {
             loadProfileFromStorage();
             try {
@@ -969,46 +981,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                 }
             } catch (e) {}
 
-            const sampleA = cloneRoutineTemplate('A');
-            sampleA.forEach(ex => ex.sets.forEach(s => s.done = true));
-
-            const sampleB = cloneRoutineTemplate('B');
-            sampleB.forEach(ex => ex.sets.forEach(s => s.done = true));
-
-            const sampleC = cloneRoutineTemplate('C');
-            sampleC.forEach(ex => ex.sets.forEach(s => s.done = true));
-
-            const todayStr = getLocalTodayStr();
-            DAILY_LOGS = {
-                '2026-10-19': {
-                    dayProgram: 'A',
-                    weight: 89.0,
-                    waist: 94.0,
-                    note: '첫 날! 체스트 서포티드 로우 자극점 찾기 완료',
-                    exercises: sampleA
-                },
-                '2026-10-21': {
-                    dayProgram: 'B',
-                    weight: 88.6,
-                    waist: 93.5,
-                    note: 'RDL 85kg 수행, 경사도 10% 걷기 15분 완료',
-                    exercises: sampleB
-                },
-                '2026-10-23': {
-                    dayProgram: 'C',
-                    weight: 88.3,
-                    waist: 93.0,
-                    note: '등 상부 케이블 와이드로우 펌핑 최고',
-                    exercises: sampleC
-                },
-                [todayStr]: {
-                    dayProgram: 'A',
-                    weight: 88.0,
-                    waist: 92.5,
-                    note: '체스트 서포티드 와이드 로우 RPE 8 중량 세팅!',
-                    exercises: cloneRoutineTemplate('A')
-                }
-            };
+            DAILY_LOGS = {};
             saveLogsToStorage();
         }
 
@@ -1016,6 +989,15 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             try {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(DAILY_LOGS));
             } catch (e) {}
+        }
+
+        // Check if a date log actually has meaningful user activity
+        function isLogActive(log) {
+            if (!log) return false;
+            const hasDoneSet = Array.isArray(log.exercises) && log.exercises.some(ex => ex.sets.some(s => s.done));
+            const hasNote = Boolean(log.note && log.note.trim().length > 0);
+            const hasExplicitRecord = Boolean(log.userSaved);
+            return hasDoneSet || hasNote || hasExplicitRecord;
         }
 
         function ensureDateLogExists(dateStr) {
@@ -1028,17 +1010,43 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                     weight: latestWeight,
                     waist: latestWaist,
                     note: '',
+                    userSaved: false,
                     exercises: cloneRoutineTemplate(prog)
                 };
             }
             return DAILY_LOGS[dateStr];
         }
 
+        function deleteSelectedDateLog(targetDateStr = selectedDateStr) {
+            delete DAILY_LOGS[targetDateStr];
+            saveLogsToStorage();
+            // Re-render cleanly with fresh unchecked template
+            const prog = getDefaultDayProgramByDate(targetDateStr);
+            currentDay = prog;
+            updateDayButtonsUI();
+            renderWorkoutList();
+            renderCalendarAndHistory();
+            showToast(`🗑️ ${targetDateStr} 기록이 깔끔하게 삭제되었습니다!`);
+        }
+
+        function deleteLogFromHistoryList(event, dateStr) {
+            event.stopPropagation();
+            delete DAILY_LOGS[dateStr];
+            saveLogsToStorage();
+            if (dateStr === selectedDateStr) {
+                currentDay = getDefaultDayProgramByDate(dateStr);
+                updateDayButtonsUI();
+                renderWorkoutList();
+            }
+            renderCalendarAndHistory();
+            showToast(`🗑️ ${dateStr} 기록이 삭제되었습니다.`);
+        }
+
         function getLatestRecordedWeight(beforeDateStr) {
             const dates = Object.keys(DAILY_LOGS).sort();
-            let lastW = 89.0;
+            let lastW = parseFloat(document.getElementById('inbodyStartWeight')?.value) || 89.0;
             dates.forEach(d => {
-                if (d <= beforeDateStr && DAILY_LOGS[d].weight) {
+                if (d <= beforeDateStr && isLogActive(DAILY_LOGS[d]) && DAILY_LOGS[d].weight) {
                     lastW = parseFloat(DAILY_LOGS[d].weight);
                 }
             });
@@ -1047,9 +1055,9 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
 
         function getLatestRecordedWaist(beforeDateStr) {
             const dates = Object.keys(DAILY_LOGS).sort();
-            let lastWaist = 94.0;
+            let lastWaist = parseFloat(document.getElementById('inbodyWaist')?.value) || 94.0;
             dates.forEach(d => {
-                if (d <= beforeDateStr && DAILY_LOGS[d].waist) {
+                if (d <= beforeDateStr && isLogActive(DAILY_LOGS[d]) && DAILY_LOGS[d].waist) {
                     lastWaist = parseFloat(DAILY_LOGS[d].waist);
                 }
             });
@@ -1070,7 +1078,8 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                 currentCalMonth = dObj.getMonth();
             }
 
-            const log = ensureDateLogExists(dateStr);
+            const existingLog = DAILY_LOGS[dateStr];
+            const log = existingLog || ensureDateLogExists(dateStr);
             currentDay = log.dayProgram || 'A';
 
             const picker = document.getElementById('workoutDatePicker');
@@ -1133,6 +1142,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             if (isNaN(num) || num <= 0) return;
             const log = ensureDateLogExists(selectedDateStr);
             log.weight = num;
+            log.userSaved = true;
 
             const dailyEl = document.getElementById('dailyWeightInput');
             if (dailyEl && document.activeElement !== dailyEl) dailyEl.value = num.toFixed(1);
@@ -1149,6 +1159,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             if (isNaN(num) || num <= 0) return;
             const log = ensureDateLogExists(selectedDateStr);
             log.waist = num;
+            log.userSaved = true;
             const inbodyWaist = document.getElementById('inbodyWaist');
             if (inbodyWaist && document.activeElement !== inbodyWaist) inbodyWaist.value = num.toFixed(1);
             saveLogsToStorage();
@@ -1158,6 +1169,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
         function updateCurrentDateNote(val) {
             const log = ensureDateLogExists(selectedDateStr);
             log.note = val;
+            if (val.trim().length > 0) log.userSaved = true;
             saveLogsToStorage();
             renderCalendarAndHistory();
         }
@@ -1165,7 +1177,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
         function copyPreviousWorkoutWeights() {
             const log = ensureDateLogExists(selectedDateStr);
             const prog = log.dayProgram;
-            const prevDates = Object.keys(DAILY_LOGS).filter(d => d < selectedDateStr && DAILY_LOGS[d].dayProgram === prog).sort();
+            const prevDates = Object.keys(DAILY_LOGS).filter(d => d < selectedDateStr && isLogActive(DAILY_LOGS[d]) && DAILY_LOGS[d].dayProgram === prog).sort();
             if (prevDates.length === 0) {
                 showToast(`이전에 기록된 DAY ${prog} 운동 내역이 없습니다.`);
                 return;
@@ -1352,30 +1364,40 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
         function selectDay(day) {
             currentDay = day;
             const log = ensureDateLogExists(selectedDateStr);
-            if (log.dayProgram !== day) {
-                log.dayProgram = day;
-                log.exercises = cloneRoutineTemplate(day);
-                saveLogsToStorage();
-                showToast(day === 'REST'
-                    ? `${selectedDateStr}이 [휴식 & 유산소 데이]로 설정되었습니다.`
-                    : `${selectedDateStr} 프로그램이 DAY ${day}로 설정되었습니다.`);
+            log.dayProgram = day;
+            log.exercises = cloneRoutineTemplate(day);
+            if (day === 'REST') {
+                log.userSaved = true;
             }
+            saveLogsToStorage();
+            showToast(day === 'REST'
+                ? `${selectedDateStr}이 [휴식일]로 기록되었습니다.`
+                : `${selectedDateStr} 프로그램이 30분 컷 DAY ${day}로 설정되었습니다.`);
             updateDayButtonsUI();
             renderWorkoutList();
             renderCalendarAndHistory();
         }
 
+        function uncheckAllSetsInDay() {
+            const log = ensureDateLogExists(selectedDateStr);
+            log.exercises.forEach(ex => ex.sets.forEach(s => s.done = false));
+            saveLogsToStorage();
+            renderWorkoutList();
+            renderCalendarAndHistory();
+            showToast('이 날짜의 모든 세트 완료 체크가 해제되었습니다.');
+        }
+
         function resetCurrentDayRoutine() {
             const log = ensureDateLogExists(selectedDateStr);
             if (log.dayProgram === 'REST') {
-                showToast('휴식일 모드입니다. DAY A/B/C를 선택하면 루틴이 표시됩니다.');
+                showToast('휴식일 모드입니다. DAY A/B/C를 선택하면 30분 컷 루틴이 표시됩니다.');
                 return;
             }
             log.exercises = cloneRoutineTemplate(log.dayProgram);
             saveLogsToStorage();
             renderWorkoutList();
             renderCalendarAndHistory();
-            showToast(`DAY ${log.dayProgram} 기본 종목 및 세트로 초기화되었습니다.`);
+            showToast(`DAY ${log.dayProgram} 30분 컷 기본 루틴(9세트)으로 초기화되었습니다.`);
         }
 
         function renderWorkoutList() {
@@ -1572,7 +1594,9 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             const setObj = ex.sets[sIdx];
             setObj.done = !setObj.done;
 
+            const log = ensureDateLogExists(selectedDateStr);
             if (setObj.done) {
+                log.userSaved = true;
                 startRestTimer(ex.restSec || 90);
             }
             saveLogsToStorage();
@@ -1603,6 +1627,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
         function updateExerciseField(exIdx, field, val) {
             getActiveExercises()[exIdx][field] = val;
             saveLogsToStorage();
+            updateSummaryMetrics();
         }
 
         function addNewExerciseToDay() {
@@ -1611,7 +1636,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                 customName: '추가 커스텀 운동 (클릭해 이름 수정)',
                 targetReps: '10~12회',
                 rpe: 'RPE 8',
-                restSec: 90,
+                restSec: 60,
                 sets: [
                     { weight: 40, reps: 10, done: false },
                     { weight: 40, reps: 10, done: false },
@@ -1633,6 +1658,8 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
         }
 
         function completeAllSetsInDay() {
+            const log = ensureDateLogExists(selectedDateStr);
+            log.userSaved = true;
             getActiveExercises().forEach(ex => {
                 ex.sets.forEach(s => { s.done = true; });
             });
@@ -1642,19 +1669,27 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             showToast(`${selectedDateStr} (DAY ${currentDay}) 모든 세트가 완료 처리되었습니다!`);
         }
 
-        // Uses Rust Wasm `calc_set_volume(weight, reps)`
+        // Uses Rust Wasm `calc_set_volume(weight, reps)` + Calculates 30-Minute Cut Estimated Duration
         function updateSummaryMetrics() {
             const activeExercises = getActiveExercises();
-            let curVol = 0, curTotal = 0, curDone = 0;
+            let curVol = 0, curTotal = 0, curDone = 0, totalSeconds = 180; // 3 min warm-up
             activeExercises.forEach(ex => {
+                const restSec = parseInt(ex.restSec) || 90;
                 ex.sets.forEach(s => {
                     curTotal++;
+                    totalSeconds += 45 + restSec; // ~45s work + rest time
                     if (s.done) {
                         curDone++;
                         curVol += RustEngine.calc_set_volume(parseFloat(s.weight) || 0, parseFloat(s.reps) || 0);
                     }
                 });
             });
+
+            const estMinEl = document.getElementById('estWorkoutMinutes');
+            if (estMinEl) {
+                const estMin = currentDay === 'REST' ? 0 : Math.round(totalSeconds / 60);
+                estMinEl.innerText = currentDay === 'REST' ? '휴식일' : `약 ${estMin}분 컷`;
+            }
 
             ['A', 'B', 'C'].forEach(d => {
                 const badge = document.getElementById(`badge-day-${d}`);
@@ -1737,6 +1772,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                 const dd = String(day).padStart(2, '0');
                 const dateKey = `${currentCalYear}-${mm}-${dd}`;
                 const log = DAILY_LOGS[dateKey];
+                const active = isLogActive(log);
                 const stats = getDayLogStats(log);
 
                 if (stats.doneSets > 0) {
@@ -1755,7 +1791,8 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                 }
 
                 let contentBadges = '';
-                if (log && (stats.doneSets > 0 || log.dayProgram === 'REST' || log.weight || isSelected)) {
+                // Only display badges on days where the user actually worked out or saved a record!
+                if (active) {
                     const pBadge = progColors[log.dayProgram] || progColors['A'];
                     const labelText = log.dayProgram === 'REST' ? '휴식' : `DAY ${log.dayProgram}`;
                     contentBadges += `
@@ -1771,6 +1808,8 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                             </div>
                         `;
                     }
+                } else {
+                    contentBadges = `<div class="text-[10px] text-slate-600 font-semibold mt-auto">기록없음</div>`;
                 }
 
                 grid.insertAdjacentHTML('beforeend', `
@@ -1805,13 +1844,32 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
         }
 
         function renderSelectedDateDetailPanel() {
+            const rawLog = DAILY_LOGS[selectedDateStr];
+            const active = isLogActive(rawLog);
             const log = ensureDateLogExists(selectedDateStr);
             const stats = getDayLogStats(log);
             const titleEl = document.getElementById('calDetailDateTitle');
-            if (titleEl) titleEl.innerText = `${selectedDateStr} · DAY ${log.dayProgram} 상세 기록`;
+            if (titleEl) {
+                titleEl.innerText = active
+                    ? `${selectedDateStr} · DAY ${log.dayProgram} 기록됨`
+                    : `${selectedDateStr} · 아직 운동 기록 없음`;
+            }
 
             const bodyEl = document.getElementById('calDetailSummaryBody');
             if (!bodyEl) return;
+
+            if (!active) {
+                bodyEl.innerHTML = `
+                    <div class="bg-slate-950/90 border border-slate-800 rounded-xl p-4 text-center space-y-2">
+                        <p class="text-xs text-slate-400 font-semibold">${selectedDateStr}에는 저장된 운동이나 체중 기록이 없습니다.</p>
+                        <button onclick="switchMainTab('workout')" class="step-btn bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold px-3 py-2 rounded-xl shadow inline-flex items-center space-x-1.5">
+                            <i class="fa-solid fa-plus"></i>
+                            <span>이 날짜에 30분 컷 운동 기록하기</span>
+                        </button>
+                    </div>
+                `;
+                return;
+            }
 
             let exRows = '';
             log.exercises.forEach((ex, idx) => {
@@ -1858,7 +1916,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             const listContainer = document.getElementById('recentHistoryList');
             if (!chartContainer || !listContainer) return;
 
-            const sortedDates = Object.keys(DAILY_LOGS).sort();
+            const sortedDates = Object.keys(DAILY_LOGS).filter(d => isLogActive(DAILY_LOGS[d])).sort();
             const entries = sortedDates.map(d => ({
                 date: d,
                 log: DAILY_LOGS[d],
@@ -1866,7 +1924,7 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
             }));
 
             if (entries.length === 0) {
-                chartContainer.innerHTML = '<span class="text-xs text-slate-500">기록된 데이터가 없습니다.</span>';
+                chartContainer.innerHTML = '<span class="text-xs text-slate-500">아직 기록된 날짜가 없습니다. 세트를 체크하거나 체중을 입력하면 그래프가 생성됩니다.</span>';
                 listContainer.innerHTML = '';
                 return;
             }
@@ -1923,12 +1981,14 @@ pub extern "C" fn scale_by_smm(base: f64, smm: f64) -> f64 {
                     <div onclick="selectDate('${item.date}')" class="cursor-pointer flex items-center justify-between px-3 py-2 rounded-xl border text-xs transition ${isSel ? 'bg-blue-950/40 border-blue-500/50' : 'bg-slate-900/80 border-slate-800 hover:border-slate-700'}">
                         <div class="flex items-center space-x-2">
                             <span class="font-extrabold text-white">${item.date}</span>
-                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300">DAY ${item.log.dayProgram}</span>
+                            <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-300">${item.log.dayProgram === 'REST' ? '휴식' : 'DAY ' + item.log.dayProgram}</span>
                             <span class="text-[11px] text-emerald-400 font-bold">${item.stats.doneSets}/${item.stats.totalSets}세트</span>
                         </div>
                         <div class="flex items-center space-x-2">
                             <span class="font-black text-sky-300">${parseFloat(item.log.weight || 89.0).toFixed(1)}kg</span>
-                            <span class="text-[10px] text-slate-400">${item.stats.volume.toLocaleString()}kg</span>
+                            <button type="button" onclick="deleteLogFromHistoryList(event, '${item.date}')" class="step-btn text-slate-500 hover:text-rose-400 px-1.5 py-0.5 rounded" title="이 날짜 기록 삭제">
+                                <i class="fa-regular fa-trash-can"></i>
+                            </button>
                         </div>
                     </div>
                 `);
