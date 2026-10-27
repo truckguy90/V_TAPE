@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ko" class="dark">
 <head>
@@ -1561,25 +1560,6 @@ pub extern "C" fn calc_cardio_kcal(body_w: f64, mins: f64, met: f64) -> f64 {
                 });
             }
             return kcal;
-        }
-            });
-        }
-
-        function selectDay(day) {
-            currentDay = day;
-            const log = ensureDateLogExists(selectedDateStr);
-            log.dayProgram = day;
-            log.exercises = cloneRoutineTemplate(day);
-            if (day === 'REST') {
-                log.userSaved = true;
-            }
-            saveLogsToStorage();
-            showToast(day === 'REST'
-                ? `${selectedDateStr}이 [휴식일]로 기록되었습니다.`
-                : `${selectedDateStr} 프로그램이 30분 컷 DAY ${day}로 설정되었습니다.`);
-            updateDayButtonsUI();
-            renderWorkoutList();
-            renderCalendarAndHistory();
         }
 
         function uncheckAllSetsInDay() {
