@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>V-TAPER BLACK-ORANGE PRO</title>
+  <title>V-TAPER PRO</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
   <style>
@@ -13,7 +13,6 @@
       --card-black: #0e0e11;
       --border-dark: #26262b;
       --accent-orange: #ff5500;
-      --accent-orange-light: #ff7733;
     }
     * {
       box-sizing: border-box;
@@ -60,17 +59,23 @@
       color: #000;
       transform: scale(0.93);
     }
-    .tab-active {
-      background: #ff5500 !important;
-      color: #ffffff !important;
-      border-color: #ff5500 !important;
+    .bottom-nav-btn {
+      color: #71717a;
+      transition: all 0.15s ease;
+    }
+    .bottom-nav-active {
+      color: #ff5500 !important;
       font-weight: 900 !important;
-      box-shadow: 0 4px 15px rgba(255, 85, 0, 0.35);
+    }
+    .bottom-nav-active .nav-icon-wrap {
+      background: rgba(255, 85, 0, 0.18);
+      border-color: rgba(255, 85, 0, 0.5);
+      color: #ff5500;
     }
     .day-card-active {
       background: linear-gradient(135deg, rgba(255, 85, 0, 0.22) 0%, rgba(20, 20, 24, 0.95) 100%) !important;
       border: 2px solid #ff5500 !important;
-      box-shadow: 0 0 20px rgba(255, 85, 0, 0.2);
+      box-shadow: 0 0 16px rgba(255, 85, 0, 0.18);
     }
     input[type="number"]::-webkit-inner-spin-button,
     input[type="number"]::-webkit-outer-spin-button {
@@ -78,7 +83,7 @@
       margin: 0;
     }
     .floating-popup {
-      animation: popUpSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      animation: popUpSlide 0.22s cubic-bezier(0.16, 1, 0.3, 1);
     }
     @keyframes popUpSlide {
       from { transform: translate(-50%, 100%); opacity: 0; }
@@ -86,7 +91,7 @@
     }
   </style>
 </head>
-<body class="pb-28">
+<body class="pb-24">
 
   <!-- 내장형 Rust 코드 아카이브 -->
   <script id="embedded-rust-source" type="text/rust">
@@ -118,264 +123,212 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 }
   </script>
 
-  <!-- 상단 고정 헤더 -->
-  <header class="sticky top-0 z-30 bg-[#070709]/95 backdrop-blur-md border-b border-zinc-800 px-3 py-2.5">
-    <div class="max-w-3xl mx-auto">
-      <div class="flex items-center justify-between gap-2">
-        <div class="flex items-center gap-2.5 min-w-0">
-          <div class="w-9 h-9 rounded-xl bg-[#ff5500] flex items-center justify-center text-white font-black shadow-lg shrink-0">
-            <i class="fa-solid fa-dumbbell"></i>
-          </div>
-          <div class="min-w-0">
-            <div class="flex items-center gap-1.5 flex-wrap">
-              <span class="font-black text-sm tracking-tight text-white">V-TAPER</span>
-              <span class="font-black text-sm tracking-tight text-[#ff5500]">BLACK-ORANGE</span>
-              <span id="wasmStatusBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-orange-950/90 border border-orange-500/50 text-orange-300 font-bold">🦀 RUST WASM</span>
-            </div>
-            <div class="flex items-center gap-1.5 mt-0.5 flex-wrap text-[11px]">
-              <span id="headerDateBadge" class="px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-bold">2026-10-27</span>
-              <span id="headerKcalBadge" class="px-1.5 py-0.5 rounded bg-orange-500/20 border border-orange-500/40 text-orange-300 font-extrabold">🔥 오늘 소모 0 kcal</span>
-              <span id="headerGoalBadge" class="px-1.5 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-zinc-300 font-bold">81kg 목표 진행률 0%</span>
-            </div>
-          </div>
+  <!-- ==================== 초슬림 상단 고정 바 (세로 늘어짐 방지) ==================== -->
+  <header class="sticky top-0 z-30 bg-[#070709]/95 backdrop-blur-md border-b border-zinc-800/90 px-3 py-2">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
+      <!-- 좌측: 핵심 상태 1줄 요약 -->
+      <div class="flex items-center gap-2 min-w-0 overflow-hidden">
+        <div class="w-7 h-7 rounded-lg bg-[#ff5500] flex items-center justify-center text-white text-xs font-black shrink-0">
+          <i class="fa-solid fa-dumbbell"></i>
         </div>
-
-        <!-- 상단 미니 타이머 -->
-        <div class="flex items-center gap-1 bg-zinc-900/90 border border-zinc-800 rounded-xl px-2 py-1.5 shrink-0">
-          <button onclick="toggleTimerSound()" id="soundToggleBtn" class="text-orange-400 text-xs px-1" title="알림음 켜기/끄기">
-            <i id="soundToggleIcon" class="fa-solid fa-volume-high"></i>
-          </button>
-          <span id="headerTimerDisplay" onclick="openRestTimerPopup()" class="font-mono font-black text-sm text-white px-1 cursor-pointer">01:00</span>
-          <button onclick="startRestTimer(60, '수동 1분 타이머')" class="text-[10px] px-1.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 font-bold">1분</button>
-          <button onclick="startRestTimer(90, '수동 90초 타이머')" class="text-[10px] px-1.5 py-1 rounded bg-zinc-800 hover:bg-zinc-700 font-bold">90초</button>
-          <button onclick="addRestTimerSeconds(30)" class="text-[10px] px-1.5 py-1 rounded bg-orange-950 text-orange-300 border border-orange-500/30 font-bold">+30초</button>
+        <div class="flex items-center gap-1.5 text-xs whitespace-nowrap overflow-x-auto no-scrollbar">
+          <span id="headerCurrentWeight" class="font-black text-white">88.8kg</span>
+          <span class="text-zinc-600">→</span>
+          <span id="headerTargetWeightText" class="font-extrabold text-[#ff5500]">81kg</span>
+          <span id="headerRemainWeight" class="text-[11px] text-zinc-400 font-bold">(-7.8kg)</span>
+          <span class="text-zinc-700">|</span>
+          <span id="headerKcalBadge" class="px-1.5 py-0.5 rounded bg-orange-500/15 border border-orange-500/30 text-orange-300 text-[11px] font-extrabold">🔥 0kcal</span>
         </div>
       </div>
 
-      <!-- 신체 스펙 요약 바 -->
-      <div class="flex items-center justify-between text-[11px] text-zinc-400 mt-1.5 pt-1.5 border-t border-zinc-800/80 flex-wrap gap-1">
-        <div>
-          키 <input id="headerHeightInput" type="number" value="176" onchange="updateProfileSpec()" class="w-11 bg-zinc-900 border border-zinc-700 rounded text-center text-white font-bold py-0.5" /> cm ·
-          선택일 체중 <span id="headerCurrentWeight" class="text-white font-black">89.0</span> kg →
-          1차목표 <input id="headerTargetWeightInput" type="number" step="0.5" value="81.0" onchange="updateProfileSpec()" class="w-12 bg-zinc-900 border border-zinc-700 rounded text-center text-[#ff5500] font-black py-0.5" /> kg
-          <span id="headerRemainWeight" class="text-orange-400 font-extrabold">(-8.0kg 남음)</span>
-        </div>
-      </div>
-
-      <!-- 4대 메인 탭 -->
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 mt-2">
-        <button id="tab-btn-log" onclick="switchMainTab('log')" class="tab-active py-2 px-2 rounded-xl border border-zinc-800 bg-zinc-900 text-xs font-extrabold flex items-center justify-center gap-1.5 whitespace-nowrap">
-          <i class="fa-solid fa-clipboard-check"></i> 1. 일자별 운동일지
+      <!-- 우측: 컴팩트 휴식 타이머 -->
+      <div class="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-xl px-2 py-1 shrink-0">
+        <button onclick="toggleTimerSound()" id="soundToggleBtn" class="text-orange-400 text-xs px-1" title="알림음">
+          <i id="soundToggleIcon" class="fa-solid fa-volume-high"></i>
         </button>
-        <button id="tab-btn-calendar" onclick="switchMainTab('calendar')" class="py-2 px-2 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 text-xs font-extrabold flex items-center justify-center gap-1.5 whitespace-nowrap">
-          <i class="fa-solid fa-calendar-days"></i> 2. 달력 & 체중변화
-        </button>
-        <button id="tab-btn-video" onclick="switchMainTab('video')" class="py-2 px-2 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 text-xs font-extrabold flex items-center justify-center gap-1.5 whitespace-nowrap">
-          <i class="fa-solid fa-fire-flame-simple"></i> 3. 3D 근육 & 코칭
-        </button>
-        <button id="tab-btn-inbody" onclick="switchMainTab('inbody')" class="py-2 px-2 rounded-xl border border-zinc-800 bg-zinc-900 text-zinc-300 text-xs font-extrabold flex items-center justify-center gap-1.5 whitespace-nowrap">
-          <i class="fa-solid fa-scale-balanced"></i> 4. 인바디 & 백업
-        </button>
+        <span id="headerTimerDisplay" onclick="openRestTimerPopup()" class="font-mono font-black text-xs text-white px-1 cursor-pointer">01:00</span>
+        <button onclick="startRestTimer(60, '수동 1분 휴식')" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-bold">1분</button>
+        <button onclick="startRestTimer(90, '수동 90초 휴식')" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-bold">90초</button>
       </div>
     </div>
   </header>
 
-  <!-- 메인 컨테이너 -->
-  <main class="max-w-3xl mx-auto px-3 pt-3">
+  <!-- ==================== 메인 컨텐츠 영역 ==================== -->
+  <main class="max-w-3xl mx-auto px-3 pt-2.5">
 
     <!-- ==================== TAB 1: 일자별 운동일지 ==================== -->
-    <section id="tab-panel-log" class="space-y-3">
+    <section id="tab-panel-log" class="space-y-2.5">
 
-      <!-- 날짜 선택 & 체중/허리/메모 카드 -->
-      <div class="bw-card p-3 space-y-2.5">
+      <!-- 날짜 선택 & 체중/허리/메모 컴팩트 카드 -->
+      <div class="bw-card p-3 space-y-2">
         <div class="flex items-center justify-between gap-1.5 flex-wrap">
           <div class="flex items-center gap-1">
             <button onclick="shiftSelectedDate(-1)" class="stepper-btn w-8 h-8 rounded-lg flex items-center justify-center">
               <i class="fa-solid fa-chevron-left text-xs"></i>
             </button>
-            <div class="flex items-center bg-zinc-900 border border-zinc-700 rounded-lg px-2.5 py-1">
+            <div class="flex items-center bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1">
               <input id="selectedDateInput" type="date" onchange="onDateInputChanged(this.value)" class="bg-transparent text-white font-black text-xs focus:outline-none" />
-              <span id="selectedDayOfWeek" class="text-orange-400 font-black text-xs ml-1.5">(화)</span>
+              <span id="selectedDayOfWeek" class="text-orange-400 font-black text-xs ml-1">(수)</span>
             </div>
             <button onclick="shiftSelectedDate(1)" class="stepper-btn w-8 h-8 rounded-lg flex items-center justify-center">
               <i class="fa-solid fa-chevron-right text-xs"></i>
             </button>
-            <button onclick="jumpToToday()" class="px-2.5 py-1.5 rounded-lg bg-orange-950/80 border border-orange-500/40 text-orange-300 text-xs font-black">오늘</button>
+            <button onclick="jumpToToday()" class="px-2 py-1.5 rounded-lg bg-orange-950/80 border border-orange-500/40 text-orange-300 text-xs font-black">오늘</button>
           </div>
 
-          <div class="flex items-center gap-1.5">
-            <button onclick="copyPreviousSameProgram()" class="px-2.5 py-1.5 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-zinc-200 text-[11px] font-bold flex items-center gap-1">
-              <i class="fa-solid fa-clock-rotate-left text-orange-400"></i> 이전기록 복사
+          <div class="flex items-center gap-1">
+            <button onclick="copyPreviousSameProgram()" class="px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-200 text-[11px] font-bold flex items-center gap-1">
+              <i class="fa-solid fa-clock-rotate-left text-orange-400"></i> 이전복사
             </button>
-            <button onclick="deleteCurrentDateLog()" class="px-2.5 py-1.5 rounded-lg bg-red-950/60 hover:bg-red-900/70 border border-red-500/40 text-red-300 text-[11px] font-bold flex items-center gap-1">
-              <i class="fa-solid fa-trash-can"></i> 이 날짜 기록삭제
+            <button onclick="deleteCurrentDateLog()" class="px-2 py-1.5 rounded-lg bg-red-950/60 border border-red-500/40 text-red-300 text-[11px] font-bold flex items-center gap-1">
+              <i class="fa-solid fa-trash-can"></i> 삭제
             </button>
           </div>
         </div>
 
-        <!-- 선택일 체중 & 허리둘레 스테퍼 -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
-          <div class="flex items-center justify-between bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-1.5">
-            <span class="text-xs font-bold text-zinc-400">오늘 체중</span>
-            <div class="flex items-center gap-1.5">
-              <button onclick="stepDailyWeight(-0.2)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
-              <input id="dailyWeightInput" type="number" step="0.1" onchange="onDailyBodyMetricChange()" class="w-16 bg-transparent text-center font-black text-base text-[#ff5500] focus:outline-none" value="89.0" />
-              <span class="text-xs text-zinc-400 font-bold">kg</span>
-              <button onclick="stepDailyWeight(0.2)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
+        <!-- 체중 & 허리둘레 1줄 배치 (모바일에서도 나란히 2열 배치되어 세로 길이 절약) -->
+        <div class="grid grid-cols-2 gap-1.5">
+          <div class="flex items-center justify-between bg-zinc-900/90 border border-zinc-800 rounded-xl px-2.5 py-1.5">
+            <span class="text-[11px] font-bold text-zinc-400">체중</span>
+            <div class="flex items-center gap-1">
+              <button onclick="stepDailyWeight(-0.2)" class="stepper-btn w-6 h-6 rounded text-xs">-</button>
+              <input id="dailyWeightInput" type="number" step="0.1" onchange="onDailyBodyMetricChange()" class="w-12 bg-transparent text-center font-black text-sm text-[#ff5500] focus:outline-none" value="88.8" />
+              <span class="text-[10px] text-zinc-400 font-bold">kg</span>
+              <button onclick="stepDailyWeight(0.2)" class="stepper-btn w-6 h-6 rounded text-xs">+</button>
             </div>
           </div>
 
-          <div class="flex items-center justify-between bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-1.5">
-            <span class="text-xs font-bold text-zinc-400">허리둘레</span>
-            <div class="flex items-center gap-1.5">
-              <button onclick="stepDailyWaist(-0.5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
-              <input id="dailyWaistInput" type="number" step="0.1" onchange="onDailyBodyMetricChange()" class="w-16 bg-transparent text-center font-black text-base text-white focus:outline-none" value="92.5" />
-              <span class="text-xs text-zinc-400 font-bold">cm</span>
-              <button onclick="stepDailyWaist(0.5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
+          <div class="flex items-center justify-between bg-zinc-900/90 border border-zinc-800 rounded-xl px-2.5 py-1.5">
+            <span class="text-[11px] font-bold text-zinc-400">허리</span>
+            <div class="flex items-center gap-1">
+              <button onclick="stepDailyWaist(-0.5)" class="stepper-btn w-6 h-6 rounded text-xs">-</button>
+              <input id="dailyWaistInput" type="number" step="0.1" onchange="onDailyBodyMetricChange()" class="w-12 bg-transparent text-center font-black text-sm text-white focus:outline-none" value="92.5" />
+              <span class="text-[10px] text-zinc-400 font-bold">cm</span>
+              <button onclick="stepDailyWaist(0.5)" class="stepper-btn w-6 h-6 rounded text-xs">+</button>
             </div>
           </div>
         </div>
 
         <!-- 한 줄 메모 -->
-        <div class="relative">
-          <input id="dailyNoteInput" type="text" oninput="onDailyBodyMetricChange()" placeholder="오늘 컨디션, 등 상부 자극, 유산소 메모 입력..." class="w-full bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500" />
-        </div>
+        <input id="dailyNoteInput" type="text" oninput="onDailyBodyMetricChange()" placeholder="오늘 컨디션, 등 상부 자극, 유산소 메모..." class="w-full bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500" />
       </div>
 
       <!-- 프로그램 선택 & 요약 카드 -->
-      <div class="bw-card p-3 space-y-3">
-        <div class="grid grid-cols-2 gap-2">
-          <button id="day-btn-A" onclick="selectProgramDay('A')" class="p-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
+      <div class="bw-card p-3 space-y-2.5">
+        <div class="grid grid-cols-2 gap-1.5">
+          <button id="day-btn-A" onclick="selectProgramDay('A')" class="p-2 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
             <div class="flex items-center justify-between">
               <span class="font-black text-xs text-orange-400">DAY A (30분컷)</span>
               <span id="badge-day-A" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">총 9세트</span>
             </div>
-            <div class="text-xs font-extrabold text-white mt-1">등상부 두께 & 하체</div>
+            <div class="text-[11px] font-extrabold text-white mt-0.5 truncate">등상부 두께 & 하체</div>
           </button>
 
-          <button id="day-btn-B" onclick="selectProgramDay('B')" class="p-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
+          <button id="day-btn-B" onclick="selectProgramDay('B')" class="p-2 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
             <div class="flex items-center justify-between">
               <span class="font-black text-xs text-orange-400">DAY B (30분컷)</span>
               <span id="badge-day-B" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">총 9세트</span>
             </div>
-            <div class="text-xs font-extrabold text-white mt-1">V-테이퍼 프레임</div>
+            <div class="text-[11px] font-extrabold text-white mt-0.5 truncate">V-테이퍼 프레임</div>
           </button>
 
-          <button id="day-btn-C" onclick="selectProgramDay('C')" class="p-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
+          <button id="day-btn-C" onclick="selectProgramDay('C')" class="p-2 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
             <div class="flex items-center justify-between">
               <span class="font-black text-xs text-orange-400">DAY C (30분컷)</span>
               <span id="badge-day-C" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">총 9세트</span>
             </div>
-            <div class="text-xs font-extrabold text-white mt-1">등상부 고립 & 어깨</div>
+            <div class="text-[11px] font-extrabold text-white mt-0.5 truncate">등상부 고립 & 어깨</div>
           </button>
 
-          <button id="day-btn-REST" onclick="selectProgramDay('REST')" class="p-2.5 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
+          <button id="day-btn-REST" onclick="selectProgramDay('REST')" class="p-2 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
             <div class="flex items-center justify-between">
               <span class="font-black text-xs text-zinc-400">유산소 / 휴식</span>
               <span id="badge-day-REST" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">유산소/체중</span>
             </div>
-            <div class="text-xs font-extrabold text-white mt-1">유산소 단독 / 체중기록</div>
+            <div class="text-[11px] font-extrabold text-white mt-0.5 truncate">유산소 단독 / 타바타</div>
           </button>
         </div>
 
         <!-- 볼륨 & 칼로리 요약 및 컨트롤 -->
         <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-zinc-800">
-          <div class="flex items-center gap-3">
+          <div class="flex items-center gap-2.5">
             <div>
-              <div class="text-[11px] text-zinc-400 font-bold">
+              <div class="text-[10px] text-zinc-400 font-bold">
                 예상 <span id="estDurationText" class="text-white">약 26분</span> · 달성 <span id="completionPercentText" class="text-[#ff5500] font-black">0%</span>
               </div>
-              <div class="text-lg font-black text-white tracking-tight"><span id="totalVolumeText">0</span> <span class="text-xs text-zinc-400">kg</span></div>
+              <div class="text-base font-black text-white"><span id="totalVolumeText">0</span> <span class="text-xs text-zinc-400">kg</span></div>
             </div>
 
-            <div class="bg-orange-950/40 border border-orange-500/40 rounded-xl px-3 py-1.5">
-              <div class="text-[10px] text-orange-300 font-bold">🔥 총 소모 칼로리</div>
-              <div class="text-base font-black text-[#ff5500]"><span id="totalKcalText">0</span> kcal</div>
-              <div id="kcalDetailText" class="text-[10px] text-zinc-400">웨이트 0 + 유산소 0 kcal</div>
+            <div class="bg-orange-950/40 border border-orange-500/40 rounded-xl px-2.5 py-1">
+              <div class="text-[10px] text-orange-300 font-bold">🔥 총 소모 열량</div>
+              <div class="text-sm font-black text-[#ff5500]"><span id="totalKcalText">0</span> kcal</div>
+              <div id="kcalDetailText" class="text-[9px] text-zinc-400">웨이트 0 + 유산소 0</div>
             </div>
           </div>
 
-          <div class="flex items-center gap-1.5 flex-wrap">
-            <button id="lockRoutineBtn" onclick="toggleRoutineLock()" class="px-2.5 py-2 rounded-xl bg-zinc-800 border border-zinc-700 text-xs font-extrabold text-zinc-200 flex items-center gap-1">
-              <i class="fa-solid fa-lock-open"></i> 루틴고정
+          <div class="flex items-center gap-1 flex-wrap">
+            <button id="lockRoutineBtn" onclick="toggleRoutineLock()" class="px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-[11px] font-extrabold text-zinc-200 flex items-center gap-1">
+              <i class="fa-solid fa-lock-open"></i> 고정
             </button>
-            <button onclick="checkAllSetsInCurrentDay(true)" class="px-3 py-2 rounded-xl bg-white text-black text-xs font-black hover:bg-zinc-200">
-              <i class="fa-solid fa-check-double"></i> 전체완료
+            <button onclick="checkAllSetsInCurrentDay(true)" class="px-2.5 py-1.5 rounded-lg bg-white text-black text-[11px] font-black">
+              전체완료
             </button>
-            <button onclick="checkAllSetsInCurrentDay(false)" class="px-2.5 py-2 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-300 text-xs font-bold">
-              체크해제
+            <button onclick="checkAllSetsInCurrentDay(false)" class="px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 text-[11px] font-bold">
+              해제
             </button>
-            <button onclick="resetCurrentDayToDefault()" class="px-2.5 py-2 rounded-xl bg-zinc-800 border border-zinc-700 text-zinc-400 text-xs font-bold" title="현재 루틴 기본값 초기화">
+            <button onclick="resetCurrentDayToDefault()" class="px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 text-[11px] font-bold" title="기본값 초기화">
               <i class="fa-solid fa-rotate-left"></i>
             </button>
           </div>
         </div>
 
         <!-- 하루 운동 종료 & 다음 볼륨 분석 메인 액션 버튼 -->
-        <button onclick="openFinishWorkoutModal()" class="w-full py-3 px-4 rounded-xl orange-btn shadow-lg shadow-orange-600/30 flex items-center justify-center gap-2 text-sm font-black">
+        <button onclick="openFinishWorkoutModal()" class="w-full py-2.5 px-3 rounded-xl orange-btn shadow-lg shadow-orange-600/25 flex items-center justify-center gap-1.5 text-xs font-black">
           <i class="fa-solid fa-flag-checkered"></i> 하루 운동 종료 & 다음 볼륨 자동분석 (제미나이 공유)
         </button>
       </div>
 
       <!-- 종목 & 고칼로리 근력 & 유산소 원터치 추가 바 -->
-      <div class="bw-card p-3 space-y-2.5">
+      <div class="bw-card p-3 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-black text-white flex items-center gap-1.5">
             <span class="w-2 h-2 rounded-full bg-[#ff5500]"></span> 유산소 & 고칼로리 근력운동 원터치 추가
           </span>
-          <span class="text-[10px] text-zinc-400">터치 시 오늘 일지에 즉시 추가됩니다</span>
+          <button onclick="switchMainTab('tabata')" class="text-[11px] text-orange-400 font-black underline">
+            ⏱️ 타바타 타이머 열기 →
+          </button>
         </div>
 
-        <!-- 3대 유산소 추가 -->
         <div class="flex flex-wrap gap-1.5">
-          <button onclick="addCardioExercise('stair')" class="px-3 py-1.5 rounded-xl bg-[#ff5500] text-white text-xs font-black flex items-center gap-1.5">
+          <button onclick="addCardioExercise('stair')" class="px-2.5 py-1.5 rounded-lg bg-[#ff5500] text-white text-[11px] font-black flex items-center gap-1">
             <i class="fa-solid fa-fire"></i> + 천국의 계단
           </button>
-          <button onclick="addCardioExercise('mountain')" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700 hover:border-orange-500 text-white text-xs font-extrabold flex items-center gap-1.5">
+          <button onclick="addCardioExercise('mountain')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-[11px] font-extrabold flex items-center gap-1">
             <i class="fa-solid fa-mountain"></i> + 마이마운틴
           </button>
-          <button onclick="addCardioExercise('bike')" class="px-3 py-1.5 rounded-xl bg-zinc-900 border border-zinc-700 hover:border-orange-500 text-white text-xs font-extrabold flex items-center gap-1.5">
+          <button onclick="addCardioExercise('bike')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-[11px] font-extrabold flex items-center gap-1">
             <i class="fa-solid fa-bicycle"></i> + 실내 자전거
           </button>
-        </div>
-
-        <!-- 고칼로리 소모 복합 근력운동 프리셋 추가 -->
-        <div class="pt-2 border-t border-zinc-800/80">
-          <div class="text-[11px] font-extrabold text-orange-400 mb-1.5 flex items-center gap-1">
-            <i class="fa-solid fa-bolt"></i> 칼로리 소모 폭발 대근육/전신 근력운동 추가 (EPOC 극대화)
-          </div>
-          <div class="flex flex-wrap gap-1.5">
-            <button onclick="addHighCaloriePreset('kettlebell_swing')" class="px-2.5 py-1.5 rounded-lg bg-orange-950/60 hover:bg-orange-900/70 border border-orange-500/40 text-orange-200 text-xs font-extrabold">
-              🔥 + 케틀벨 스윙 (전신 대사폭발)
-            </button>
-            <button onclick="addHighCaloriePreset('barbell_squat')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-bold">
-              🦵 + 바벨 백 스쿼트 (하체/코어)
-            </button>
-            <button onclick="addHighCaloriePreset('conv_deadlift')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-bold">
-              ⚡ + 컨벤셔널 데드리프트 (전신 후면)
-            </button>
-            <button onclick="addHighCaloriePreset('db_thruster')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-bold">
-              💥 + 덤벨 쓰러스터 (하체+어깨 복합)
-            </button>
-            <button onclick="addHighCaloriePreset('walking_lunge')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-zinc-200 text-xs font-bold">
-              🏃 + 덤벨 워킹 런지 (둔근/대퇴)
-            </button>
-            <button onclick="addCustomWeightExercise()" class="px-2.5 py-1.5 rounded-lg bg-white text-black text-xs font-black">
-              + 직접 근력운동 추가
-            </button>
-          </div>
+          <button onclick="addHighCaloriePreset('kettlebell_swing')" class="px-2.5 py-1.5 rounded-lg bg-orange-950/70 border border-orange-500/40 text-orange-200 text-[11px] font-extrabold">
+            🔥 + 케틀벨 스윙
+          </button>
+          <button onclick="addHighCaloriePreset('barbell_squat')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">
+            🦵 + 바벨 스쿼트
+          </button>
+          <button onclick="addHighCaloriePreset('conv_deadlift')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">
+            ⚡ + 데드리프트
+          </button>
+          <button onclick="addHighCaloriePreset('db_thruster')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">
+            💥 + 쓰러스터
+          </button>
+          <button onclick="addCustomWeightExercise()" class="px-2.5 py-1.5 rounded-lg bg-white text-black text-[11px] font-black">
+            + 직접 추가
+          </button>
         </div>
       </div>
 
       <!-- 운동 카드 리스트 렌더링 컨테이너 -->
-      <div id="exerciseListContainer" class="space-y-3"></div>
-
-      <!-- 하단 하루 운동 종료 & 분석 버튼 -->
-      <div class="pt-2">
-        <button onclick="openFinishWorkoutModal()" class="w-full py-3.5 px-4 rounded-2xl orange-btn shadow-xl shadow-orange-600/30 flex items-center justify-center gap-2 text-base font-black">
-          <i class="fa-solid fa-chart-line"></i> 오늘 운동 종료 & 다음 볼륨 자동분석 리포트 열기
-        </button>
-      </div>
+      <div id="exerciseListContainer" class="space-y-2.5"></div>
     </section>
 
     <!-- ==================== TAB 2: 달력 & 체중변화 ==================== -->
@@ -388,7 +341,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             <button onclick="changeCalendarMonth(1)" class="stepper-btn w-8 h-8 rounded-lg"><i class="fa-solid fa-chevron-right text-xs"></i></button>
           </div>
           <div class="text-xs text-zinc-400 font-bold">
-            이번 달 운동일수: <span id="monthlyWorkoutDaysCount" class="text-[#ff5500] font-black">0일</span>
+            이번 달 운동: <span id="monthlyWorkoutDaysCount" class="text-[#ff5500] font-black">0일</span>
           </div>
         </div>
 
@@ -401,23 +354,129 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       <!-- 선택한 날짜 요약 -->
       <div id="calendarSelectedDetailCard" class="bw-card p-3.5"></div>
 
-      <!-- 체중 & 허리둘레 추이 차트 -->
+      <!-- 체중 추이 차트 -->
       <div class="bw-card p-3.5 space-y-2">
         <div class="flex items-center justify-between">
-          <h3 class="text-sm font-black text-white">📉 체중(오렌지) & 허리둘레(화이트점선) 변화 추이</h3>
-          <span class="text-[11px] text-zinc-400">목표 81.0kg</span>
+          <h3 class="text-sm font-black text-white">📉 일자별 체중 변화 추이</h3>
+          <span class="text-[11px] text-orange-400 font-bold">1차 목표 81.0kg</span>
         </div>
-        <div id="weightChartSvgContainer" class="w-full h-48 bg-zinc-950 border border-zinc-800 rounded-xl p-2 flex items-center justify-center"></div>
+        <div id="weightChartSvgContainer" class="w-full h-44 bg-zinc-950 border border-zinc-800 rounded-xl p-2 flex items-center justify-center"></div>
       </div>
     </section>
 
-    <!-- ==================== TAB 3: 3D 근육 & 코칭 ==================== -->
+    <!-- ==================== TAB 3: 전용 타바타(TABATA) & 인터벌 타이머 ==================== -->
+    <section id="tab-panel-tabata" class="hidden space-y-3">
+      <!-- 프리셋 선택 바 -->
+      <div class="bw-card p-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-white flex items-center gap-1.5">
+            <i class="fa-solid fa-bolt text-[#ff5500]"></i> 타바타 & 인터벌 프리셋 선택
+          </span>
+          <span id="tabataEstKcalBadge" class="text-[11px] px-2 py-0.5 rounded bg-orange-950 border border-orange-500/40 text-orange-300 font-black">
+            예상 소모 약 75 kcal
+          </span>
+        </div>
+        <div class="grid grid-cols-3 gap-1.5">
+          <button onclick="applyTabataPreset('classic')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
+            <div class="text-[11px] font-black text-[#ff5500]">정통 타바타 4분</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">20초 운동 / 10초 휴식 × 8R</div>
+          </button>
+          <button onclick="applyTabataPreset('kettlebell')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
+            <div class="text-[11px] font-black text-orange-400">케틀벨 10세트</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">30초 스윙 / 30초 휴식 × 10R</div>
+          </button>
+          <button onclick="applyTabataPreset('hiit')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
+            <div class="text-[11px] font-black text-emerald-400">고강도 HIIT</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">40초 운동 / 20초 휴식 × 6R</div>
+          </button>
+        </div>
+      </div>
+
+      <!-- 메인 타바타 디스플레이 카드 -->
+      <div id="tabataMainDisplayCard" class="bw-card-orange p-4 text-center space-y-3 transition-all">
+        <div class="flex items-center justify-between">
+          <span id="tabataPhaseBadge" class="px-3 py-1 rounded-full bg-zinc-800 text-zinc-200 text-xs font-black tracking-wider">
+            READY · 대기중
+          </span>
+          <span id="tabataRoundText" class="text-sm font-black text-white">
+            ROUND <span class="text-[#ff5500] text-lg">1</span> / 8
+          </span>
+        </div>
+
+        <!-- 초대형 카운트다운 숫자 -->
+        <div class="py-2">
+          <div id="tabataBigTime" class="font-mono text-7xl sm:text-8xl font-black text-white tracking-tight leading-none">
+            00:20
+          </div>
+          <div id="tabataSubStatusText" class="text-xs font-bold text-zinc-400 mt-2">
+            시작 버튼을 누르면 5초 준비 카운트 후 시작됩니다
+          </div>
+        </div>
+
+        <!-- 진행 프로그레스 바 -->
+        <div class="w-full h-3 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
+          <div id="tabataProgressBar" class="h-full bg-[#ff5500] transition-all duration-300" style="width: 100%"></div>
+        </div>
+
+        <!-- 시작 / 일시정지 / 초기화 컨트롤 버튼 -->
+        <div class="grid grid-cols-3 gap-2 pt-1">
+          <button id="tabataStartPauseBtn" onclick="toggleTabataStartPause()" class="col-span-2 py-3.5 rounded-xl orange-btn text-base font-black flex items-center justify-center gap-2 shadow-lg">
+            <i class="fa-solid fa-play"></i> 타바타 시작
+          </button>
+          <button onclick="resetTabataTimer()" class="py-3.5 rounded-xl bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-white text-sm font-black flex items-center justify-center gap-1.5">
+            <i class="fa-solid fa-rotate-left"></i> 리셋
+          </button>
+        </div>
+      </div>
+
+      <!-- 운동시간 / 휴식시간 / 라운드 커스텀 조절 & 일지 기록 -->
+      <div class="bw-card p-3.5 space-y-3">
+        <div class="text-xs font-black text-white">⚙️ 타바타 시간 & 라운드 직접 설정</div>
+        <div class="grid grid-cols-3 gap-2">
+          <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2 text-center">
+            <div class="text-[10px] text-zinc-400 font-bold mb-1">🔥 운동 (초)</div>
+            <div class="flex items-center justify-center gap-1">
+              <button onclick="stepTabataConfig('workSec', -5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
+              <input id="tabataWorkInput" type="number" value="20" onchange="updateTabataConfigFromInputs()" class="w-11 bg-transparent text-center font-black text-sm text-[#ff5500]" />
+              <button onclick="stepTabataConfig('workSec', 5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
+            </div>
+          </div>
+
+          <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2 text-center">
+            <div class="text-[10px] text-zinc-400 font-bold mb-1">💨 휴식 (초)</div>
+            <div class="flex items-center justify-center gap-1">
+              <button onclick="stepTabataConfig('restSec', -5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
+              <input id="tabataRestInput" type="number" value="10" onchange="updateTabataConfigFromInputs()" class="w-11 bg-transparent text-center font-black text-sm text-emerald-400" />
+              <button onclick="stepTabataConfig('restSec', 5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
+            </div>
+          </div>
+
+          <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2 text-center">
+            <div class="text-[10px] text-zinc-400 font-bold mb-1">🔁 라운드 (세트)</div>
+            <div class="flex items-center justify-center gap-1">
+              <button onclick="stepTabataConfig('rounds', -1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
+              <input id="tabataRoundsInput" type="number" value="8" onchange="updateTabataConfigFromInputs()" class="w-10 bg-transparent text-center font-black text-sm text-white" />
+              <button onclick="stepTabataConfig('rounds', 1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex items-center gap-2">
+          <input id="tabataExerciseNameInput" type="text" value="타바타 인터벌 (케틀벨 스윙/버피)" class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-orange-500" />
+          <button onclick="logTabataToDailyWorkout()" class="px-3.5 py-2 rounded-xl bg-white text-black text-xs font-black shrink-0">
+            + 오늘 일지에 기록 추가
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 4: 3D 근육 & 코칭 ==================== -->
     <section id="tab-panel-video" class="hidden space-y-3">
       <div class="bw-card p-3.5 space-y-3">
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
-            <span class="text-[11px] px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 font-extrabold">3D MUSCLE ANATOMY & PRO COACHING</span>
-            <h2 id="videoSectionTitle" class="text-base font-black text-white mt-1">체스트 서포티드 와이드 로우</h2>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-orange-500/20 text-orange-300 font-extrabold">3D MUSCLE & COACHING</span>
+            <h2 id="videoSectionTitle" class="text-sm font-black text-white mt-1">체스트 서포티드 와이드 로우</h2>
           </div>
           <select id="videoExerciseSelect" onchange="selectVideoExercise(this.value)" class="bg-zinc-900 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-extrabold text-white"></select>
         </div>
@@ -425,20 +484,20 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
           <div class="bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
             <div class="px-3 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
-              <span class="text-xs font-black text-orange-400"><i class="fa-solid fa-person-rays mr-1"></i> 3D 근육 해부학 모션 영상</span>
-              <span class="text-[10px] text-zinc-400">화이트 마네킹 & 타깃 근육</span>
+              <span class="text-xs font-black text-orange-400"><i class="fa-solid fa-person-rays mr-1"></i> 3D 근육 해부학 모션</span>
+              <span class="text-[10px] text-zinc-400">타깃 주동근 확인</span>
             </div>
-            <div class="aspect-[9/16] max-h-[420px] w-full mx-auto bg-black">
+            <div class="aspect-[9/16] max-h-[380px] w-full mx-auto bg-black">
               <iframe id="anatomyYoutubeIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
           </div>
 
           <div class="bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
             <div class="px-3 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
-              <span class="text-xs font-black text-white"><i class="fa-brands fa-youtube text-red-500 mr-1"></i> 실전 보디빌딩 자세 코칭</span>
-              <span class="text-[10px] text-zinc-400">핵심 큐잉 & 세팅법</span>
+              <span class="text-xs font-black text-white"><i class="fa-brands fa-youtube text-red-500 mr-1"></i> 실전 보디빌딩 코칭</span>
+              <span class="text-[10px] text-zinc-400">그립 & 각도 팁</span>
             </div>
-            <div class="aspect-[9/16] max-h-[420px] w-full mx-auto bg-black">
+            <div class="aspect-[9/16] max-h-[380px] w-full mx-auto bg-black">
               <iframe id="coachingYoutubeIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
             </div>
           </div>
@@ -448,64 +507,68 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       </div>
     </section>
 
-    <!-- ==================== TAB 4: 인바디 & 백업 ==================== -->
+    <!-- ==================== TAB 5: 인바디 & 백업 ==================== -->
     <section id="tab-panel-inbody" class="hidden space-y-3">
-      <div class="bw-card p-4 space-y-3">
-        <h2 class="text-base font-black text-white flex items-center gap-2">
-          <i class="fa-solid fa-scale-balanced text-[#ff5500]"></i> 인바디(InBody) 수치 입력 & 골격근량 비례 중량 자동 세팅
+      <div class="bw-card p-3.5 space-y-3">
+        <h2 class="text-sm font-black text-white flex items-center gap-1.5">
+          <i class="fa-solid fa-scale-balanced text-[#ff5500]"></i> 신체 스펙 & 인바디(InBody) 설정
         </h2>
-        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+        <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
           <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
-            <label class="text-[11px] text-zinc-400 font-bold">현재 체중 (kg)</label>
-            <input id="inbodyWeightInput" type="number" step="0.1" value="89.0" class="w-full bg-transparent text-lg font-black text-white mt-1 focus:outline-none" />
+            <label class="text-[10px] text-zinc-400 font-bold">신장 (cm)</label>
+            <input id="inbodyHeightInput" type="number" value="176" onchange="updateProfileSpecFromInbody()" class="w-full bg-transparent text-base font-black text-white mt-0.5 focus:outline-none" />
           </div>
           <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
-            <label class="text-[11px] text-zinc-400 font-bold">골격근량 SMM (kg)</label>
-            <input id="inbodySmmInput" type="number" step="0.1" value="36.5" class="w-full bg-transparent text-lg font-black text-[#ff5500] mt-1 focus:outline-none" />
+            <label class="text-[10px] text-zinc-400 font-bold">현재 체중 (kg)</label>
+            <input id="inbodyWeightInput" type="number" step="0.1" value="88.8" class="w-full bg-transparent text-base font-black text-white mt-0.5 focus:outline-none" />
           </div>
           <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
-            <label class="text-[11px] text-zinc-400 font-bold">체지방률 PBF (%)</label>
-            <input id="inbodyPbfInput" type="number" step="0.1" value="25.5" class="w-full bg-transparent text-lg font-black text-white mt-1 focus:outline-none" />
+            <label class="text-[10px] text-zinc-400 font-bold">골격근량 SMM (kg)</label>
+            <input id="inbodySmmInput" type="number" step="0.1" value="36.5" class="w-full bg-transparent text-base font-black text-[#ff5500] mt-0.5 focus:outline-none" />
           </div>
           <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
-            <label class="text-[11px] text-zinc-400 font-bold">1차 목표체중 (kg)</label>
-            <input id="inbodyGoalInput" type="number" step="0.5" value="81.0" class="w-full bg-transparent text-lg font-black text-orange-400 mt-1 focus:outline-none" />
+            <label class="text-[10px] text-zinc-400 font-bold">체지방률 PBF (%)</label>
+            <input id="inbodyPbfInput" type="number" step="0.1" value="25.5" class="w-full bg-transparent text-base font-black text-white mt-0.5 focus:outline-none" />
+          </div>
+          <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+            <label class="text-[10px] text-zinc-400 font-bold">1차 목표체중 (kg)</label>
+            <input id="inbodyGoalInput" type="number" step="0.5" value="81.0" onchange="updateProfileSpecFromInbody()" class="w-full bg-transparent text-base font-black text-orange-400 mt-0.5 focus:outline-none" />
           </div>
         </div>
-        <button onclick="applyInbodyAutoScaling()" class="w-full py-3 rounded-xl orange-btn text-xs font-black">
-          ⚡ 인바디 골격근량(SMM) 기준으로 기본 루틴 중량 일괄 최적화
+        <button onclick="applyInbodyAutoScaling()" class="w-full py-2.5 rounded-xl orange-btn text-xs font-black">
+          ⚡ 골격근량(SMM) 기준으로 루틴 추천 무게 최적화
         </button>
       </div>
 
       <!-- RPE 8 중량 계산기 -->
-      <div class="bw-card p-4 space-y-3">
-        <h3 class="text-sm font-black text-white">🧮 과학적 RPE 8 (예비 반복 2회) 추천 중량 계산기 (Rust Wasm)</h3>
+      <div class="bw-card p-3.5 space-y-2.5">
+        <h3 class="text-sm font-black text-white">🧮 RPE 8 (예비 반복 2회) 중량 계산기</h3>
         <div class="grid grid-cols-3 gap-2">
-          <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+          <div class="bg-zinc-900 p-2 rounded-xl border border-zinc-800">
             <label class="text-[10px] text-zinc-400 font-bold">다룬 무게 (kg)</label>
-            <input id="calcInputWeight" type="number" value="40" oninput="runRpeCalculator()" class="w-full bg-transparent text-base font-black text-white mt-1 focus:outline-none" />
+            <input id="calcInputWeight" type="number" value="40" oninput="runRpeCalculator()" class="w-full bg-transparent text-sm font-black text-white mt-0.5 focus:outline-none" />
           </div>
-          <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+          <div class="bg-zinc-900 p-2 rounded-xl border border-zinc-800">
             <label class="text-[10px] text-zinc-400 font-bold">성공 횟수 (회)</label>
-            <input id="calcInputReps" type="number" value="8" oninput="runRpeCalculator()" class="w-full bg-transparent text-base font-black text-white mt-1 focus:outline-none" />
+            <input id="calcInputReps" type="number" value="8" oninput="runRpeCalculator()" class="w-full bg-transparent text-sm font-black text-white mt-0.5 focus:outline-none" />
           </div>
-          <div class="bg-zinc-900 p-2.5 rounded-xl border border-zinc-800">
+          <div class="bg-zinc-900 p-2 rounded-xl border border-zinc-800">
             <label class="text-[10px] text-zinc-400 font-bold">목표 횟수 (회)</label>
-            <input id="calcTargetReps" type="number" value="10" oninput="runRpeCalculator()" class="w-full bg-transparent text-base font-black text-[#ff5500] mt-1 focus:outline-none" />
+            <input id="calcTargetReps" type="number" value="10" oninput="runRpeCalculator()" class="w-full bg-transparent text-sm font-black text-[#ff5500] mt-0.5 focus:outline-none" />
           </div>
         </div>
-        <div id="rpeCalcResultBox" class="p-3 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-200"></div>
+        <div id="rpeCalcResultBox" class="p-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-xs font-bold text-zinc-200"></div>
       </div>
 
       <!-- 백업 및 복원 -->
-      <div class="bw-card p-4 space-y-2.5">
-        <h3 class="text-sm font-black text-white">💾 운동일지 전체 데이터 백업 & 복원</h3>
+      <div class="bw-card p-3.5 space-y-2">
+        <h3 class="text-sm font-black text-white">💾 데이터 백업 & 복원</h3>
         <div class="flex flex-wrap gap-2">
-          <button onclick="exportJsonBackup()" class="px-4 py-2.5 rounded-xl bg-white text-black text-xs font-black">
-            <i class="fa-solid fa-download mr-1"></i> 백업 파일 저장 (.json)
+          <button onclick="exportJsonBackup()" class="px-3.5 py-2 rounded-xl bg-white text-black text-xs font-black">
+            <i class="fa-solid fa-download mr-1"></i> 백업 저장 (.json)
           </button>
-          <label class="px-4 py-2.5 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-xs font-extrabold cursor-pointer">
-            <i class="fa-solid fa-upload mr-1"></i> 백업 파일 불러오기
+          <label class="px-3.5 py-2 rounded-xl bg-zinc-800 border border-zinc-700 text-white text-xs font-extrabold cursor-pointer">
+            <i class="fa-solid fa-upload mr-1"></i> 백업 불러오기
             <input type="file" accept=".json" onchange="importJsonBackup(event)" class="hidden" />
           </label>
         </div>
@@ -514,32 +577,72 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
   </main>
 
-  <!-- ==================== 플로팅 자동 휴식 타이머 팝업 ==================== -->
-  <div id="restTimerFloatingPopup" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-md floating-popup">
-    <div class="bg-[#0c0c0f]/95 backdrop-blur-xl border-2 border-[#ff5500] rounded-2xl p-3.5 shadow-2xl shadow-orange-600/30">
+  <!-- ==================== 스마트폰 하단 고정 5탭 내비게이션 바 ==================== -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#070709]/95 backdrop-blur-xl border-t border-zinc-800 px-2 py-1.5">
+    <div class="max-w-3xl mx-auto grid grid-cols-5 gap-1">
+      <button id="tab-btn-log" onclick="switchMainTab('log')" class="bottom-nav-btn bottom-nav-active flex flex-col items-center justify-center py-1 rounded-xl">
+        <div class="nav-icon-wrap w-8 h-7 rounded-lg border border-transparent flex items-center justify-center text-sm">
+          <i class="fa-solid fa-clipboard-check"></i>
+        </div>
+        <span class="text-[10px] mt-0.5">운동일지</span>
+      </button>
+
+      <button id="tab-btn-calendar" onclick="switchMainTab('calendar')" class="bottom-nav-btn flex flex-col items-center justify-center py-1 rounded-xl">
+        <div class="nav-icon-wrap w-8 h-7 rounded-lg border border-transparent flex items-center justify-center text-sm">
+          <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <span class="text-[10px] mt-0.5">달력/체중</span>
+      </button>
+
+      <button id="tab-btn-tabata" onclick="switchMainTab('tabata')" class="bottom-nav-btn flex flex-col items-center justify-center py-1 rounded-xl">
+        <div class="nav-icon-wrap w-8 h-7 rounded-lg border border-transparent flex items-center justify-center text-sm">
+          <i class="fa-solid fa-stopwatch-20"></i>
+        </div>
+        <span class="text-[10px] mt-0.5">타바타</span>
+      </button>
+
+      <button id="tab-btn-video" onclick="switchMainTab('video')" class="bottom-nav-btn flex flex-col items-center justify-center py-1 rounded-xl">
+        <div class="nav-icon-wrap w-8 h-7 rounded-lg border border-transparent flex items-center justify-center text-sm">
+          <i class="fa-solid fa-fire-flame-simple"></i>
+        </div>
+        <span class="text-[10px] mt-0.5">3D코칭</span>
+      </button>
+
+      <button id="tab-btn-inbody" onclick="switchMainTab('inbody')" class="bottom-nav-btn flex flex-col items-center justify-center py-1 rounded-xl">
+        <div class="nav-icon-wrap w-8 h-7 rounded-lg border border-transparent flex items-center justify-center text-sm">
+          <i class="fa-solid fa-scale-balanced"></i>
+        </div>
+        <span class="text-[10px] mt-0.5">인바디</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== 플로팅 자동 휴식 타이머 팝업 (하단 탭바 위) ==================== -->
+  <div id="restTimerFloatingPopup" class="hidden fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-md floating-popup">
+    <div class="bg-[#0c0c0f]/95 backdrop-blur-xl border-2 border-[#ff5500] rounded-2xl p-3 shadow-2xl shadow-orange-600/30">
       <div class="flex items-center justify-between gap-2">
         <div class="flex items-center gap-2 min-w-0">
-          <span class="w-2.5 h-2.5 rounded-full bg-[#ff5500] animate-ping shrink-0"></span>
+          <span class="w-2 h-2 rounded-full bg-[#ff5500] animate-ping shrink-0"></span>
           <div class="truncate">
-            <div class="text-[10px] font-black text-orange-400 uppercase tracking-wider">세트 완료! 자동 휴식 타이머</div>
+            <div class="text-[10px] font-black text-orange-400">세트 완료! 휴식 타이머</div>
             <div id="popupTimerExerciseLabel" class="text-xs font-extrabold text-white truncate">체스트 서포티드 와이드 로우</div>
           </div>
         </div>
-        <button onclick="closeRestTimerPopup()" class="text-zinc-400 hover:text-white px-2 py-1 text-xs font-bold">
+        <button onclick="closeRestTimerPopup()" class="text-zinc-400 hover:text-white px-2 text-xs font-bold">
           <i class="fa-solid fa-xmark text-base"></i>
         </button>
       </div>
 
-      <div class="flex items-center justify-between my-2.5">
-        <div id="popupTimerCountdown" class="font-mono text-4xl font-black text-white tracking-tight">01:30</div>
-        <div class="flex items-center gap-1.5">
-          <button onclick="addRestTimerSeconds(-15)" class="stepper-btn px-2.5 py-2 rounded-xl text-xs font-black">-15초</button>
-          <button onclick="addRestTimerSeconds(30)" class="px-3 py-2 rounded-xl bg-orange-950 border border-orange-500/50 text-orange-300 text-xs font-black">+30초</button>
-          <button onclick="skipRestTimer()" class="px-3 py-2 rounded-xl bg-white text-black text-xs font-black">스킵</button>
+      <div class="flex items-center justify-between my-2">
+        <div id="popupTimerCountdown" class="font-mono text-3xl font-black text-white tracking-tight">01:30</div>
+        <div class="flex items-center gap-1">
+          <button onclick="addRestTimerSeconds(-15)" class="stepper-btn px-2 py-1.5 rounded-lg text-xs font-black">-15초</button>
+          <button onclick="addRestTimerSeconds(30)" class="px-2.5 py-1.5 rounded-lg bg-orange-950 border border-orange-500/50 text-orange-300 text-xs font-black">+30초</button>
+          <button onclick="skipRestTimer()" class="px-2.5 py-1.5 rounded-lg bg-white text-black text-xs font-black">스킵</button>
         </div>
       </div>
 
-      <div class="w-full h-2 bg-zinc-800 rounded-full overflow-hidden">
+      <div class="w-full h-1.5 bg-zinc-800 rounded-full overflow-hidden">
         <div id="popupTimerProgressBar" class="h-full bg-[#ff5500] transition-all duration-300" style="width: 100%"></div>
       </div>
     </div>
@@ -547,50 +650,43 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
   <!-- ==================== 하루 운동 종료 & AI 볼륨 분석 모달 ==================== -->
   <div id="finishAnalysisModal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-3 overflow-y-auto">
-    <div class="bw-card-orange w-full max-w-2xl p-4 sm:p-5 space-y-4 max-h-[92vh] overflow-y-auto">
-      <div class="flex items-center justify-between border-b border-zinc-800 pb-3">
+    <div class="bw-card-orange w-full max-w-2xl p-4 space-y-3.5 max-h-[90vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-zinc-800 pb-2.5">
         <div>
-          <span class="text-[10px] px-2 py-0.5 rounded bg-[#ff5500] text-white font-black">WORKOUT ANALYSIS & NEXT PROGRESSION</span>
-          <h2 class="text-lg font-black text-white mt-1">🏁 오늘 운동 기록 분석 & 다음 세션 볼륨 처방</h2>
+          <span class="text-[10px] px-2 py-0.5 rounded bg-[#ff5500] text-white font-black">WORKOUT ANALYSIS</span>
+          <h2 class="text-base font-black text-white mt-1">🏁 오늘 운동 분석 & 다음 세션 볼륨 처방</h2>
         </div>
         <button onclick="closeFinishWorkoutModal()" class="w-8 h-8 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300">
           <i class="fa-solid fa-xmark"></i>
         </button>
       </div>
 
-      <!-- 오늘 요약 배지 -->
       <div id="analysisSummaryHeader" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
 
-      <!-- 종목별 분석 및 다음 세션 추천 리스트 -->
       <div class="space-y-2">
-        <div class="text-xs font-black text-orange-400 flex items-center gap-1.5">
-          <i class="fa-solid fa-microchip"></i> 종목별 수행 분석 및 다음 세션 자동 처방 (이중 점진 과부하 기준)
-        </div>
+        <div class="text-xs font-black text-orange-400">종목별 수행 분석 및 다음 세션 추천</div>
         <div id="analysisExerciseCards" class="space-y-2"></div>
       </div>
 
-      <!-- 다음 세션 자동 반영 버튼 -->
-      <button onclick="applyNextSessionRecommendations()" class="w-full py-3 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-orange-500/60 text-orange-300 text-xs font-black flex items-center justify-center gap-2">
-        <i class="fa-solid fa-wand-magic-sparkles"></i> ⚡ 분석된 추천 무게·횟수를 다음번 동일 루틴 기본값으로 예약 적용하기
+      <button onclick="applyNextSessionRecommendations()" class="w-full py-2.5 rounded-xl bg-zinc-900 border border-orange-500/60 text-orange-300 text-xs font-black">
+        ⚡ 추천 무게·횟수를 다음번 동일 루틴 기본값으로 예약 적용
       </button>
 
-      <!-- 제미나이 공유용 깔끔한 텍스트 박스 & 원클릭 복사 -->
       <div class="space-y-2 pt-2 border-t border-zinc-800">
         <div class="flex items-center justify-between flex-wrap gap-2">
-          <span class="text-xs font-black text-white">🤖 제미나이(코치) 전달용 요약 리포트</span>
-          <button onclick="copyGeminiReportText()" id="copyGeminiReportBtn" class="px-3.5 py-2 rounded-xl orange-btn text-xs font-black flex items-center gap-1.5 shadow-lg">
-            <i class="fa-solid fa-copy"></i> 📋 제미나이 전달용 원클릭 복사
+          <span class="text-xs font-black text-white">🤖 제미나이 전달용 리포트</span>
+          <button onclick="copyGeminiReportText()" id="copyGeminiReportBtn" class="px-3 py-1.5 rounded-xl orange-btn text-xs font-black">
+            📋 원클릭 복사
           </button>
         </div>
-        <p class="text-[11px] text-zinc-400">복사 버튼을 누른 뒤 제미나이 채팅창에 그대로 붙여넣기만 하면 코치가 즉시 분석해 드립니다.</p>
-        <textarea id="geminiReportTextarea" readonly rows="10" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-3 text-xs font-mono text-zinc-200 focus:outline-none"></textarea>
+        <textarea id="geminiReportTextarea" readonly rows="8" class="w-full bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 text-xs font-mono text-zinc-200 focus:outline-none"></textarea>
       </div>
     </div>
   </div>
 
   <script>
     // =========================================================================
-    // 1. 내장형 Rust Wasm 바이너리 로더
+    // 1. 내장형 Rust Wasm 로더
     // =========================================================================
     const RUST_WASM_BYTES = new Uint8Array([
       0x00,0x61,0x73,0x6d,0x01,0x00,0x00,0x00,0x01,0x11,0x02,0x60,0x02,0x7f,0x7f,0x01,
@@ -624,13 +720,11 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         rustEngine.calcOneRm = (w, r) => ex.calc_one_rm(Math.round(w * 10), Math.round(r)) / 10;
         rustEngine.calcRpeLoad = (oneRm, targetReps, rir) => ex.calc_rpe_load(Math.round(oneRm * 10), Math.round(targetReps), Math.round(rir)) / 10;
         rustEngine.scaleBySmm = (baseW, smm) => ex.scale_by_smm(Math.round(baseW * 10), Math.round(smm * 10)) / 10;
-      } catch (e) {
-        console.warn("Wasm fallback used:", e);
-      }
+      } catch (e) {}
     }
 
     // =========================================================================
-    // 2. 기본 운동 템플릿 & 고칼로리 근력 프리셋 & 유산소 데이터베이스
+    // 2. 운동 데이터베이스
     // =========================================================================
     const CARDIO_TYPES = {
       stair: {
@@ -639,7 +733,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         unitLabel: '속도(단)',
         defaultLevel: 7,
         defaultMinutes: 10,
-        desc: '하체 대근육과 둔근을 사용해 분당 칼로리 소모가 가장 높은 끝판왕 유산소 · 현재 체중(89kg) 기준 관절 보호와 내장지방 연소 최적'
+        desc: '하체 대근육과 둔근을 사용해 분당 칼로리 소모가 가장 높은 끝판왕 유산소'
       },
       mountain: {
         key: 'mountain',
@@ -647,7 +741,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         unitLabel: '경사도(%)',
         defaultLevel: 12,
         defaultMinutes: 15,
-        desc: '무릎 충격 없이 높은 경사도 워킹으로 복부 내장지방을 집중 연소하는 고효율 유산소'
+        desc: '무릎 충격 없이 높은 경사도 워킹으로 복부 내장지방을 집중 연소'
       },
       bike: {
         key: 'bike',
@@ -655,32 +749,39 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         unitLabel: '저항(단)',
         defaultLevel: 8,
         defaultMinutes: 15,
-        desc: '하체 피로도가 높은 날 무릎 부담을 최소화하면서 칼로리를 태우는 안정적인 유산소'
+        desc: '하체 피로도가 높은 날 무릎 부담 없이 칼로리를 태우는 유산소'
+      },
+      tabata: {
+        key: 'tabata',
+        name: '타바타 고강도 인터벌 (HIIT)',
+        unitLabel: '강도(RPE)',
+        defaultLevel: 9,
+        defaultMinutes: 10,
+        desc: '초고강도 인터벌 트레이닝으로 운동 후 초과 산소섭취량(EPOC) 극대화'
       }
     };
 
-    // 고칼로리 복합 근력운동 프리셋
     const HIGH_CALORIE_STRENGTH_PRESETS = {
       kettlebell_swing: {
         id: 'hc_kb_swing',
         type: 'weight',
         highCalorieFactor: 1.55,
-        name: '🔥 케틀벨 스윙 (전신 후면/대사 폭발)',
+        name: '🔥 케틀벨 스윙 (전신 대사 폭발)',
         targetReps: '15~20회',
         rpe: '8.5',
         rest: 60,
         videoKey: 'rdl',
         sets: [
-          { weight: 16, reps: 20, done: false },
-          { weight: 16, reps: 20, done: false },
-          { weight: 16, reps: 20, done: false }
+          { weight: 20, reps: 20, done: false },
+          { weight: 20, reps: 20, done: false },
+          { weight: 20, reps: 20, done: false }
         ]
       },
       barbell_squat: {
         id: 'hc_bb_squat',
         type: 'weight',
         highCalorieFactor: 1.45,
-        name: '🦵 바벨 백 스쿼트 (전신 대사량 끝판왕)',
+        name: '🦵 바벨 백 스쿼트 (하체/코어)',
         targetReps: '8~10회',
         rpe: '8',
         rest: 90,
@@ -695,7 +796,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         id: 'hc_deadlift',
         type: 'weight',
         highCalorieFactor: 1.50,
-        name: '⚡ 컨벤셔널 데드리프트 (등상부+후면사슬 전체)',
+        name: '⚡ 컨벤셔널 데드리프트 (전신 후면)',
         targetReps: '6~8회',
         rpe: '8',
         rest: 120,
@@ -710,7 +811,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         id: 'hc_thruster',
         type: 'weight',
         highCalorieFactor: 1.60,
-        name: '💥 덤벨 쓰러스터 (스쿼트+숄더프레스 복합)',
+        name: '💥 덤벨 쓰러스터 (하체+어깨 복합)',
         targetReps: '10~12회',
         rpe: '8.5',
         rest: 75,
@@ -719,21 +820,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           { weight: 24, reps: 12, done: false },
           { weight: 24, reps: 12, done: false },
           { weight: 24, reps: 12, done: false }
-        ]
-      },
-      walking_lunge: {
-        id: 'hc_lunge',
-        type: 'weight',
-        highCalorieFactor: 1.45,
-        name: '🏃 덤벨 워킹 런지 (하체/둔근 칼로리 폭격)',
-        targetReps: '12~15회',
-        rpe: '8.5',
-        rest: 75,
-        videoKey: 'squat',
-        sets: [
-          { weight: 20, reps: 14, done: false },
-          { weight: 20, reps: 14, done: false },
-          { weight: 20, reps: 14, done: false }
         ]
       }
     };
@@ -745,7 +831,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         coachingId: 'rBECnnZHlnM',
         points: [
           '가슴을 패드에 단단히 밀착하고 팔꿈치를 몸통에서 45~60도 벌려 당깁니다.',
-          '이완 시 날개뼈(견갑골)가 양옆으로 뽑히듯 늘려주고, 수축 시 날개뼈 사이를 강하게 쥐어짭니다.'
+          '이완 시 날개뼈가 양옆으로 뽑히듯 늘려주고, 수축 시 날개뼈 사이를 강하게 쥐어짭니다.'
         ]
       },
       squat: {
@@ -754,7 +840,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         coachingId: 'QuBKlgaZdfI',
         points: [
           '발판을 어깨너비로 딛고 무릎이 발끝 방향과 일치하도록 내려갑니다.',
-          '밀어 올릴 때 무릎 관절을 완전히 잠그지(Lock-out) 말고 95% 지점에서 텐션을 유지합니다.'
+          '밀어 올릴 때 무릎 관절을 완전히 잠그지 말고 95% 지점에서 텐션을 유지합니다.'
         ]
       },
       incline: {
@@ -762,17 +848,16 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         anatomyId: 'Gruq177Psnk',
         coachingId: 'YzpUmUi5R10',
         points: [
-          '벤치 각도를 30도로 세팅하고 견갑골을 살짝 모은 상태에서 쇄골 위쪽 방향으로 밀어 올립니다.',
-          '전완근이 바닥과 수직을 유지하도록 팔꿈치 각도를 제어하세요.'
+          '벤치 각도를 30도로 세팅하고 견갑골을 살짝 모은 상태에서 쇄골 위쪽 방향으로 밀어 올립니다.'
         ]
       },
       rdl: {
-        title: '루마니안 데드리프트 (등상부 정적지지 & 후면사슬)',
+        title: '루마니안 데드리프트 / 케틀벨 스윙 (후면사슬)',
         anatomyId: 'Wou9zVQrAfs',
         coachingId: 'HLReYMA2d2c',
         points: [
-          '바벨이나 덤벨을 허벅지에 스치듯 내리며 엉덩이를 뒤로 깊게 빼줍니다(힙 힌지).',
-          '등 상부가 굽지 않게 견갑대를 단단히 고정하면 승모근과 능형근에 강한 정적 자극이 들어갑니다.'
+          '고관절을 접어 엉덩이를 뒤로 깊게 빼는 힙 힌지(Hip Hinge) 동작이 핵심입니다.',
+          '등 상부가 굽지 않게 견갑대를 단단히 고정하여 승모근과 능형근의 정적 수축을 유지하세요.'
         ]
       },
       latpulldown: {
@@ -780,34 +865,23 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         anatomyId: 'S481pmnNTYY',
         coachingId: 'vL_HLxYJOYE',
         points: [
-          '어깨너비 1.5배 와이드 그립을 잡고 흉추를 살짝 열어 윗가슴 쪽으로 바를 당깁니다.',
-          '팔로 당기지 말고 팔꿈치를 옆구리 아래로 찍어 누른다는 느낌으로 수축하세요.'
+          '어깨너비 1.5배 와이드 그립을 잡고 흉추를 살짝 열어 윗가슴 쪽으로 바를 당깁니다.'
         ]
       },
       ohp: {
-        title: '오버헤드 프레스 / 숄더 프레스 (어깨 프레임)',
+        title: '오버헤드 프레스 (어깨 프레임)',
         anatomyId: '4LBVP2Oe7fg',
         coachingId: 'abFW83mxZ78',
         points: [
-          '팔꿈치가 몸통보다 살짝 앞에 위치하도록 세팅(견갑면)하여 어깨 충돌을 방지합니다.',
-          '복부와 둔근에 힘을 주어 허리가 과도하게 꺾이지 않도록 코어를 잡아줍니다.'
+          '팔꿈치가 몸통보다 살짝 앞에 위치하도록 세팅하여 어깨 충돌을 방지합니다.'
         ]
       },
       facepull: {
-        title: '케이블 페이스풀 / 리어 델트 (후면삼각근 & 등상부)',
+        title: '케이블 페이스풀 (후면삼각근 & 등상부)',
         anatomyId: 'bcaNXuEKPCI',
         coachingId: 'vy9V2snzwMc',
         points: [
-          '케이블 높이를 명치~눈높이에 맞추고 로프를 이마/미간 쪽으로 당기며 엄지손가락을 뒤로 회전시킵니다.',
-          '후면 삼각근과 중하부 승모근이 수축되는 지점에서 1초간 멈춰줍니다.'
-        ]
-      },
-      lateral: {
-        title: '사이드 레터럴 레이즈 (측면 어깨 확장)',
-        anatomyId: 'Kl3LEzQ5Zqs',
-        coachingId: 'jN4R9e1CDrU',
-        points: [
-          '승모근이 으쓱 올라가지 않도록 어깨를 눌러 고정한 채 팔꿈치를 양옆 멀리 던지듯 들어 올립니다.'
+          '로프를 미간 쪽으로 당기며 엄지손가락을 뒤로 외회전시켜 후면 어깨와 중하부 승모근을 수축합니다.'
         ]
       }
     };
@@ -819,23 +893,23 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             id: 'a1', type: 'weight', name: '체스트 서포티드 와이드 로우', targetReps: '8~10회', rpe: '8', rest: 90, videoKey: 'widerow',
             sets: [
               { weight: 40, reps: 8, done: false },
-              { weight: 35, reps: 10, done: false },
+              { weight: 40, reps: 8, done: false },
               { weight: 35, reps: 10, done: false }
             ]
           },
           {
             id: 'a2', type: 'weight', name: '레그프레스 (대사량 폭발)', targetReps: '10~12회', rpe: '8', rest: 90, videoKey: 'squat',
             sets: [
-              { weight: 140, reps: 15, done: false },
-              { weight: 140, reps: 15, done: false },
-              { weight: 140, reps: 21, done: false }
+              { weight: 170, reps: 12, done: false },
+              { weight: 170, reps: 12, done: false },
+              { weight: 170, reps: 12, done: false }
             ]
           },
           {
             id: 'a3', type: 'weight', name: '30° 인클라인 프레스', targetReps: '10~12회', rpe: '8.5', rest: 60, videoKey: 'incline',
             sets: [
               { weight: 38, reps: 10, done: false },
-              { weight: 32, reps: 12, done: false },
+              { weight: 35, reps: 10, done: false },
               { weight: 32, reps: 12, done: false }
             ]
           }
@@ -907,7 +981,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 3. 상태 관리 및 LocalStorage 영구 저장 (기존 키 호환)
+    // 3. 상태 관리 (기존 LocalStorage 완벽 호환)
     // =========================================================================
     const STORAGE_KEY = 'vtaper_black_orange_v1';
 
@@ -919,7 +993,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         smm: 36.5,
         pbf: 25.5
       },
-      selectedDate: '2026-10-27',
+      selectedDate: '2026-10-28',
       calendarYear: 2026,
       calendarMonth: 10,
       soundEnabled: true,
@@ -957,43 +1031,13 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         } else {
           appState.selectedDate = getTodayDateString();
         }
-      } catch (e) {
-        console.error('Failed to load state:', e);
-      }
-
-      // 2026-10-27 스크린샷 데이터 보존용 기본 세팅 (비어있을 경우만)
-      if (!appState.logsByDate['2026-10-27']) {
-        const t = getTemplates();
-        const dayACopy = cloneDeep(t.A);
-        dayACopy.forEach(ex => ex.sets.forEach(s => s.done = true));
-        dayACopy.push({
-          id: 'cardio_oct27',
-          type: 'cardio',
-          cardioType: 'stair',
-          name: '천국의 계단 (스텝밀)',
-          level: 7,
-          minutes: 10,
-          done: true
-        });
-        appState.logsByDate['2026-10-27'] = {
-          program: 'A',
-          locked: true,
-          weight: 89.0,
-          waist: 92.5,
-          note: '천국의계단 유산소 10분',
-          programsByDay: {
-            A: dayACopy
-          }
-        };
-      }
+      } catch (e) {}
     }
 
     function saveAppState() {
       try {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(appState));
-      } catch (e) {
-        console.error('Failed to save state:', e);
-      }
+      } catch (e) {}
     }
 
     function getOrCreateDateEntry(dateStr) {
@@ -1002,7 +1046,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         appState.logsByDate[dateStr] = {
           program: 'A',
           locked: false,
-          weight: 89.0,
+          weight: 88.8,
           waist: 92.5,
           note: '',
           programsByDay: {
@@ -1022,9 +1066,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           C: cloneDeep(templates.C),
           REST: cloneDeep(templates.REST)
         };
-        if (Array.isArray(entry.exercises)) {
-          entry.programsByDay[entry.program || 'A'] = entry.exercises;
-        }
       }
       const prog = entry.program || 'A';
       if (!entry.programsByDay[prog]) {
@@ -1039,28 +1080,24 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 4. 칼로리(kcal) 및 볼륨 계산 로직
+    // 4. 칼로리 및 볼륨 계산
     // =========================================================================
     function getExerciseBurnedKcal(ex, bodyWeightKg, onlyDone = true) {
-      const bw = Number(bodyWeightKg) || 89.0;
+      const bw = Number(bodyWeightKg) || 88.8;
       if (ex.type === 'cardio') {
         if (onlyDone && !ex.done) return 0;
         const mins = Math.max(1, Number(ex.minutes) || 10);
         const lvl = Math.max(1, Number(ex.level) || 5);
         let mets = 6.0;
-        if (ex.cardioType === 'stair') {
-          mets = 6.5 + lvl * 0.45;
-        } else if (ex.cardioType === 'mountain') {
-          mets = 5.0 + lvl * 0.32;
-        } else {
-          mets = 4.5 + lvl * 0.35;
-        }
+        if (ex.cardioType === 'stair') mets = 6.5 + lvl * 0.45;
+        else if (ex.cardioType === 'mountain') mets = 5.0 + lvl * 0.32;
+        else if (ex.cardioType === 'tabata') mets = 8.5 + lvl * 0.45;
+        else mets = 4.5 + lvl * 0.35;
         return Math.round((mets * 3.5 * bw / 200) * mins);
       } else {
         const sets = ex.sets || [];
         const activeSets = onlyDone ? sets.filter(s => s.done) : sets;
         if (activeSets.length === 0) return 0;
-
         const isLowerOrFull = /스쿼트|레그프레스|데드리프트|런지|케틀벨|쓰러스터/i.test(ex.name);
         const baseFactor = ex.highCalorieFactor || (isLowerOrFull ? 1.38 : 1.0);
 
@@ -1082,14 +1119,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         return { totalVol: 0, weightKcal: 0, cardioKcal: 0, totalKcal: 0, doneSets: 0, totalSets: 0, percent: 0, estMins: 0 };
       }
       const exList = entry.programsByDay[entry.program || 'A'] || [];
-      const bw = Number(entry.weight) || 89.0;
+      const bw = Number(entry.weight) || 88.8;
 
-      let totalVol = 0;
-      let weightKcal = 0;
-      let cardioKcal = 0;
-      let doneSets = 0;
-      let totalSets = 0;
-      let estSeconds = 0;
+      let totalVol = 0, weightKcal = 0, cardioKcal = 0, doneSets = 0, totalSets = 0, estSeconds = 0;
 
       exList.forEach(ex => {
         if (ex.type === 'cardio') {
@@ -1098,8 +1130,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           cardioKcal += getExerciseBurnedKcal(ex, bw, true);
           estSeconds += (Number(ex.minutes) || 10) * 60;
         } else {
-          const sets = ex.sets || [];
-          sets.forEach(s => {
+          (ex.sets || []).forEach(s => {
             totalSets += 1;
             estSeconds += 35 + (Number(ex.rest) || 75);
             if (s.done) {
@@ -1113,20 +1144,11 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
       const percent = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
       const estMins = Math.max(5, Math.round(estSeconds / 60));
-      return {
-        totalVol,
-        weightKcal,
-        cardioKcal,
-        totalKcal: weightKcal + cardioKcal,
-        doneSets,
-        totalSets,
-        percent,
-        estMins
-      };
+      return { totalVol, weightKcal, cardioKcal, totalKcal: weightKcal + cardioKcal, doneSets, totalSets, percent, estMins };
     }
 
     // =========================================================================
-    // 5. 플로팅 자동 휴식 타이머 & 사운드
+    // 5. 오디오 비프음 & 플로팅 휴식 타이머
     // =========================================================================
     let timerInterval = null;
     let timerTotalSec = 60;
@@ -1140,22 +1162,23 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       return `${m}:${r}`;
     }
 
-    function playBeepAlarm() {
+    function playTone(freq = 880, duration = 0.16, count = 1) {
       if (!appState.soundEnabled) return;
       try {
         const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        [0, 0.22, 0.44].forEach(delay => {
+        for (let i = 0; i < count; i++) {
+          const delay = i * (duration + 0.06);
           const osc = ctx.createOscillator();
           const gain = ctx.createGain();
           osc.type = 'sine';
-          osc.frequency.setValueAtTime(880, ctx.currentTime + delay);
+          osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
           gain.gain.setValueAtTime(0.25, ctx.currentTime + delay);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + 0.18);
+          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
           osc.connect(gain);
           gain.connect(ctx.destination);
           osc.start(ctx.currentTime + delay);
-          osc.stop(ctx.currentTime + delay + 0.19);
-        });
+          osc.stop(ctx.currentTime + delay + duration + 0.01);
+        }
       } catch (e) {}
     }
 
@@ -1174,8 +1197,8 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         if (timerRemainSec <= 0) {
           clearInterval(timerInterval);
           timerInterval = null;
-          playBeepAlarm();
-          document.getElementById('popupTimerExerciseLabel').textContent = '🔥 휴식 완료! 다음 세트 들어가세요!';
+          playTone(880, 0.18, 3);
+          document.getElementById('popupTimerExerciseLabel').textContent = '🔥 휴식 완료! 다음 세트 시작하세요!';
         }
       }, 1000);
     }
@@ -1223,30 +1246,242 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 6. 메인 UI 렌더링 (탭 1: 운동일지)
+    // 6. 전용 타바타(TABATA) 타이머 엔진
+    // =========================================================================
+    let tabataState = {
+      workSec: 20,
+      restSec: 10,
+      rounds: 8,
+      currentRound: 1,
+      phase: 'IDLE', // IDLE | PREP | WORK | REST | DONE
+      remainSec: 20,
+      phaseTotalSec: 20,
+      running: false,
+      intervalId: null
+    };
+
+    function getTabataEstimatedKcal() {
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+      const bw = Number(entry.weight) || 88.8;
+      const totalSec = (tabataState.workSec + tabataState.restSec) * tabataState.rounds;
+      const totalMins = Math.max(1, totalSec / 60);
+      // 고강도 타바타 평균 11.5 METs + EPOC 15% 가산
+      return Math.round(((11.5 * 3.5 * bw) / 200) * totalMins * 1.15);
+    }
+
+    function applyTabataPreset(presetName) {
+      resetTabataTimer();
+      if (presetName === 'classic') {
+        tabataState.workSec = 20;
+        tabataState.restSec = 10;
+        tabataState.rounds = 8;
+        document.getElementById('tabataExerciseNameInput').value = '정통 타바타 인터벌 (20초/10초×8R)';
+      } else if (presetName === 'kettlebell') {
+        tabataState.workSec = 30;
+        tabataState.restSec = 30;
+        tabataState.rounds = 10;
+        document.getElementById('tabataExerciseNameInput').value = '20kg 케틀벨 스윙 타바타 (10세트)';
+      } else if (presetName === 'hiit') {
+        tabataState.workSec = 40;
+        tabataState.restSec = 20;
+        tabataState.rounds = 6;
+        document.getElementById('tabataExerciseNameInput').value = '고강도 HIIT 인터벌 (40초/20초×6R)';
+      }
+      syncTabataInputsAndUI();
+    }
+
+    function stepTabataConfig(field, delta) {
+      if (tabataState.running) return;
+      tabataState[field] = Math.max(field === 'rounds' ? 1 : 5, tabataState[field] + delta);
+      tabataState.remainSec = tabataState.workSec;
+      tabataState.phaseTotalSec = tabataState.workSec;
+      syncTabataInputsAndUI();
+    }
+
+    function updateTabataConfigFromInputs() {
+      if (tabataState.running) return;
+      tabataState.workSec = Math.max(5, Number(document.getElementById('tabataWorkInput').value) || 20);
+      tabataState.restSec = Math.max(5, Number(document.getElementById('tabataRestInput').value) || 10);
+      tabataState.rounds = Math.max(1, Number(document.getElementById('tabataRoundsInput').value) || 8);
+      tabataState.remainSec = tabataState.workSec;
+      tabataState.phaseTotalSec = tabataState.workSec;
+      syncTabataInputsAndUI();
+    }
+
+    function syncTabataInputsAndUI() {
+      document.getElementById('tabataWorkInput').value = tabataState.workSec;
+      document.getElementById('tabataRestInput').value = tabataState.restSec;
+      document.getElementById('tabataRoundsInput').value = tabataState.rounds;
+      document.getElementById('tabataEstKcalBadge').textContent = `예상 소모 약 ${getTabataEstimatedKcal()} kcal`;
+      renderTabataDisplay();
+    }
+
+    function toggleTabataStartPause() {
+      if (tabataState.running) {
+        clearInterval(tabataState.intervalId);
+        tabataState.intervalId = null;
+        tabataState.running = false;
+        renderTabataDisplay();
+        return;
+      }
+
+      if (tabataState.phase === 'IDLE' || tabataState.phase === 'DONE') {
+        tabataState.phase = 'PREP';
+        tabataState.currentRound = 1;
+        tabataState.remainSec = 5;
+        tabataState.phaseTotalSec = 5;
+        playTone(660, 0.12, 1);
+      }
+
+      tabataState.running = true;
+      renderTabataDisplay();
+
+      tabataState.intervalId = setInterval(() => {
+        tabataState.remainSec -= 1;
+
+        if (tabataState.remainSec > 0 && tabataState.remainSec <= 3) {
+          playTone(600, 0.09, 1);
+        }
+
+        if (tabataState.remainSec <= 0) {
+          advanceTabataPhase();
+        }
+        renderTabataDisplay();
+      }, 1000);
+    }
+
+    function advanceTabataPhase() {
+      if (tabataState.phase === 'PREP') {
+        tabataState.phase = 'WORK';
+        tabataState.remainSec = tabataState.workSec;
+        tabataState.phaseTotalSec = tabataState.workSec;
+        playTone(980, 0.22, 2);
+      } else if (tabataState.phase === 'WORK') {
+        if (tabataState.currentRound >= tabataState.rounds) {
+          // 전체 라운드 종료
+          clearInterval(tabataState.intervalId);
+          tabataState.intervalId = null;
+          tabataState.running = false;
+          tabataState.phase = 'DONE';
+          tabataState.remainSec = 0;
+          playTone(1046, 0.2, 3);
+        } else {
+          tabataState.phase = 'REST';
+          tabataState.remainSec = tabataState.restSec;
+          tabataState.phaseTotalSec = tabataState.restSec;
+          playTone(520, 0.25, 1);
+        }
+      } else if (tabataState.phase === 'REST') {
+        tabataState.currentRound += 1;
+        tabataState.phase = 'WORK';
+        tabataState.remainSec = tabataState.workSec;
+        tabataState.phaseTotalSec = tabataState.workSec;
+        playTone(980, 0.22, 2);
+      }
+    }
+
+    function resetTabataTimer() {
+      if (tabataState.intervalId) clearInterval(tabataState.intervalId);
+      tabataState.intervalId = null;
+      tabataState.running = false;
+      tabataState.phase = 'IDLE';
+      tabataState.currentRound = 1;
+      tabataState.remainSec = tabataState.workSec;
+      tabataState.phaseTotalSec = tabataState.workSec;
+      renderTabataDisplay();
+    }
+
+    function renderTabataDisplay() {
+      const badge = document.getElementById('tabataPhaseBadge');
+      const roundEl = document.getElementById('tabataRoundText');
+      const bigTime = document.getElementById('tabataBigTime');
+      const subText = document.getElementById('tabataSubStatusText');
+      const bar = document.getElementById('tabataProgressBar');
+      const btn = document.getElementById('tabataStartPauseBtn');
+
+      roundEl.innerHTML = `ROUND <span class="text-[#ff5500] text-lg">${tabataState.currentRound}</span> / ${tabataState.rounds}`;
+      bigTime.textContent = formatTimeMMSS(tabataState.remainSec);
+
+      const pct = tabataState.phaseTotalSec > 0
+        ? Math.max(0, Math.min(100, (tabataState.remainSec / tabataState.phaseTotalSec) * 100))
+        : 0;
+      bar.style.width = `${pct}%`;
+
+      if (tabataState.phase === 'IDLE') {
+        badge.textContent = 'READY · 대기중';
+        badge.className = 'px-3 py-1 rounded-full bg-zinc-800 text-zinc-200 text-xs font-black';
+        bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-white tracking-tight leading-none';
+        bar.className = 'h-full bg-[#ff5500] transition-all duration-300';
+        subText.textContent = `총 ${tabataState.rounds}라운드 · 예상 소모 ${getTabataEstimatedKcal()} kcal`;
+      } else if (tabataState.phase === 'PREP') {
+        badge.textContent = 'PREP · 준비 카운트';
+        badge.className = 'px-3 py-1 rounded-full bg-amber-500 text-black text-xs font-black';
+        bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-amber-400 tracking-tight leading-none';
+        bar.className = 'h-full bg-amber-400 transition-all duration-300';
+        subText.textContent = '자세를 잡으세요! 곧 1라운드 시작합니다!';
+      } else if (tabataState.phase === 'WORK') {
+        badge.textContent = '🔥 WORK · 전력 운동!';
+        badge.className = 'px-3 py-1 rounded-full bg-[#ff5500] text-white text-xs font-black animate-pulse';
+        bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-[#ff5500] tracking-tight leading-none';
+        bar.className = 'h-full bg-[#ff5500] transition-all duration-300';
+        subText.textContent = `${tabataState.currentRound}라운드 전력 수행 중! 코어와 호흡 유지!`;
+      } else if (tabataState.phase === 'REST') {
+        badge.textContent = '💨 REST · 호흡 정리';
+        badge.className = 'px-3 py-1 rounded-full bg-emerald-500 text-black text-xs font-black';
+        bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-emerald-400 tracking-tight leading-none';
+        bar.className = 'h-full bg-emerald-400 transition-all duration-300';
+        subText.textContent = `깊게 호흡하세요! 다음 ${tabataState.currentRound + 1}라운드 대기`;
+      } else if (tabataState.phase === 'DONE') {
+        badge.textContent = '🎉 COMPLETE · 타바타 완료!';
+        badge.className = 'px-3 py-1 rounded-full bg-white text-black text-xs font-black';
+        bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-orange-400 tracking-tight leading-none';
+        subText.textContent = `총 ${tabataState.rounds}라운드 완주! 약 ${getTabataEstimatedKcal()} kcal 연소 완료!`;
+      }
+
+      if (tabataState.running) {
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i> 일시정지';
+      } else if (tabataState.phase === 'DONE') {
+        btn.innerHTML = '<i class="fa-solid fa-play"></i> 다시 시작';
+      } else {
+        btn.innerHTML = '<i class="fa-solid fa-play"></i> 타바타 시작';
+      }
+    }
+
+    function logTabataToDailyWorkout() {
+      const totalSec = (tabataState.workSec + tabataState.restSec) * tabataState.rounds;
+      const mins = Math.max(4, Math.round(totalSec / 60));
+      const title = document.getElementById('tabataExerciseNameInput').value || '타바타 인터벌';
+      const exercises = getCurrentExercises();
+      exercises.push({
+        id: 'tabata_' + Date.now(),
+        type: 'cardio',
+        cardioType: 'tabata',
+        name: title,
+        level: 9,
+        minutes: mins,
+        done: true
+      });
+      saveAppState();
+      renderAll();
+      switchMainTab('log');
+    }
+
+    // =========================================================================
+    // 7. 메인 렌더링 & 일지 조작
     // =========================================================================
     function renderAll() {
       const entry = getOrCreateDateEntry(appState.selectedDate);
       const summary = calculateDaySummary(appState.selectedDate);
 
-      // 상단 헤더 업데이트
-      document.getElementById('headerDateBadge').textContent = appState.selectedDate;
-      document.getElementById('headerKcalBadge').textContent = `🔥 오늘 소모 ${summary.totalKcal} kcal`;
-      document.getElementById('headerHeightInput').value = appState.profile.height;
-      document.getElementById('headerTargetWeightInput').value = appState.profile.targetWeight;
-
-      const curW = Number(entry.weight) || 89.0;
-      const startW = Number(appState.profile.startWeight) || 89.0;
+      const curW = Number(entry.weight) || 88.8;
       const goalW = Number(appState.profile.targetWeight) || 81.0;
       const remain = (curW - goalW).toFixed(1);
-      const totalToLose = Math.max(0.1, startW - goalW);
-      const goalPct = Math.max(0, Math.min(100, Math.round(((startW - curW) / totalToLose) * 100)));
 
-      document.getElementById('headerCurrentWeight').textContent = curW.toFixed(1);
-      document.getElementById('headerRemainWeight').textContent = `(${remain > 0 ? '-' + remain : '목표달성!'}kg 남음)`;
-      document.getElementById('headerGoalBadge').textContent = `81kg 목표 진행률 ${goalPct}%`;
+      document.getElementById('headerCurrentWeight').textContent = `${curW.toFixed(1)}kg`;
+      document.getElementById('headerTargetWeightText').textContent = `${goalW.toFixed(1)}kg`;
+      document.getElementById('headerRemainWeight').textContent = `(${remain > 0 ? '-' + remain + 'kg' : '달성!'})`;
+      document.getElementById('headerKcalBadge').textContent = `🔥 ${summary.totalKcal}kcal`;
 
-      // 날짜 바 업데이트
       document.getElementById('selectedDateInput').value = appState.selectedDate;
       const daysKor = ['일', '월', '화', '수', '목', '금', '토'];
       const dObj = new Date(appState.selectedDate + 'T00:00:00');
@@ -1256,15 +1491,10 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       document.getElementById('dailyWaistInput').value = (Number(entry.waist) || 92.5).toFixed(1);
       document.getElementById('dailyNoteInput').value = entry.note || '';
 
-      // Day A/B/C/REST 버튼 상태 업데이트
       ['A', 'B', 'C', 'REST'].forEach(dayKey => {
         const btn = document.getElementById(`day-btn-${dayKey}`);
         const badge = document.getElementById(`badge-day-${dayKey}`);
-        if (entry.program === dayKey) {
-          btn.classList.add('day-card-active');
-        } else {
-          btn.classList.remove('day-card-active');
-        }
+        btn.classList.toggle('day-card-active', entry.program === dayKey);
 
         const dayExList = entry.programsByDay[dayKey] || [];
         let dSets = 0, tSets = 0;
@@ -1280,7 +1510,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           }
         });
         if (dSets > 0) {
-          badge.textContent = `${dSets}/${tSets} 기록됨✓`;
+          badge.textContent = `${dSets}/${tSets} 완료✓`;
           badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-[#ff5500] text-white font-black';
         } else {
           badge.textContent = dayKey === 'REST' ? '유산소/체중' : `총 ${tSets}세트`;
@@ -1288,22 +1518,20 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         }
       });
 
-      // 잠금 버튼 상태
       const lockBtn = document.getElementById('lockRoutineBtn');
       if (entry.locked) {
-        lockBtn.className = 'px-2.5 py-2 rounded-xl bg-[#ff5500] text-white text-xs font-black flex items-center gap-1';
-        lockBtn.innerHTML = '<i class="fa-solid fa-lock"></i> 루틴잠김';
+        lockBtn.className = 'px-2 py-1.5 rounded-lg bg-[#ff5500] text-white text-[11px] font-black flex items-center gap-1';
+        lockBtn.innerHTML = '<i class="fa-solid fa-lock"></i> 잠김';
       } else {
-        lockBtn.className = 'px-2.5 py-2 rounded-xl bg-zinc-800 border border-zinc-700 text-xs font-extrabold text-zinc-200 flex items-center gap-1';
-        lockBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i> 루틴고정';
+        lockBtn.className = 'px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-[11px] font-extrabold text-zinc-200 flex items-center gap-1';
+        lockBtn.innerHTML = '<i class="fa-solid fa-lock-open"></i> 고정';
       }
 
-      // 요약 수치 업데이트
       document.getElementById('estDurationText').textContent = `약 ${summary.estMins}분`;
       document.getElementById('completionPercentText').textContent = `${summary.percent}%`;
       document.getElementById('totalVolumeText').textContent = summary.totalVol.toLocaleString();
       document.getElementById('totalKcalText').textContent = summary.totalKcal;
-      document.getElementById('kcalDetailText').textContent = `웨이트 ${summary.weightKcal} + 유산소 ${summary.cardioKcal} kcal`;
+      document.getElementById('kcalDetailText').textContent = `웨이트 ${summary.weightKcal} + 유산소 ${summary.cardioKcal}`;
 
       renderExerciseCards();
     }
@@ -1312,10 +1540,10 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       const container = document.getElementById('exerciseListContainer');
       const entry = getOrCreateDateEntry(appState.selectedDate);
       const exercises = entry.programsByDay[entry.program] || [];
-      const bw = Number(entry.weight) || 89.0;
+      const bw = Number(entry.weight) || 88.8;
 
       if (exercises.length === 0) {
-        container.innerHTML = `<div class="bw-card p-6 text-center text-zinc-400 text-xs">등록된 운동이 없습니다. 위 버튼에서 운동이나 유산소를 추가해 주세요.</div>`;
+        container.innerHTML = `<div class="bw-card p-5 text-center text-zinc-400 text-xs">등록된 운동이 없습니다. 위 버튼에서 운동이나 유산소를 추가해 주세요.</div>`;
         return;
       }
 
@@ -1326,129 +1554,121 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         if (ex.type === 'cardio') {
           const cInfo = CARDIO_TYPES[ex.cardioType] || CARDIO_TYPES.stair;
           return `
-            <div class="bw-card-orange p-3.5 space-y-3">
+            <div class="bw-card-orange p-3 space-y-2.5">
               <div class="flex items-center justify-between gap-2 flex-wrap">
-                <div class="flex items-center gap-2">
-                  <span class="px-2 py-0.5 rounded bg-[#ff5500] text-white text-[11px] font-black">유산소</span>
-                  <select onchange="changeCardioType(${exIdx}, this.value)" class="bg-zinc-900 border border-orange-500/40 rounded-lg px-2.5 py-1 text-xs font-black text-white">
-                    <option value="stair" ${ex.cardioType === 'stair' ? 'selected' : ''}>🔥 천국의 계단 (스텝밀)</option>
-                    <option value="mountain" ${ex.cardioType === 'mountain' ? 'selected' : ''}>⛰️ 마이마운틴 (경사워킹)</option>
-                    <option value="bike" ${ex.cardioType === 'bike' ? 'selected' : ''}>🚴 실내 자전거 (사이클)</option>
+                <div class="flex items-center gap-1.5">
+                  <span class="px-2 py-0.5 rounded bg-[#ff5500] text-white text-[10px] font-black">유산소</span>
+                  <select onchange="changeCardioType(${exIdx}, this.value)" class="bg-zinc-900 border border-orange-500/40 rounded-lg px-2 py-1 text-xs font-black text-white">
+                    <option value="stair" ${ex.cardioType === 'stair' ? 'selected' : ''}>🔥 천국의 계단</option>
+                    <option value="mountain" ${ex.cardioType === 'mountain' ? 'selected' : ''}>⛰️ 마이마운틴</option>
+                    <option value="bike" ${ex.cardioType === 'bike' ? 'selected' : ''}>🚴 실내 자전거</option>
+                    <option value="tabata" ${ex.cardioType === 'tabata' ? 'selected' : ''}>⚡ 타바타 인터벌</option>
                   </select>
                 </div>
-                <span class="px-2.5 py-1 rounded-full bg-orange-950 border border-orange-500/40 text-orange-300 text-xs font-black">
+                <span class="px-2 py-0.5 rounded-full bg-orange-950 border border-orange-500/40 text-orange-300 text-[11px] font-black">
                   🔥 ${doneKcal} / ${potentialKcal} kcal
                 </span>
               </div>
 
-              <p class="text-[11px] text-zinc-400">${cInfo.desc}</p>
-
-              <div class="flex items-center justify-between gap-2 bg-zinc-950/90 border border-zinc-800 rounded-xl p-2.5 flex-wrap">
-                <div class="flex items-center gap-1.5">
-                  <span class="text-[11px] text-zinc-400 font-bold">${cInfo.unitLabel}</span>
-                  <button onclick="stepCardioValue(${exIdx}, 'level', -1)" class="stepper-btn w-8 h-8 rounded-lg">-</button>
-                  <input type="number" value="${ex.level}" onchange="setCardioValue(${exIdx}, 'level', this.value)" class="w-12 bg-transparent text-center font-black text-base text-white" />
-                  <button onclick="stepCardioValue(${exIdx}, 'level', 1)" class="stepper-btn w-8 h-8 rounded-lg">+</button>
+              <div class="flex items-center justify-between gap-1.5 bg-zinc-950/90 border border-zinc-800 rounded-xl p-2 flex-wrap">
+                <div class="flex items-center gap-1">
+                  <span class="text-[10px] text-zinc-400 font-bold">${cInfo.unitLabel}</span>
+                  <button onclick="stepCardioValue(${exIdx}, 'level', -1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
+                  <input type="number" value="${ex.level}" onchange="setCardioValue(${exIdx}, 'level', this.value)" class="w-10 bg-transparent text-center font-black text-sm text-white" />
+                  <button onclick="stepCardioValue(${exIdx}, 'level', 1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
                 </div>
 
-                <div class="flex items-center gap-1.5">
-                  <button onclick="stepCardioValue(${exIdx}, 'minutes', -5)" class="stepper-btn px-2 h-8 rounded-lg text-xs">-5</button>
-                  <input type="number" value="${ex.minutes}" onchange="setCardioValue(${exIdx}, 'minutes', this.value)" class="w-12 bg-transparent text-center font-black text-base text-[#ff5500]" />
-                  <span class="text-xs text-zinc-400 font-bold">분</span>
-                  <button onclick="stepCardioValue(${exIdx}, 'minutes', 5)" class="stepper-btn px-2 h-8 rounded-lg text-xs">+5</button>
+                <div class="flex items-center gap-1">
+                  <button onclick="stepCardioValue(${exIdx}, 'minutes', -5)" class="stepper-btn px-1.5 h-7 rounded-lg text-xs">-5</button>
+                  <input type="number" value="${ex.minutes}" onchange="setCardioValue(${exIdx}, 'minutes', this.value)" class="w-10 bg-transparent text-center font-black text-sm text-[#ff5500]" />
+                  <span class="text-[11px] text-zinc-400 font-bold">분</span>
+                  <button onclick="stepCardioValue(${exIdx}, 'minutes', 5)" class="stepper-btn px-1.5 h-7 rounded-lg text-xs">+5</button>
                 </div>
 
-                <button onclick="toggleCardioDone(${exIdx})" class="px-4 py-2 rounded-xl font-black text-xs transition-all ${ex.done ? 'bg-[#ff5500] text-white shadow-lg shadow-orange-500/30' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}">
-                  <i class="fa-solid fa-check mr-1"></i> ${ex.done ? '완료됨' : '완료체크'}
+                <button onclick="toggleCardioDone(${exIdx})" class="px-3 py-1.5 rounded-xl font-black text-xs ${ex.done ? 'bg-[#ff5500] text-white' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}">
+                  <i class="fa-solid fa-check mr-1"></i>${ex.done ? '완료' : '체크'}
                 </button>
               </div>
 
-              <div class="flex items-center justify-between text-[11px] text-zinc-500">
-                <span>시간(분)과 강도를 조절하면 칼로리가 즉시 반영됩니다.</span>
-                <button onclick="removeExercise(${exIdx})" class="text-zinc-400 hover:text-red-400 font-bold">
-                  <i class="fa-solid fa-trash-can mr-1"></i>유산소 삭제
+              <div class="flex items-center justify-between text-[10px] text-zinc-500">
+                <span>${cInfo.desc}</span>
+                <button onclick="removeExercise(${exIdx})" class="text-zinc-400 hover:text-red-400 font-bold shrink-0 ml-2">
+                  <i class="fa-solid fa-trash-can"></i> 삭제
                 </button>
               </div>
             </div>
           `;
         }
 
-        // 웨이트 종목 카드
         const setsHtml = (ex.sets || []).map((s, sIdx) => `
-          <div class="flex items-center justify-between gap-1.5 p-2 rounded-xl border transition-all ${s.done ? 'bg-orange-950/25 border-[#ff5500]/60' : 'bg-zinc-950 border-zinc-800'}">
-            <div class="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${s.done ? 'bg-[#ff5500] text-white' : 'bg-zinc-800 text-zinc-400'}">
+          <div class="flex items-center justify-between gap-1 p-1.5 rounded-xl border transition-all ${s.done ? 'bg-orange-950/25 border-[#ff5500]/60' : 'bg-zinc-950 border-zinc-800'}">
+            <div class="w-6 h-6 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${s.done ? 'bg-[#ff5500] text-white' : 'bg-zinc-800 text-zinc-400'}">
               ${sIdx + 1}
             </div>
 
-            <!-- 무게 스테퍼 -->
-            <div class="flex items-center bg-zinc-900 border border-zinc-700 rounded-xl px-1.5 py-1">
-              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'weight', -2.5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
-              <input type="number" step="0.5" value="${s.weight}" onchange="updateSetDirect(${exIdx}, ${sIdx}, 'weight', this.value)" class="w-14 bg-transparent text-center font-black text-sm text-white focus:outline-none" />
-              <span class="text-[10px] text-zinc-400 font-bold mr-1">kg</span>
-              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'weight', 2.5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
+            <div class="flex items-center bg-zinc-900 border border-zinc-700 rounded-xl px-1 py-0.5">
+              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'weight', -2.5)" class="stepper-btn w-6 h-6 rounded text-xs">-</button>
+              <input type="number" step="0.5" value="${s.weight}" onchange="updateSetDirect(${exIdx}, ${sIdx}, 'weight', this.value)" class="w-12 bg-transparent text-center font-black text-xs text-white focus:outline-none" />
+              <span class="text-[10px] text-zinc-400 font-bold mr-0.5">kg</span>
+              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'weight', 2.5)" class="stepper-btn w-6 h-6 rounded text-xs">+</button>
             </div>
 
-            <!-- 횟수 스테퍼 -->
-            <div class="flex items-center bg-zinc-900 border border-zinc-700 rounded-xl px-1.5 py-1">
-              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'reps', -1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
-              <input type="number" value="${s.reps}" onchange="updateSetDirect(${exIdx}, ${sIdx}, 'reps', this.value)" class="w-11 bg-transparent text-center font-black text-sm text-[#ff5500] focus:outline-none" />
-              <span class="text-[10px] text-zinc-400 font-bold mr-1">회</span>
-              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'reps', 1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
+            <div class="flex items-center bg-zinc-900 border border-zinc-700 rounded-xl px-1 py-0.5">
+              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'reps', -1)" class="stepper-btn w-6 h-6 rounded text-xs">-</button>
+              <input type="number" value="${s.reps}" onchange="updateSetDirect(${exIdx}, ${sIdx}, 'reps', this.value)" class="w-10 bg-transparent text-center font-black text-xs text-[#ff5500] focus:outline-none" />
+              <span class="text-[10px] text-zinc-400 font-bold mr-0.5">회</span>
+              <button onclick="stepSetValue(${exIdx}, ${sIdx}, 'reps', 1)" class="stepper-btn w-6 h-6 rounded text-xs">+</button>
             </div>
 
-            <!-- 완료 체크 버튼 (클릭 시 자동 휴식 타이머 팝업) -->
-            <button onclick="toggleSetDone(${exIdx}, ${sIdx})" class="w-10 h-9 rounded-xl font-black text-sm flex items-center justify-center transition-all shrink-0 ${s.done ? 'bg-[#ff5500] text-white shadow-md shadow-orange-500/30' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}">
+            <button onclick="toggleSetDone(${exIdx}, ${sIdx})" class="w-9 h-8 rounded-xl font-black text-xs flex items-center justify-center transition-all shrink-0 ${s.done ? 'bg-[#ff5500] text-white shadow-md shadow-orange-500/30' : 'bg-zinc-800 text-zinc-400 border border-zinc-700'}">
               <i class="fa-solid fa-check"></i>
             </button>
           </div>
         `).join('');
 
         return `
-          <div class="bw-card p-3.5 space-y-2.5">
+          <div class="bw-card p-3 space-y-2">
             <div class="flex items-center justify-between gap-2">
-              <div class="flex items-center gap-2 min-w-0 flex-1">
-                <span class="w-6 h-6 rounded-lg bg-white text-black font-black text-xs flex items-center justify-center shrink-0">${exIdx + 1}</span>
-                <input type="text" value="${ex.name}" onchange="updateExerciseMeta(${exIdx}, 'name', this.value)" class="bg-transparent font-black text-sm text-white w-full focus:outline-none focus:border-b border-orange-500 truncate" />
+              <div class="flex items-center gap-1.5 min-w-0 flex-1">
+                <span class="w-5 h-5 rounded bg-white text-black font-black text-[11px] flex items-center justify-center shrink-0">${exIdx + 1}</span>
+                <input type="text" value="${ex.name}" onchange="updateExerciseMeta(${exIdx}, 'name', this.value)" class="bg-transparent font-black text-xs sm:text-sm text-white w-full focus:outline-none truncate" />
               </div>
 
-              <div class="flex items-center gap-1.5 shrink-0">
-                <span class="px-2 py-1 rounded-lg bg-orange-950/80 border border-orange-500/40 text-orange-300 text-[11px] font-black">
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="px-2 py-0.5 rounded bg-orange-950/80 border border-orange-500/40 text-orange-300 text-[10px] font-black">
                   🔥 ${doneKcal}/${potentialKcal}kcal
                 </span>
-                <button onclick="openVideoForExercise('${ex.videoKey || 'widerow'}')" class="px-2.5 py-1 rounded-lg bg-[#ff5500] text-white text-[11px] font-black flex items-center gap-1">
-                  <i class="fa-solid fa-circle-play"></i> 3D근육
+                <button onclick="openVideoForExercise('${ex.videoKey || 'widerow'}')" class="px-2 py-0.5 rounded bg-[#ff5500] text-white text-[10px] font-black">
+                  3D근육
                 </button>
               </div>
             </div>
 
-            <!-- 목표 횟수 / RPE / 휴식 시간 / 1세트 전체적용 -->
-            <div class="flex items-center justify-between gap-2 text-[11px] text-zinc-400 pt-1 border-t border-zinc-800/80 flex-wrap">
-              <div class="flex items-center gap-2 flex-wrap">
-                <span>목표 <input type="text" value="${ex.targetReps || '8~10회'}" onchange="updateExerciseMeta(${exIdx}, 'targetReps', this.value)" class="w-14 bg-zinc-900 border border-zinc-700 rounded text-center text-white font-bold py-0.5" /></span>
-                <span>RPE <input type="text" value="${ex.rpe || '8'}" onchange="updateExerciseMeta(${exIdx}, 'rpe', this.value)" class="w-9 bg-zinc-900 border border-zinc-700 rounded text-center text-orange-400 font-bold py-0.5" /></span>
-                <span>휴식 <input type="number" step="15" value="${ex.rest || 90}" onchange="updateExerciseMeta(${exIdx}, 'rest', this.value)" class="w-12 bg-zinc-900 border border-zinc-700 rounded text-center text-white font-bold py-0.5" /> 초</span>
+            <div class="flex items-center justify-between gap-1.5 text-[10px] text-zinc-400 pt-1 border-t border-zinc-800/80 flex-wrap">
+              <div class="flex items-center gap-1.5 flex-wrap">
+                <span>목표 <input type="text" value="${ex.targetReps || '8~10회'}" onchange="updateExerciseMeta(${exIdx}, 'targetReps', this.value)" class="w-12 bg-zinc-900 border border-zinc-700 rounded text-center text-white font-bold py-0.5" /></span>
+                <span>RPE <input type="text" value="${ex.rpe || '8'}" onchange="updateExerciseMeta(${exIdx}, 'rpe', this.value)" class="w-8 bg-zinc-900 border border-zinc-700 rounded text-center text-orange-400 font-bold py-0.5" /></span>
+                <span>휴식 <input type="number" step="15" value="${ex.rest || 90}" onchange="updateExerciseMeta(${exIdx}, 'rest', this.value)" class="w-10 bg-zinc-900 border border-zinc-700 rounded text-center text-white font-bold py-0.5" />초</span>
               </div>
-              <button onclick="copyFirstSetToAll(${exIdx})" class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-zinc-700 border border-zinc-600 text-zinc-200 text-[11px] font-bold">
-                🪄 1세트값 전체적용
+              <button onclick="copyFirstSetToAll(${exIdx})" class="px-2 py-0.5 rounded bg-zinc-800 border border-zinc-600 text-zinc-200 text-[10px] font-bold">
+                🪄 1세트 전체적용
               </button>
             </div>
 
-            <!-- 세트 목록 -->
-            <div class="space-y-1.5">
+            <div class="space-y-1">
               ${setsHtml}
             </div>
 
-            <!-- 세트 추가 / 삭제 / 종목 삭제 -->
-            <div class="flex items-center justify-between pt-1">
-              <div class="flex items-center gap-1.5">
-                <button onclick="addSetToExercise(${exIdx})" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-[11px] font-bold">
-                  + 세트 추가(복제)
+            <div class="flex items-center justify-between pt-0.5">
+              <div class="flex items-center gap-1">
+                <button onclick="addSetToExercise(${exIdx})" class="px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-[10px] font-bold">
+                  + 세트 추가
                 </button>
-                <button onclick="removeLastSetFromExercise(${exIdx})" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 text-[11px] font-bold">
+                <button onclick="removeLastSetFromExercise(${exIdx})" class="px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 text-[10px] font-bold">
                   - 세트 삭제
                 </button>
               </div>
-              <button onclick="removeExercise(${exIdx})" class="text-zinc-500 hover:text-red-400 text-xs px-1.5">
+              <button onclick="removeExercise(${exIdx})" class="text-zinc-500 hover:text-red-400 text-xs px-1">
                 <i class="fa-solid fa-trash-can"></i>
               </button>
             </div>
@@ -1458,27 +1678,22 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 7. 운동일지 조작 이벤트 핸들러 (세트 체크 시 자동 타이머 팝업)
+    // 8. 운동일지 핸들러
     // =========================================================================
     function toggleSetDone(exIdx, sIdx) {
       const exercises = getCurrentExercises();
       const ex = exercises[exIdx];
       if (!ex || !ex.sets[sIdx]) return;
-
       ex.sets[sIdx].done = !ex.sets[sIdx].done;
       saveAppState();
       renderAll();
-
-      // 세트를 완료 체크했을 때 자동으로 플로팅 휴식 타이머 팝업 실행!
       if (ex.sets[sIdx].done) {
-        const restSeconds = Number(ex.rest) || 90;
-        startRestTimer(restSeconds, `${ex.name} (${sIdx + 1}세트 완료)`);
+        startRestTimer(Number(ex.rest) || 90, `${ex.name} (${sIdx + 1}세트 완료)`);
       }
     }
 
     function stepSetValue(exIdx, sIdx, field, delta) {
-      const exercises = getCurrentExercises();
-      const s = exercises[exIdx].sets[sIdx];
+      const s = getCurrentExercises()[exIdx].sets[sIdx];
       const nextVal = Math.max(0, Number(s[field]) + delta);
       s[field] = field === 'weight' ? Math.round(nextVal * 10) / 10 : Math.max(1, Math.round(nextVal));
       saveAppState();
@@ -1486,34 +1701,29 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function updateSetDirect(exIdx, sIdx, field, val) {
-      const exercises = getCurrentExercises();
       const num = Math.max(0, Number(val) || 0);
-      exercises[exIdx].sets[sIdx][field] = field === 'weight' ? Math.round(num * 10) / 10 : Math.max(1, Math.round(num));
+      getCurrentExercises()[exIdx].sets[sIdx][field] = field === 'weight' ? Math.round(num * 10) / 10 : Math.max(1, Math.round(num));
       saveAppState();
       renderAll();
     }
 
     function updateExerciseMeta(exIdx, field, val) {
-      const exercises = getCurrentExercises();
-      exercises[exIdx][field] = field === 'rest' ? Math.max(10, Number(val) || 60) : val;
+      getCurrentExercises()[exIdx][field] = field === 'rest' ? Math.max(10, Number(val) || 60) : val;
       saveAppState();
       renderAll();
     }
 
     function copyFirstSetToAll(exIdx) {
-      const exercises = getCurrentExercises();
-      const sets = exercises[exIdx].sets;
+      const sets = getCurrentExercises()[exIdx].sets;
       if (!sets || sets.length === 0) return;
-      const w = sets[0].weight;
-      const r = sets[0].reps;
+      const w = sets[0].weight, r = sets[0].reps;
       sets.forEach(s => { s.weight = w; s.reps = r; });
       saveAppState();
       renderAll();
     }
 
     function addSetToExercise(exIdx) {
-      const exercises = getCurrentExercises();
-      const sets = exercises[exIdx].sets;
+      const sets = getCurrentExercises()[exIdx].sets;
       const last = sets.length > 0 ? sets[sets.length - 1] : { weight: 40, reps: 10 };
       sets.push({ weight: last.weight, reps: last.reps, done: false });
       saveAppState();
@@ -1521,25 +1731,23 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function removeLastSetFromExercise(exIdx) {
-      const exercises = getCurrentExercises();
-      if (exercises[exIdx].sets.length > 1) {
-        exercises[exIdx].sets.pop();
+      const sets = getCurrentExercises()[exIdx].sets;
+      if (sets.length > 1) {
+        sets.pop();
         saveAppState();
         renderAll();
       }
     }
 
     function removeExercise(exIdx) {
-      const exercises = getCurrentExercises();
-      exercises.splice(exIdx, 1);
+      getCurrentExercises().splice(exIdx, 1);
       saveAppState();
       renderAll();
     }
 
     function addCardioExercise(cardioType) {
       const c = CARDIO_TYPES[cardioType] || CARDIO_TYPES.stair;
-      const exercises = getCurrentExercises();
-      exercises.push({
+      getCurrentExercises().push({
         id: 'cardio_' + Date.now(),
         type: 'cardio',
         cardioType: c.key,
@@ -1570,8 +1778,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function setCardioValue(exIdx, field, val) {
-      const ex = getCurrentExercises()[exIdx];
-      ex[field] = Math.max(1, Number(val) || 1);
+      getCurrentExercises()[exIdx][field] = Math.max(1, Number(val) || 1);
       saveAppState();
       renderAll();
     }
@@ -1586,20 +1793,18 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     function addHighCaloriePreset(presetKey) {
       const preset = HIGH_CALORIE_STRENGTH_PRESETS[presetKey];
       if (!preset) return;
-      const exercises = getCurrentExercises();
       const copy = cloneDeep(preset);
       copy.id = preset.id + '_' + Date.now();
-      exercises.push(copy);
+      getCurrentExercises().push(copy);
       saveAppState();
       renderAll();
     }
 
     function addCustomWeightExercise() {
-      const exercises = getCurrentExercises();
-      exercises.push({
+      getCurrentExercises().push({
         id: 'custom_' + Date.now(),
         type: 'weight',
-        name: '추가 근력운동 (이름 터치해 수정)',
+        name: '추가 근력운동 (터치해 수정)',
         targetReps: '8~10회',
         rpe: '8',
         rest: 90,
@@ -1615,7 +1820,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 8. 하루 운동 종료 & 다음 볼륨/중량 자동 분석 엔진 (Double Progression)
+    // 9. 하루 운동 종료 & 다음 볼륨 분석 모달
     // =========================================================================
     let lastGeneratedRecommendations = [];
 
@@ -1634,11 +1839,11 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         return {
           type: 'cardio',
           name: ex.name,
-          statusBadge: '유산소 증량 처방',
+          statusBadge: '유산소 시간 증량',
           statusColor: 'text-orange-400 border-orange-500/40 bg-orange-950/50',
-          todaySummary: `강도 ${curLvl}단 × ${curMins}분 완료`,
-          nextPrescription: `강도 ${curLvl}단 고정 × ${nextMins}분 (+${nextMins - curMins}분 연장)`,
-          coachComment: `현재 체중에서 관절 무리 없이 내장지방 연소량을 늘리기 위해 속도(단수)는 ${curLvl}단으로 유지하고 시간만 ${nextMins}분으로 늘립니다.`,
+          todaySummary: `강도 ${curLvl} × ${curMins}분`,
+          nextPrescription: `강도 ${curLvl} 고정 × ${nextMins}분`,
+          coachComment: `관절 보호를 위해 강도는 ${curLvl}로 고정하고 시간만 ${nextMins}분으로 늘립니다.`,
           nextData: { level: curLvl, minutes: nextMins }
         };
       }
@@ -1652,61 +1857,42 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
       const weights = usedSets.map(s => Number(s.weight) || 0);
       const reps = usedSets.map(s => Number(s.reps) || 0);
-      const maxW = Math.max(...weights);
-      const minW = Math.min(...weights);
-      const maxR = Math.max(...reps);
-      const minR = Math.min(...reps);
-
+      const maxW = Math.max(...weights), minW = Math.min(...weights);
+      const maxR = Math.max(...reps), minR = Math.min(...reps);
       const todaySetStr = usedSets.map((s, i) => `${i + 1}세트 ${s.weight}kg×${s.reps}회`).join(', ');
 
-      let nextSets = cloneDeep(usedSets);
-      let statusBadge = '';
-      let statusColor = '';
-      let nextPrescription = '';
-      let coachComment = '';
+      let nextSets = cloneDeep(usedSets), statusBadge = '', statusColor = '', nextPrescription = '', coachComment = '';
 
-      // Case 1: 목표 횟수 상단보다 훨씬 많이 수행한 경우 (예: 레그프레스 140kg 15~21회)
       if (minR >= range.max + 3 || maxR >= range.max + 5) {
         const jump = isLower ? (maxR >= range.max + 8 ? 25 : 15) : 5;
         const nextW = maxW + jump;
         nextSets = usedSets.map(() => ({ weight: nextW, reps: range.max, done: false }));
-        statusBadge = `🔥 중량 대폭 상향 (+${jump}kg)`;
+        statusBadge = `🔥 중량 상향 (+${jump}kg)`;
         statusColor = 'text-orange-300 border-orange-500 bg-orange-950/70';
-        nextPrescription = `전 세트 ${nextW}kg × ${range.min}~${range.max}회 (${usedSets.length}세트)`;
-        coachComment = `목표 반복수(${range.min}~${range.max}회)를 크게 초과(최대 ${maxR}회)하여 현재 중량이 가볍습니다. 다음 세션에서는 ${nextW}kg으로 상향해 기계적 장력을 높입니다.`;
-      }
-      // Case 2: 모든 세트가 동일 중량으로 목표 상단 횟수(max) 이상 달성한 경우
-      else if (maxW === minW && minR >= range.max) {
+        nextPrescription = `전 세트 ${nextW}kg × ${range.min}~${range.max}회`;
+        coachComment = `목표 반복수를 크게 초과하여 다음 세션은 ${nextW}kg으로 상향합니다.`;
+      } else if (maxW === minW && minR >= range.max) {
         const nextW = maxW + incStep;
         nextSets = usedSets.map(() => ({ weight: nextW, reps: range.min, done: false }));
-        statusBadge = `⚡ 점진적 과부하 증량 (+${incStep}kg)`;
+        statusBadge = `⚡ 점진적 과부하 (+${incStep}kg)`;
         statusColor = 'text-emerald-300 border-emerald-500/50 bg-emerald-950/50';
-        nextPrescription = `전 세트 ${nextW}kg × ${range.min}~${range.max}회 (${usedSets.length}세트)`;
-        coachComment = `전 세트 목표 상단 횟수(${range.max}회)를 완벽히 정복했습니다! 이중 점진 과부하 원칙에 따라 다음 세션은 ${nextW}kg으로 증량합니다.`;
-      }
-      // Case 3: 역피라미드 (1세트는 무겁게, 2/3세트는 감량해서 수행한 경우 - 예: 와이드 로우 40/35/35, 인클라인 38/32/32)
-      else if (maxW > minW) {
+        nextPrescription = `전 세트 ${nextW}kg × ${range.min}~${range.max}회`;
+        coachComment = `전 세트 목표 상단 횟수 달성! 다음 세션은 ${nextW}kg으로 증량합니다.`;
+      } else if (maxW > minW) {
         nextSets = usedSets.map((s, idx) => {
-          if (idx === 0) return { weight: maxW, reps: Math.min(range.max, s.reps + 1), done: false };
-          if (idx === 1) return { weight: maxW, reps: range.min, done: false };
+          if (idx <= 1) return { weight: maxW, reps: range.min, done: false };
           return { weight: minW, reps: range.max, done: false };
         });
         statusBadge = `📈 상위 중량 세트 확장`;
         statusColor = 'text-amber-300 border-amber-500/50 bg-amber-950/50';
-        nextPrescription = `1·2세트 ${maxW}kg × ${range.min}~${range.max}회 / 마지막 세트 ${minW}kg × ${range.max}회`;
-        coachComment = `오늘 1세트(${maxW}kg) 수행 후 후반 세트 중량을 낮춰 목표 횟수를 잘 채우셨습니다. 다음 세션은 2세트까지 ${maxW}kg을 고정하여 총 볼륨을 끌어올립니다.`;
-      }
-      // Case 4: 아직 목표 상단 횟수에 도달하지 못한 경우 -> 동일 중량에서 횟수 +1~2회 목표
-      else {
-        nextSets = usedSets.map(s => ({
-          weight: s.weight,
-          reps: Math.min(range.max, Number(s.reps) + 1),
-          done: false
-        }));
-        statusBadge = `🎯 중량 유지 & 반복수 +1회`;
+        nextPrescription = `1·2세트 ${maxW}kg 고정 / 마지막 세트 ${minW}kg`;
+        coachComment = `다음 세션은 2세트까지 ${maxW}kg을 고정하여 볼륨을 높입니다.`;
+      } else {
+        nextSets = usedSets.map(s => ({ weight: s.weight, reps: Math.min(range.max, Number(s.reps) + 1), done: false }));
+        statusBadge = `🎯 중량 유지 & 횟수 +1회`;
         statusColor = 'text-zinc-200 border-zinc-600 bg-zinc-800';
         nextPrescription = `전 세트 ${maxW}kg 유지 × 목표 ${Math.min(range.max, minR + 1)}~${range.max}회`;
-        coachComment = `현재 중량(${maxW}kg)에서 자극이 정확히 들어가고 있습니다. 다음 세션에는 무게를 유지한 채 세트당 1~2회씩 더 당겨 모든 세트를 ${range.max}회로 채우는 것이 목표입니다.`;
+        coachComment = `현재 중량(${maxW}kg)을 유지하며 세트당 1회씩 더 채우는 것이 목표입니다.`;
       }
 
       const nextVol = nextSets.reduce((acc, s) => acc + rustEngine.calcSetVolume(s.weight, s.reps), 0);
@@ -1717,8 +1903,8 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         name: ex.name,
         statusBadge,
         statusColor,
-        todaySummary: `${todaySetStr} (볼륨 ${todayVol.toLocaleString()}kg)`,
-        nextPrescription: `${nextPrescription} → 예상 볼륨 ${nextVol.toLocaleString()}kg`,
+        todaySummary: `${todaySetStr} (${todayVol.toLocaleString()}kg)`,
+        nextPrescription: `${nextPrescription} → 예상 ${nextVol.toLocaleString()}kg`,
         coachComment,
         nextSets
       };
@@ -1729,64 +1915,52 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       const summary = calculateDaySummary(appState.selectedDate);
       const exercises = entry.programsByDay[entry.program] || [];
 
-      // 아직 체크 안 된 세트가 있으면 자동으로 전체 완료 처리할지 여부와 관계없이 분석 수행
       lastGeneratedRecommendations = exercises.map(ex => analyzeExerciseProgression(ex));
 
-      // 1. 상단 요약 배지 렌더링
       document.getElementById('analysisSummaryHeader').innerHTML = `
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2.5">
-          <div class="text-[10px] text-zinc-400 font-bold">수행 일자 / 루틴</div>
-          <div class="text-sm font-black text-white mt-0.5">${appState.selectedDate} (DAY ${entry.program})</div>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2">
+          <div class="text-[10px] text-zinc-400 font-bold">일자 / 루틴</div>
+          <div class="text-xs font-black text-white mt-0.5">${appState.selectedDate} (DAY ${entry.program})</div>
         </div>
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2.5">
-          <div class="text-[10px] text-zinc-400 font-bold">체중 / 허리둘레</div>
-          <div class="text-sm font-black text-[#ff5500] mt-0.5">${Number(entry.weight).toFixed(1)}kg / ${Number(entry.waist).toFixed(1)}cm</div>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2">
+          <div class="text-[10px] text-zinc-400 font-bold">체중 / 허리</div>
+          <div class="text-xs font-black text-[#ff5500] mt-0.5">${Number(entry.weight).toFixed(1)}kg / ${Number(entry.waist).toFixed(1)}cm</div>
         </div>
-        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2.5">
-          <div class="text-[10px] text-zinc-400 font-bold">총 거상 볼륨</div>
-          <div class="text-sm font-black text-white mt-0.5">${summary.totalVol.toLocaleString()} kg</div>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2">
+          <div class="text-[10px] text-zinc-400 font-bold">총 볼륨</div>
+          <div class="text-xs font-black text-white mt-0.5">${summary.totalVol.toLocaleString()} kg</div>
         </div>
-        <div class="bg-zinc-900 border border-orange-500/40 rounded-xl p-2.5">
-          <div class="text-[10px] text-orange-300 font-bold">총 소모 칼로리</div>
-          <div class="text-sm font-black text-[#ff5500] mt-0.5">🔥 ${summary.totalKcal} kcal</div>
+        <div class="bg-zinc-900 border border-orange-500/40 rounded-xl p-2">
+          <div class="text-[10px] text-orange-300 font-bold">총 소모 열량</div>
+          <div class="text-xs font-black text-[#ff5500] mt-0.5">🔥 ${summary.totalKcal} kcal</div>
         </div>
       `;
 
-      // 2. 종목별 카드 렌더링
       document.getElementById('analysisExerciseCards').innerHTML = lastGeneratedRecommendations.map((rec, idx) => `
-        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-3 space-y-1.5">
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 space-y-1">
           <div class="flex items-center justify-between gap-2 flex-wrap">
             <span class="font-black text-xs text-white">${idx + 1}. ${rec.name}</span>
             <span class="text-[10px] px-2 py-0.5 rounded-full border font-black ${rec.statusColor}">${rec.statusBadge}</span>
           </div>
-          <div class="text-[11px] text-zinc-400">
-            <strong class="text-zinc-200">오늘 기록:</strong> ${rec.todaySummary}
-          </div>
-          <div class="text-[11px] text-orange-300 font-extrabold">
-            <strong class="text-[#ff5500]">다음 목표:</strong> ${rec.nextPrescription}
-          </div>
-          <div class="text-[11px] text-zinc-300 bg-zinc-900/90 rounded-lg p-2 border border-zinc-800">
-            💡 ${rec.coachComment}
-          </div>
+          <div class="text-[11px] text-zinc-400"><strong class="text-zinc-200">오늘:</strong> ${rec.todaySummary}</div>
+          <div class="text-[11px] text-orange-300 font-extrabold"><strong class="text-[#ff5500]">다음:</strong> ${rec.nextPrescription}</div>
+          <div class="text-[11px] text-zinc-300">💡 ${rec.coachComment}</div>
         </div>
       `).join('');
 
-      // 3. 제미나이 전달용 텍스트 생성
       const remainKg = (Number(entry.weight) - Number(appState.profile.targetWeight)).toFixed(1);
       const reportLines = [
         `📊 [V-TAPER 운동일지 & 자동 분석 리포트]`,
         `- 일자: ${appState.selectedDate} (프로그램: DAY ${entry.program})`,
-        `- 신체: 키 ${appState.profile.height}cm / 현재체중 ${Number(entry.weight).toFixed(1)}kg (목표 ${appState.profile.targetWeight}kg까지 -${remainKg}kg) / 허리 ${Number(entry.waist).toFixed(1)}cm`,
-        `- 총 볼륨: ${summary.totalVol.toLocaleString()} kg (${summary.doneSets}/${summary.totalSets}세트 완료, 약 ${summary.estMins}분)`,
-        `- 총 소모 열량: ${summary.totalKcal} kcal (웨이트 ${summary.weightKcal} kcal + 유산소 ${summary.cardioKcal} kcal)`,
-        entry.note ? `- 오늘 메모: ${entry.note}` : null,
+        `- 신체: 키 ${appState.profile.height}cm / 체중 ${Number(entry.weight).toFixed(1)}kg (목표 ${appState.profile.targetWeight}kg까지 -${remainKg}kg) / 허리 ${Number(entry.waist).toFixed(1)}cm`,
+        `- 총 볼륨: ${summary.totalVol.toLocaleString()} kg (${summary.doneSets}/${summary.totalSets}세트 완료)`,
+        `- 총 소모 열량: ${summary.totalKcal} kcal (웨이트 ${summary.weightKcal} + 유산소 ${summary.cardioKcal})`,
+        entry.note ? `- 메모: ${entry.note}` : null,
         ``,
-        `🏋️ [종목별 수행 기록 및 다음 세션 자동 처방]`,
+        `🏋️ [종목별 수행 기록 및 다음 세션 처방]`,
         ...lastGeneratedRecommendations.map((rec, i) =>
-          `${i + 1}. ${rec.name} [${rec.statusBadge}]\n   • 오늘 수행: ${rec.todaySummary}\n   • 다음 처방: ${rec.nextPrescription}\n   • 분석 코멘트: ${rec.coachComment}`
-        ),
-        ``,
-        `코치님, 오늘 위와 같이 운동 완료했습니다! 기록 분석과 다음 세션 피드백 부탁드립니다.`
+          `${i + 1}. ${rec.name} [${rec.statusBadge}]\n   • 오늘: ${rec.todaySummary}\n   • 다음: ${rec.nextPrescription}`
+        )
       ].filter(Boolean).join('\n');
 
       document.getElementById('geminiReportTextarea').value = reportLines;
@@ -1804,8 +1978,8 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       navigator.clipboard.writeText(textarea.value).then(() => {
         const btn = document.getElementById('copyGeminiReportBtn');
         const orig = btn.innerHTML;
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> ✅ 복사 완료! 채팅창에 붙여넣으세요';
-        setTimeout(() => { btn.innerHTML = orig; }, 2500);
+        btn.innerHTML = '✅ 복사 완료!';
+        setTimeout(() => { btn.innerHTML = orig; }, 2000);
       });
     }
 
@@ -1826,19 +2000,18 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         }
       });
 
-      const templates = getTemplates();
-      templates[prog] = currentList;
+      getTemplates()[prog] = currentList;
       saveAppState();
-      alert(`다음번 DAY ${prog} 루틴의 기본 무게와 횟수가 오늘 분석된 추천 볼륨으로 자동 업데이트되었습니다!`);
+      alert(`다음번 DAY ${prog} 기본 무게와 횟수가 업데이트되었습니다!`);
     }
 
     // =========================================================================
-    // 9. 날짜 이동, 프로그램 전환, 달력 & 차트
+    // 10. 날짜 이동 및 하단 5탭 전환
     // =========================================================================
     function selectProgramDay(dayKey) {
       const entry = getOrCreateDateEntry(appState.selectedDate);
       if (entry.locked && entry.program !== dayKey) {
-        alert('현재 [🔒 루틴잠김] 상태입니다. 다른 루틴으로 바꾸려면 [루틴잠김] 버튼을 한 번 눌러 해제해 주세요.');
+        alert('현재 [잠김] 상태입니다. [잠김] 버튼을 눌러 해제한 뒤 변경해 주세요.');
         return;
       }
       entry.program = dayKey;
@@ -1857,8 +2030,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function checkAllSetsInCurrentDay(doneState) {
-      const exercises = getCurrentExercises();
-      exercises.forEach(ex => {
+      getCurrentExercises().forEach(ex => {
         if (ex.type === 'cardio') ex.done = doneState;
         else (ex.sets || []).forEach(s => s.done = doneState);
       });
@@ -1867,7 +2039,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function resetCurrentDayToDefault() {
-      if (!confirm('현재 보고 있는 루틴을 초기 추천 세팅으로 되돌릴까요?')) return;
+      if (!confirm('현재 루틴을 기본 세팅으로 초기화할까요?')) return;
       const entry = getOrCreateDateEntry(appState.selectedDate);
       entry.programsByDay[entry.program] = cloneDeep(getDefaultTemplates()[entry.program] || getDefaultTemplates().A);
       saveAppState();
@@ -1877,10 +2049,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     function shiftSelectedDate(deltaDays) {
       const d = new Date(appState.selectedDate + 'T00:00:00');
       d.setDate(d.getDate() + deltaDays);
-      const y = d.getFullYear();
-      const m = String(d.getMonth() + 1).padStart(2, '0');
-      const day = String(d.getDate()).padStart(2, '0');
-      appState.selectedDate = `${y}-${m}-${day}`;
+      appState.selectedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
       saveAppState();
       renderAll();
     }
@@ -1900,7 +2069,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
     function stepDailyWeight(delta) {
       const entry = getOrCreateDateEntry(appState.selectedDate);
-      entry.weight = Math.round(((Number(entry.weight) || 89.0) + delta) * 10) / 10;
+      entry.weight = Math.round(((Number(entry.weight) || 88.8) + delta) * 10) / 10;
       saveAppState();
       renderAll();
     }
@@ -1914,16 +2083,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
     function onDailyBodyMetricChange() {
       const entry = getOrCreateDateEntry(appState.selectedDate);
-      entry.weight = Number(document.getElementById('dailyWeightInput').value) || 89.0;
+      entry.weight = Number(document.getElementById('dailyWeightInput').value) || 88.8;
       entry.waist = Number(document.getElementById('dailyWaistInput').value) || 92.5;
       entry.note = document.getElementById('dailyNoteInput').value;
-      saveAppState();
-      renderAll();
-    }
-
-    function updateProfileSpec() {
-      appState.profile.height = Number(document.getElementById('headerHeightInput').value) || 176;
-      appState.profile.targetWeight = Number(document.getElementById('headerTargetWeightInput').value) || 81.0;
       saveAppState();
       renderAll();
     }
@@ -1945,31 +2107,34 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           entry.programsByDay[targetProg] = copied;
           saveAppState();
           renderAll();
-          alert(`${d}에 수행했던 DAY ${targetProg} 무게/횟수 세팅을 불러왔습니다!`);
+          alert(`${d}의 DAY ${targetProg} 세팅을 복사했습니다!`);
           return;
         }
       }
-      alert(`이전에 기록된 DAY ${targetProg} 내역이 없습니다.`);
+      alert(`이전 DAY ${targetProg} 기록이 없습니다.`);
     }
 
     function deleteCurrentDateLog() {
-      if (!confirm(`${appState.selectedDate} 날짜의 모든 운동 기록을 삭제할까요?`)) return;
+      if (!confirm(`${appState.selectedDate} 기록을 삭제할까요?`)) return;
       delete appState.logsByDate[appState.selectedDate];
       saveAppState();
       renderAll();
     }
 
-    // =========================================================================
-    // 10. 탭 전환 & 달력/비디오/인바디 탭
-    // =========================================================================
     function switchMainTab(tabName) {
-      ['log', 'calendar', 'video', 'inbody'].forEach(t => {
+      ['log', 'calendar', 'tabata', 'video', 'inbody'].forEach(t => {
         document.getElementById(`tab-panel-${t}`).classList.toggle('hidden', t !== tabName);
-        document.getElementById(`tab-btn-${t}`).classList.toggle('tab-active', t === tabName);
+        document.getElementById(`tab-btn-${t}`).classList.toggle('bottom-nav-active', t === tabName);
       });
       if (tabName === 'calendar') renderCalendarTab();
+      if (tabName === 'tabata') syncTabataInputsAndUI();
       if (tabName === 'video') initVideoTab();
-      if (tabName === 'inbody') runRpeCalculator();
+      if (tabName === 'inbody') {
+        document.getElementById('inbodyHeightInput').value = appState.profile.height || 176;
+        document.getElementById('inbodyGoalInput').value = appState.profile.targetWeight || 81.0;
+        runRpeCalculator();
+      }
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
     function changeCalendarMonth(delta) {
@@ -1980,8 +2145,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function renderCalendarTab() {
-      const y = appState.calendarYear;
-      const m = appState.calendarMonth;
+      const y = appState.calendarYear, m = appState.calendarMonth;
       document.getElementById('calendarMonthTitle').textContent = `${y}년 ${m}월`;
 
       const firstDay = new Date(y, m - 1, 1).getDay();
@@ -1990,9 +2154,8 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       grid.innerHTML = '';
 
       let workoutDaysCount = 0;
-
       for (let i = 0; i < firstDay; i++) {
-        grid.innerHTML += `<div class="h-16 rounded-xl bg-zinc-950/40"></div>`;
+        grid.innerHTML += `<div class="h-14 rounded-xl bg-zinc-950/40"></div>`;
       }
 
       for (let d = 1; d <= daysInMonth; d++) {
@@ -2005,15 +2168,15 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         if (sum.doneSets > 0) workoutDaysCount += 1;
 
         grid.innerHTML += `
-          <button onclick="selectDateFromCalendar('${dateStr}')" class="h-16 p-1 rounded-xl border text-left flex flex-col justify-between transition-all ${isSelected ? 'border-2 border-[#ff5500] bg-orange-950/30' : hasRecord ? 'border-zinc-700 bg-zinc-900' : 'border-zinc-900 bg-zinc-950'}">
+          <button onclick="selectDateFromCalendar('${dateStr}')" class="h-14 p-1 rounded-xl border text-left flex flex-col justify-between transition-all ${isSelected ? 'border-2 border-[#ff5500] bg-orange-950/30' : hasRecord ? 'border-zinc-700 bg-zinc-900' : 'border-zinc-900 bg-zinc-950'}">
             <div class="flex items-center justify-between w-full">
               <span class="text-[11px] font-black ${isSelected ? 'text-[#ff5500]' : 'text-white'}">${d}</span>
-              ${sum.doneSets > 0 ? `<span class="text-[9px] px-1 rounded bg-[#ff5500] text-white font-black">${entry.program}</span>` : ''}
+              ${sum.doneSets > 0 ? `<span class="text-[8px] px-1 rounded bg-[#ff5500] text-white font-black">${entry.program}</span>` : ''}
             </div>
             ${hasRecord ? `
               <div class="w-full">
                 <div class="text-[9px] text-zinc-300 font-bold truncate">${Number(entry.weight).toFixed(1)}kg</div>
-                ${sum.totalKcal > 0 ? `<div class="text-[9px] text-orange-400 font-extrabold truncate">🔥${sum.totalKcal}</div>` : ''}
+                ${sum.totalKcal > 0 ? `<div class="text-[8px] text-orange-400 font-extrabold truncate">🔥${sum.totalKcal}</div>` : ''}
               </div>
             ` : `<div class="text-[9px] text-zinc-700">-</div>`}
           </button>
@@ -2043,9 +2206,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           <div class="flex items-center justify-between">
             <div>
               <div class="text-sm font-black text-white">${dateStr} 기록 없음</div>
-              <div class="text-xs text-zinc-400 mt-0.5">해당 날짜에 완료 체크된 운동 세트가 없습니다.</div>
+              <div class="text-xs text-zinc-400 mt-0.5">완료된 세트가 없습니다.</div>
             </div>
-            <button onclick="switchMainTab('log')" class="px-3 py-2 rounded-xl orange-btn text-xs">운동 기록하러 가기</button>
+            <button onclick="switchMainTab('log')" class="px-3 py-2 rounded-xl orange-btn text-xs">일지 열기</button>
           </div>
         `;
         return;
@@ -2055,12 +2218,12 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
             <span class="text-[10px] px-2 py-0.5 rounded bg-[#ff5500] text-white font-black">DAY ${entry.program} 완료</span>
-            <h3 class="text-sm font-black text-white mt-1">${dateStr} · 체중 ${Number(entry.weight).toFixed(1)}kg / 허리 ${Number(entry.waist).toFixed(1)}cm</h3>
-            <p class="text-xs text-orange-300 font-bold mt-0.5">총 볼륨 ${sum.totalVol.toLocaleString()}kg · 🔥 소모 ${sum.totalKcal}kcal</p>
+            <h3 class="text-sm font-black text-white mt-1">${dateStr} · ${Number(entry.weight).toFixed(1)}kg / 허리 ${Number(entry.waist).toFixed(1)}cm</h3>
+            <p class="text-xs text-orange-300 font-bold mt-0.5">볼륨 ${sum.totalVol.toLocaleString()}kg · 🔥 ${sum.totalKcal}kcal</p>
           </div>
           <div class="flex items-center gap-1.5">
-            <button onclick="switchMainTab('log')" class="px-3 py-2 rounded-xl bg-white text-black text-xs font-black">일지 상세/수정</button>
-            <button onclick="openFinishWorkoutModal()" class="px-3 py-2 rounded-xl orange-btn text-xs font-black">분석 리포트</button>
+            <button onclick="switchMainTab('log')" class="px-3 py-2 rounded-xl bg-white text-black text-xs font-black">수정</button>
+            <button onclick="openFinishWorkoutModal()" class="px-3 py-2 rounded-xl orange-btn text-xs font-black">분석</button>
           </div>
         </div>
       `;
@@ -2069,15 +2232,15 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     function renderWeightTrendChart() {
       const container = document.getElementById('weightChartSvgContainer');
       const dates = Object.keys(appState.logsByDate).sort();
-      const entries = dates.map(d => ({ date: d.slice(5), weight: Number(appState.logsByDate[d].weight) || 89.0, waist: Number(appState.logsByDate[d].waist) || 92.5 }));
+      const entries = dates.map(d => ({ date: d.slice(5), weight: Number(appState.logsByDate[d].weight) || 88.8 }));
 
       if (entries.length === 0) {
         container.innerHTML = `<span class="text-xs text-zinc-500">기록된 체중 데이터가 없습니다.</span>`;
         return;
       }
 
-      const wMin = 79, wMax = 95;
-      const width = 560, height = 160, pad = 28;
+      const wMin = 79, wMax = 94;
+      const width = 560, height = 150, pad = 26;
       const pts = entries.map((e, i) => {
         const x = entries.length === 1 ? width / 2 : pad + (i / (entries.length - 1)) * (width - pad * 2);
         const y = height - pad - ((e.weight - wMin) / (wMax - wMin)) * (height - pad * 2);
@@ -2087,8 +2250,8 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       const polyPoints = pts.map(p => `${p.x},${p.y}`).join(' ');
       const circles = pts.map(p => `
         <circle cx="${p.x}" cy="${p.y}" r="4.5" fill="#ff5500" stroke="#fff" stroke-width="1.5" />
-        <text x="${p.x}" y="${p.y - 9}" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="bold">${p.weight}kg</text>
-        <text x="${p.x}" y="${height - 8}" text-anchor="middle" fill="#888" font-size="9">${p.date}</text>
+        <text x="${p.x}" y="${p.y - 8}" text-anchor="middle" fill="#ffffff" font-size="10" font-weight="bold">${p.weight}</text>
+        <text x="${p.x}" y="${height - 6}" text-anchor="middle" fill="#888" font-size="9">${p.date}</text>
       `).join('');
 
       container.innerHTML = `
@@ -2099,7 +2262,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       `;
     }
 
-    // 3D 근육 & 코칭 비디오 탭
     function initVideoTab() {
       const sel = document.getElementById('videoExerciseSelect');
       if (sel.options.length === 0) {
@@ -2127,10 +2289,16 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       selectVideoExercise(videoKey || 'widerow');
     }
 
-    // 인바디 & RPE 계산기
+    function updateProfileSpecFromInbody() {
+      appState.profile.height = Number(document.getElementById('inbodyHeightInput').value) || 176;
+      appState.profile.targetWeight = Number(document.getElementById('inbodyGoalInput').value) || 81.0;
+      saveAppState();
+      renderAll();
+    }
+
     function applyInbodyAutoScaling() {
       const smm = Number(document.getElementById('inbodySmmInput').value) || 36.5;
-      const w = Number(document.getElementById('inbodyWeightInput').value) || 89.0;
+      const w = Number(document.getElementById('inbodyWeightInput').value) || 88.8;
       const goal = Number(document.getElementById('inbodyGoalInput').value) || 81.0;
 
       appState.profile.smm = smm;
@@ -2151,7 +2319,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
       saveAppState();
       renderAll();
-      alert(`골격근량 ${smm}kg 기준 전 종목 추천 무게가 최적화되었습니다!`);
+      alert(`골격근량 ${smm}kg 기준으로 추천 무게가 최적화되었습니다!`);
     }
 
     function runRpeCalculator() {
@@ -2164,7 +2332,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
       document.getElementById('rpeCalcResultBox').innerHTML = `
         추정 1RM: <span class="text-white font-black">${oneRm.toFixed(1)} kg</span> ·
-        목표 ${targetR}회 기준 RPE 8(예비 2회) 추천 세트 중량: <span class="text-[#ff5500] text-sm font-black">${rpe8Weight} kg</span>
+        목표 ${targetR}회 기준 RPE 8 추천 중량: <span class="text-[#ff5500] text-sm font-black">${rpe8Weight} kg</span>
       `;
     }
 
@@ -2187,7 +2355,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           appState = Object.assign(appState, parsed);
           saveAppState();
           renderAll();
-          alert('백업 데이터가 성공적으로 복원되었습니다!');
+          alert('백업 데이터가 복원되었습니다!');
         } catch (err) {
           alert('올바른 백업 파일이 아닙니다.');
         }
@@ -2195,11 +2363,11 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       reader.readAsText(file);
     }
 
-    // 앱 초기 구동
     window.addEventListener('DOMContentLoaded', async () => {
       await initRustWasm();
       loadAppState();
       renderAll();
+      syncTabataInputsAndUI();
     });
   </script>
 </body>
