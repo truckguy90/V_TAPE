@@ -123,29 +123,36 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 }
   </script>
 
-  <!-- ==================== 초슬림 상단 고정 바 (세로 늘어짐 방지) ==================== -->
-  <header class="sticky top-0 z-30 bg-[#070709]/95 backdrop-blur-md border-b border-zinc-800/90 px-3 py-2">
-    <div class="max-w-3xl mx-auto flex items-center justify-between gap-2">
+  <!-- ==================== 초슬림 상단 고정 바 ==================== -->
+  <header class="sticky top-0 z-30 bg-[#070709]/95 backdrop-blur-md border-b border-zinc-800/90 px-2.5 py-2">
+    <div class="max-w-3xl mx-auto flex items-center justify-between gap-1.5">
       <!-- 좌측: 핵심 상태 1줄 요약 -->
-      <div class="flex items-center gap-2 min-w-0 overflow-hidden">
-        <div class="w-7 h-7 rounded-lg bg-[#ff5500] flex items-center justify-center text-white text-xs font-black shrink-0">
+      <div class="flex items-center gap-1.5 min-w-0 overflow-hidden">
+        <div class="w-6 h-6 rounded-lg bg-[#ff5500] flex items-center justify-center text-white text-[11px] font-black shrink-0">
           <i class="fa-solid fa-dumbbell"></i>
         </div>
-        <div class="flex items-center gap-1.5 text-xs whitespace-nowrap overflow-x-auto no-scrollbar">
+        <div class="flex items-center gap-1 text-xs whitespace-nowrap overflow-x-auto no-scrollbar">
           <span id="headerCurrentWeight" class="font-black text-white">88.8kg</span>
           <span class="text-zinc-600">→</span>
           <span id="headerTargetWeightText" class="font-extrabold text-[#ff5500]">81kg</span>
-          <span id="headerRemainWeight" class="text-[11px] text-zinc-400 font-bold">(-7.8kg)</span>
+          <span id="headerRemainWeight" class="text-[10px] text-zinc-400 font-bold">(-7.8)</span>
           <span class="text-zinc-700">|</span>
-          <span id="headerKcalBadge" class="px-1.5 py-0.5 rounded bg-orange-500/15 border border-orange-500/30 text-orange-300 text-[11px] font-extrabold">🔥 0kcal</span>
+          <span id="headerKcalBadge" class="px-1.5 py-0.5 rounded bg-orange-500/15 border border-orange-500/30 text-orange-300 text-[10px] font-extrabold">🔥 0kcal</span>
         </div>
       </div>
 
-      <!-- 우측: 컴팩트 휴식 타이머 -->
-      <div class="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-xl px-2 py-1 shrink-0">
-        <button onclick="toggleTimerSound()" id="soundToggleBtn" class="text-orange-400 text-xs px-1" title="알림음">
+      <!-- 우측: 버저음 선택기 & 컴팩트 휴식 타이머 -->
+      <div class="flex items-center gap-1 bg-zinc-900 border border-zinc-800 rounded-xl px-1.5 py-1 shrink-0">
+        <button onclick="toggleTimerSound()" id="soundToggleBtn" class="text-orange-400 text-xs px-1" title="음소거 켜기/끄기">
           <i id="soundToggleIcon" class="fa-solid fa-volume-high"></i>
         </button>
+        <select id="headerBuzzerSelect" onchange="changeBuzzerPreset(this.value, true)" class="bg-zinc-950 border border-zinc-700 text-orange-300 text-[10px] font-extrabold rounded px-1 py-0.5 focus:outline-none" title="타이머 버저음 선택">
+          <option value="gong">🔔 복싱공</option>
+          <option value="horn">📢 전자버저</option>
+          <option value="arcade">👾 8비트</option>
+          <option value="siren">🚨 사이렌</option>
+          <option value="chime">✨ 차임벨</option>
+        </select>
         <span id="headerTimerDisplay" onclick="openRestTimerPopup()" class="font-mono font-black text-xs text-white px-1 cursor-pointer">01:00</span>
         <button onclick="startRestTimer(60, '수동 1분 휴식')" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-bold">1분</button>
         <button onclick="startRestTimer(90, '수동 90초 휴식')" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-200 font-bold">90초</button>
@@ -186,7 +193,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           </div>
         </div>
 
-        <!-- 체중 & 허리둘레 1줄 배치 (모바일에서도 나란히 2열 배치되어 세로 길이 절약) -->
+        <!-- 체중 & 허리둘레 1줄 배치 -->
         <div class="grid grid-cols-2 gap-1.5">
           <div class="flex items-center justify-between bg-zinc-900/90 border border-zinc-800 rounded-xl px-2.5 py-1.5">
             <span class="text-[11px] font-bold text-zinc-400">체중</span>
@@ -370,20 +377,24 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       <div class="bw-card p-3 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-black text-white flex items-center gap-1.5">
-            <i class="fa-solid fa-bolt text-[#ff5500]"></i> 타바타 & 인터벌 프리셋 선택
+            <i class="fa-solid fa-bolt text-[#ff5500]"></i> 타바타 & 케틀벨 인터벌 프리셋
           </span>
           <span id="tabataEstKcalBadge" class="text-[11px] px-2 py-0.5 rounded bg-orange-950 border border-orange-500/40 text-orange-300 font-black">
             예상 소모 약 75 kcal
           </span>
         </div>
-        <div class="grid grid-cols-3 gap-1.5">
-          <button onclick="applyTabataPreset('classic')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
-            <div class="text-[11px] font-black text-[#ff5500]">정통 타바타 4분</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">20초 운동 / 10초 휴식 × 8R</div>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+          <button onclick="applyTabataPreset('kb20_12')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-orange-500/50 text-left">
+            <div class="text-[11px] font-black text-[#ff5500]">20kg 케틀벨 (30/30)</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">30초 스윙 / 30초 휴식 × 12R</div>
           </button>
-          <button onclick="applyTabataPreset('kettlebell')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
-            <div class="text-[11px] font-black text-orange-400">케틀벨 10세트</div>
-            <div class="text-[10px] text-zinc-300 mt-0.5">30초 스윙 / 30초 휴식 × 10R</div>
+          <button onclick="applyTabataPreset('kb16_12')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
+            <div class="text-[11px] font-black text-orange-400">16kg 고밀도 (20/20)</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">20초 스윙 / 20초 휴식 × 12R</div>
+          </button>
+          <button onclick="applyTabataPreset('classic')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
+            <div class="text-[11px] font-black text-white">정통 타바타 4분</div>
+            <div class="text-[10px] text-zinc-300 mt-0.5">20초 운동 / 10초 휴식 × 8R</div>
           </button>
           <button onclick="applyTabataPreset('hiit')" class="p-2 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-700 text-left">
             <div class="text-[11px] font-black text-emerald-400">고강도 HIIT</div>
@@ -399,17 +410,17 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             READY · 대기중
           </span>
           <span id="tabataRoundText" class="text-sm font-black text-white">
-            ROUND <span class="text-[#ff5500] text-lg">1</span> / 8
+            ROUND <span class="text-[#ff5500] text-lg">1</span> / 12
           </span>
         </div>
 
         <!-- 초대형 카운트다운 숫자 -->
         <div class="py-2">
           <div id="tabataBigTime" class="font-mono text-7xl sm:text-8xl font-black text-white tracking-tight leading-none">
-            00:20
+            00:30
           </div>
           <div id="tabataSubStatusText" class="text-xs font-bold text-zinc-400 mt-2">
-            시작 버튼을 누르면 5초 준비 카운트 후 시작됩니다
+            종료 5초 전부터 카운트다운 알림음 + 완료 시 선택된 버저음이 울립니다
           </div>
         </div>
 
@@ -429,15 +440,40 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         </div>
       </div>
 
-      <!-- 운동시간 / 휴식시간 / 라운드 커스텀 조절 & 일지 기록 -->
+      <!-- 버저 사운드 선택 & 시간 커스텀 조절 -->
       <div class="bw-card p-3.5 space-y-3">
-        <div class="text-xs font-black text-white">⚙️ 타바타 시간 & 라운드 직접 설정</div>
+        <!-- 버저음 5종 선택 및 미리듣기 -->
+        <div class="space-y-1.5 pb-2.5 border-b border-zinc-800">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-black text-white">🔊 타이머 버저음 선택 (클릭 시 소리 미리듣기)</span>
+            <span class="text-[10px] text-orange-400 font-bold">5초 전 카운트다운 자동 작동</span>
+          </div>
+          <div class="grid grid-cols-2 sm:grid-cols-5 gap-1.5">
+            <button id="buzzer-btn-gong" onclick="changeBuzzerPreset('gong', true)" class="py-2 px-2 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-extrabold text-zinc-200">
+              🔔 복싱 공소리
+            </button>
+            <button id="buzzer-btn-horn" onclick="changeBuzzerPreset('horn', true)" class="py-2 px-2 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-extrabold text-zinc-200">
+              📢 체육관 버저
+            </button>
+            <button id="buzzer-btn-arcade" onclick="changeBuzzerPreset('arcade', true)" class="py-2 px-2 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-extrabold text-zinc-200">
+              👾 8비트 아케이드
+            </button>
+            <button id="buzzer-btn-siren" onclick="changeBuzzerPreset('siren', true)" class="py-2 px-2 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-extrabold text-zinc-200">
+              🚨 HIIT 사이렌
+            </button>
+            <button id="buzzer-btn-chime" onclick="changeBuzzerPreset('chime', true)" class="py-2 px-2 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-extrabold text-zinc-200">
+              ✨ 크리스탈 차임
+            </button>
+          </div>
+        </div>
+
+        <div class="text-xs font-black text-white">⚙️ 운동시간 / 휴식시간 / 라운드 직접 설정</div>
         <div class="grid grid-cols-3 gap-2">
           <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2 text-center">
             <div class="text-[10px] text-zinc-400 font-bold mb-1">🔥 운동 (초)</div>
             <div class="flex items-center justify-center gap-1">
               <button onclick="stepTabataConfig('workSec', -5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
-              <input id="tabataWorkInput" type="number" value="20" onchange="updateTabataConfigFromInputs()" class="w-11 bg-transparent text-center font-black text-sm text-[#ff5500]" />
+              <input id="tabataWorkInput" type="number" value="30" onchange="updateTabataConfigFromInputs()" class="w-11 bg-transparent text-center font-black text-sm text-[#ff5500]" />
               <button onclick="stepTabataConfig('workSec', 5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
             </div>
           </div>
@@ -446,7 +482,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             <div class="text-[10px] text-zinc-400 font-bold mb-1">💨 휴식 (초)</div>
             <div class="flex items-center justify-center gap-1">
               <button onclick="stepTabataConfig('restSec', -5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
-              <input id="tabataRestInput" type="number" value="10" onchange="updateTabataConfigFromInputs()" class="w-11 bg-transparent text-center font-black text-sm text-emerald-400" />
+              <input id="tabataRestInput" type="number" value="30" onchange="updateTabataConfigFromInputs()" class="w-11 bg-transparent text-center font-black text-sm text-emerald-400" />
               <button onclick="stepTabataConfig('restSec', 5)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
             </div>
           </div>
@@ -455,14 +491,14 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             <div class="text-[10px] text-zinc-400 font-bold mb-1">🔁 라운드 (세트)</div>
             <div class="flex items-center justify-center gap-1">
               <button onclick="stepTabataConfig('rounds', -1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">-</button>
-              <input id="tabataRoundsInput" type="number" value="8" onchange="updateTabataConfigFromInputs()" class="w-10 bg-transparent text-center font-black text-sm text-white" />
+              <input id="tabataRoundsInput" type="number" value="12" onchange="updateTabataConfigFromInputs()" class="w-10 bg-transparent text-center font-black text-sm text-white" />
               <button onclick="stepTabataConfig('rounds', 1)" class="stepper-btn w-7 h-7 rounded-lg text-xs">+</button>
             </div>
           </div>
         </div>
 
         <div class="flex items-center gap-2">
-          <input id="tabataExerciseNameInput" type="text" value="타바타 인터벌 (케틀벨 스윙/버피)" class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-orange-500" />
+          <input id="tabataExerciseNameInput" type="text" value="20kg 케틀벨 스윙 인터벌 (12세트)" class="flex-1 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-xs text-white font-bold focus:outline-none focus:border-orange-500" />
           <button onclick="logTabataToDailyWorkout()" class="px-3.5 py-2 rounded-xl bg-white text-black text-xs font-black shrink-0">
             + 오늘 일지에 기록 추가
           </button>
@@ -624,7 +660,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         <div class="flex items-center gap-2 min-w-0">
           <span class="w-2 h-2 rounded-full bg-[#ff5500] animate-ping shrink-0"></span>
           <div class="truncate">
-            <div class="text-[10px] font-black text-orange-400">세트 완료! 휴식 타이머</div>
+            <div class="text-[10px] font-black text-orange-400">세트 완료! 휴식 타이머 (종료 시 자동 닫힘)</div>
             <div id="popupTimerExerciseLabel" class="text-xs font-extrabold text-white truncate">체스트 서포티드 와이드 로우</div>
           </div>
         </div>
@@ -769,12 +805,12 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         name: '🔥 케틀벨 스윙 (전신 대사 폭발)',
         targetReps: '15~20회',
         rpe: '8.5',
-        rest: 60,
+        rest: 30,
         videoKey: 'rdl',
         sets: [
-          { weight: 20, reps: 20, done: false },
-          { weight: 20, reps: 20, done: false },
-          { weight: 20, reps: 20, done: false }
+          { weight: 20, reps: 15, done: false },
+          { weight: 20, reps: 15, done: false },
+          { weight: 20, reps: 15, done: false }
         ]
       },
       barbell_squat: {
@@ -997,6 +1033,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       calendarYear: 2026,
       calendarMonth: 10,
       soundEnabled: true,
+      buzzerType: 'gong', // gong | horn | arcade | siren | chime
       customTemplates: null,
       logsByDate: {}
     };
@@ -1028,6 +1065,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           appState = Object.assign(appState, parsed);
           if (!appState.profile) appState.profile = { height: 176, startWeight: 89.0, targetWeight: 81.0, smm: 36.5, pbf: 25.5 };
           if (!appState.logsByDate) appState.logsByDate = {};
+          if (!appState.buzzerType) appState.buzzerType = 'gong';
         } else {
           appState.selectedDate = getTodayDateString();
         }
@@ -1148,7 +1186,153 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 5. 오디오 비프음 & 플로팅 휴식 타이머
+    // 5. 오디오 신디사이저 (5초 전 카운트다운 틱 & 5종 커스텀 버저음)
+    // =========================================================================
+    let sharedAudioCtx = null;
+
+    function getAudioCtx() {
+      if (!sharedAudioCtx) {
+        sharedAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (sharedAudioCtx.state === 'suspended') {
+        sharedAudioCtx.resume();
+      }
+      return sharedAudioCtx;
+    }
+
+    // 종료 5초 전 카운트다운 틱 사운드 (5, 4, 3, 2, 1초마다 또렷한 피치 상승)
+    function playCountdownTick(secLeft) {
+      if (!appState.soundEnabled) return;
+      try {
+        const ctx = getAudioCtx();
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        // 5초->1초로 갈수록 약간씩 높아지는 긴장감 있는 비프음
+        const pitchMap = { 5: 620, 4: 660, 3: 720, 2: 790, 1: 880 };
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(pitchMap[secLeft] || 700, ctx.currentTime);
+        gain.gain.setValueAtTime(0.28, ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.11);
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+        osc.start(ctx.currentTime);
+        osc.stop(ctx.currentTime + 0.12);
+      } catch (e) {}
+    }
+
+    // 5종 메인 버저 사운드 재생기
+    function playBuzzerSound(presetOverride = null) {
+      if (!appState.soundEnabled) return;
+      const type = presetOverride || appState.buzzerType || 'gong';
+      try {
+        const ctx = getAudioCtx();
+        const now = ctx.currentTime;
+
+        if (type === 'gong') {
+          // 1. 복싱 링 공소리 (배음 합성 금속성 벨)
+          [220, 330, 554, 880, 1180].forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = idx % 2 === 0 ? 'sine' : 'triangle';
+            osc.frequency.setValueAtTime(freq, now);
+            gain.gain.setValueAtTime(0.32 / (idx + 1), now);
+            gain.gain.exponentialRampToValueAtTime(0.0008, now + 1.15);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now);
+            osc.stop(now + 1.2);
+          });
+        } else if (type === 'horn') {
+          // 2. 체육관 전자 버저 (강렬한 톱니파 농구장/복싱장 버저 2연타)
+          [0, 0.34].forEach(offset => {
+            [145, 149, 290].forEach(freq => {
+              const osc = ctx.createOscillator();
+              const gain = ctx.createGain();
+              osc.type = 'sawtooth';
+              osc.frequency.setValueAtTime(freq, now + offset);
+              gain.gain.setValueAtTime(0.18, now + offset);
+              gain.gain.exponentialRampToValueAtTime(0.01, now + offset + 0.28);
+              osc.connect(gain);
+              gain.connect(ctx.destination);
+              osc.start(now + offset);
+              osc.stop(now + offset + 0.29);
+            });
+          });
+        } else if (type === 'arcade') {
+          // 3. 8비트 아케이드 (경쾌한 스퀘어파 3단 상승음)
+          const notes = [587.33, 783.99, 1046.50, 1318.51];
+          notes.forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'square';
+            osc.frequency.setValueAtTime(freq, now + idx * 0.11);
+            gain.gain.setValueAtTime(0.18, now + idx * 0.11);
+            gain.gain.exponentialRampToValueAtTime(0.005, now + idx * 0.11 + 0.1);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + idx * 0.11);
+            osc.stop(now + idx * 0.11 + 0.11);
+          });
+        } else if (type === 'siren') {
+          // 4. 크로스핏 사이렌 (주파수 스윕 업-다운 2회)
+          [0, 0.38].forEach(offset => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sawtooth';
+            osc.frequency.setValueAtTime(440, now + offset);
+            osc.frequency.linearRampToValueAtTime(960, now + offset + 0.22);
+            osc.frequency.linearRampToValueAtTime(520, now + offset + 0.35);
+            gain.gain.setValueAtTime(0.22, now + offset);
+            gain.gain.exponentialRampToValueAtTime(0.01, now + offset + 0.36);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(now + offset);
+            osc.stop(now + offset + 0.37);
+          });
+        } else {
+          // 5. 크리스탈 차임 (맑은 메이저 트라이어드 화음 벨)
+          [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
+            const osc = ctx.createOscillator();
+            const gain = ctx.createGain();
+            osc.type = 'sine';
+            const startT = now + idx * 0.08;
+            osc.frequency.setValueAtTime(freq, startT);
+            gain.gain.setValueAtTime(0.25, startT);
+            gain.gain.exponentialRampToValueAtTime(0.001, startT + 0.65);
+            osc.connect(gain);
+            gain.connect(ctx.destination);
+            osc.start(startT);
+            osc.stop(startT + 0.66);
+          });
+        }
+      } catch (e) {}
+    }
+
+    function changeBuzzerPreset(newType, playPreview = true) {
+      appState.buzzerType = newType;
+      saveAppState();
+      syncBuzzerSelectorUI();
+      if (playPreview) {
+        playBuzzerSound(newType);
+      }
+    }
+
+    function syncBuzzerSelectorUI() {
+      const sel = document.getElementById('headerBuzzerSelect');
+      if (sel) sel.value = appState.buzzerType || 'gong';
+      ['gong', 'horn', 'arcade', 'siren', 'chime'].forEach(k => {
+        const btn = document.getElementById(`buzzer-btn-${k}`);
+        if (!btn) return;
+        if (k === appState.buzzerType) {
+          btn.className = 'py-2 px-2 rounded-xl border-2 border-[#ff5500] bg-orange-950/60 text-xs font-black text-white shadow';
+        } else {
+          btn.className = 'py-2 px-2 rounded-xl border border-zinc-700 bg-zinc-900 text-xs font-extrabold text-zinc-300';
+        }
+      });
+    }
+
+    // =========================================================================
+    // 6. 플로팅 휴식 타이머 (5초 전 카운트다운 + 종료 시 팝업 자동 닫힘)
     // =========================================================================
     let timerInterval = null;
     let timerTotalSec = 60;
@@ -1160,26 +1344,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       const m = String(Math.floor(s / 60)).padStart(2, '0');
       const r = String(s % 60).padStart(2, '0');
       return `${m}:${r}`;
-    }
-
-    function playTone(freq = 880, duration = 0.16, count = 1) {
-      if (!appState.soundEnabled) return;
-      try {
-        const ctx = new (window.AudioContext || window.webkitAudioContext)();
-        for (let i = 0; i < count; i++) {
-          const delay = i * (duration + 0.06);
-          const osc = ctx.createOscillator();
-          const gain = ctx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
-          gain.gain.setValueAtTime(0.25, ctx.currentTime + delay);
-          gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
-          osc.connect(gain);
-          gain.connect(ctx.destination);
-          osc.start(ctx.currentTime + delay);
-          osc.stop(ctx.currentTime + delay + duration + 0.01);
-        }
-      } catch (e) {}
     }
 
     function startRestTimer(seconds, labelText = '세트 완료 휴식') {
@@ -1194,11 +1358,21 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       timerInterval = setInterval(() => {
         timerRemainSec -= 1;
         updateTimerUI();
+
+        // 종료 5초 전부터 1초까지 카운트다운 알림음 재생
+        if (timerRemainSec > 0 && timerRemainSec <= 5) {
+          playCountdownTick(timerRemainSec);
+        }
+
+        // 시간 종료 시 버저음 재생 후 자동으로 플로팅 팝업 닫기
         if (timerRemainSec <= 0) {
           clearInterval(timerInterval);
           timerInterval = null;
-          playTone(880, 0.18, 3);
-          document.getElementById('popupTimerExerciseLabel').textContent = '🔥 휴식 완료! 다음 세트 시작하세요!';
+          playBuzzerSound();
+          document.getElementById('popupTimerExerciseLabel').textContent = '🔥 휴식 종료! 다음 세트 시작!';
+          setTimeout(() => {
+            closeRestTimerPopup();
+          }, 600);
         }
       }, 1000);
     }
@@ -1206,7 +1380,14 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     function updateTimerUI() {
       const str = formatTimeMMSS(timerRemainSec);
       document.getElementById('headerTimerDisplay').textContent = str;
-      document.getElementById('popupTimerCountdown').textContent = str;
+      const countdownEl = document.getElementById('popupTimerCountdown');
+      countdownEl.textContent = str;
+      // 5초 이하일 때 숫자 오렌지색 강조
+      if (timerRemainSec > 0 && timerRemainSec <= 5) {
+        countdownEl.className = 'font-mono text-3xl font-black text-[#ff5500] tracking-tight animate-pulse';
+      } else {
+        countdownEl.className = 'font-mono text-3xl font-black text-white tracking-tight';
+      }
       document.getElementById('popupTimerExerciseLabel').textContent = timerLabel;
       const pct = timerTotalSec > 0 ? Math.max(0, Math.min(100, (timerRemainSec / timerTotalSec) * 100)) : 0;
       document.getElementById('popupTimerProgressBar').style.width = `${pct}%`;
@@ -1246,16 +1427,16 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 6. 전용 타바타(TABATA) 타이머 엔진
+    // 7. 전용 타바타(TABATA) 타이머 엔진 (5초 전 카운트다운 + 선택 버저음 연동)
     // =========================================================================
     let tabataState = {
-      workSec: 20,
-      restSec: 10,
-      rounds: 8,
+      workSec: 30,
+      restSec: 30,
+      rounds: 12,
       currentRound: 1,
       phase: 'IDLE', // IDLE | PREP | WORK | REST | DONE
-      remainSec: 20,
-      phaseTotalSec: 20,
+      remainSec: 30,
+      phaseTotalSec: 30,
       running: false,
       intervalId: null
     };
@@ -1265,28 +1446,34 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       const bw = Number(entry.weight) || 88.8;
       const totalSec = (tabataState.workSec + tabataState.restSec) * tabataState.rounds;
       const totalMins = Math.max(1, totalSec / 60);
-      // 고강도 타바타 평균 11.5 METs + EPOC 15% 가산
       return Math.round(((11.5 * 3.5 * bw) / 200) * totalMins * 1.15);
     }
 
     function applyTabataPreset(presetName) {
       resetTabataTimer();
-      if (presetName === 'classic') {
+      if (presetName === 'kb20_12') {
+        tabataState.workSec = 30;
+        tabataState.restSec = 30;
+        tabataState.rounds = 12;
+        document.getElementById('tabataExerciseNameInput').value = '20kg 케틀벨 스윙 인터벌 (30/30×12R)';
+      } else if (presetName === 'kb16_12') {
+        tabataState.workSec = 20;
+        tabataState.restSec = 20;
+        tabataState.rounds = 12;
+        document.getElementById('tabataExerciseNameInput').value = '16kg 케틀벨 고밀도 인터벌 (20/20×12R)';
+      } else if (presetName === 'classic') {
         tabataState.workSec = 20;
         tabataState.restSec = 10;
         tabataState.rounds = 8;
         document.getElementById('tabataExerciseNameInput').value = '정통 타바타 인터벌 (20초/10초×8R)';
-      } else if (presetName === 'kettlebell') {
-        tabataState.workSec = 30;
-        tabataState.restSec = 30;
-        tabataState.rounds = 10;
-        document.getElementById('tabataExerciseNameInput').value = '20kg 케틀벨 스윙 타바타 (10세트)';
       } else if (presetName === 'hiit') {
         tabataState.workSec = 40;
         tabataState.restSec = 20;
         tabataState.rounds = 6;
         document.getElementById('tabataExerciseNameInput').value = '고강도 HIIT 인터벌 (40초/20초×6R)';
       }
+      tabataState.remainSec = tabataState.workSec;
+      tabataState.phaseTotalSec = tabataState.workSec;
       syncTabataInputsAndUI();
     }
 
@@ -1300,9 +1487,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
     function updateTabataConfigFromInputs() {
       if (tabataState.running) return;
-      tabataState.workSec = Math.max(5, Number(document.getElementById('tabataWorkInput').value) || 20);
-      tabataState.restSec = Math.max(5, Number(document.getElementById('tabataRestInput').value) || 10);
-      tabataState.rounds = Math.max(1, Number(document.getElementById('tabataRoundsInput').value) || 8);
+      tabataState.workSec = Math.max(5, Number(document.getElementById('tabataWorkInput').value) || 30);
+      tabataState.restSec = Math.max(5, Number(document.getElementById('tabataRestInput').value) || 30);
+      tabataState.rounds = Math.max(1, Number(document.getElementById('tabataRoundsInput').value) || 12);
       tabataState.remainSec = tabataState.workSec;
       tabataState.phaseTotalSec = tabataState.workSec;
       syncTabataInputsAndUI();
@@ -1313,6 +1500,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       document.getElementById('tabataRestInput').value = tabataState.restSec;
       document.getElementById('tabataRoundsInput').value = tabataState.rounds;
       document.getElementById('tabataEstKcalBadge').textContent = `예상 소모 약 ${getTabataEstimatedKcal()} kcal`;
+      syncBuzzerSelectorUI();
       renderTabataDisplay();
     }
 
@@ -1330,7 +1518,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         tabataState.currentRound = 1;
         tabataState.remainSec = 5;
         tabataState.phaseTotalSec = 5;
-        playTone(660, 0.12, 1);
+        playCountdownTick(5);
       }
 
       tabataState.running = true;
@@ -1339,8 +1527,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       tabataState.intervalId = setInterval(() => {
         tabataState.remainSec -= 1;
 
-        if (tabataState.remainSec > 0 && tabataState.remainSec <= 3) {
-          playTone(600, 0.09, 1);
+        // 종료 5초 전부터 카운트다운 알림음 재생
+        if (tabataState.remainSec > 0 && tabataState.remainSec <= 5) {
+          playCountdownTick(tabataState.remainSec);
         }
 
         if (tabataState.remainSec <= 0) {
@@ -1355,28 +1544,27 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         tabataState.phase = 'WORK';
         tabataState.remainSec = tabataState.workSec;
         tabataState.phaseTotalSec = tabataState.workSec;
-        playTone(980, 0.22, 2);
+        playBuzzerSound();
       } else if (tabataState.phase === 'WORK') {
         if (tabataState.currentRound >= tabataState.rounds) {
-          // 전체 라운드 종료
           clearInterval(tabataState.intervalId);
           tabataState.intervalId = null;
           tabataState.running = false;
           tabataState.phase = 'DONE';
           tabataState.remainSec = 0;
-          playTone(1046, 0.2, 3);
+          playBuzzerSound();
         } else {
           tabataState.phase = 'REST';
           tabataState.remainSec = tabataState.restSec;
           tabataState.phaseTotalSec = tabataState.restSec;
-          playTone(520, 0.25, 1);
+          playBuzzerSound();
         }
       } else if (tabataState.phase === 'REST') {
         tabataState.currentRound += 1;
         tabataState.phase = 'WORK';
         tabataState.remainSec = tabataState.workSec;
         tabataState.phaseTotalSec = tabataState.workSec;
-        playTone(980, 0.22, 2);
+        playBuzzerSound();
       }
     }
 
@@ -1412,9 +1600,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         badge.className = 'px-3 py-1 rounded-full bg-zinc-800 text-zinc-200 text-xs font-black';
         bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-white tracking-tight leading-none';
         bar.className = 'h-full bg-[#ff5500] transition-all duration-300';
-        subText.textContent = `총 ${tabataState.rounds}라운드 · 예상 소모 ${getTabataEstimatedKcal()} kcal`;
+        subText.textContent = `총 ${tabataState.rounds}라운드 · 종료 5초 전부터 카운트다운 알림음 작동`;
       } else if (tabataState.phase === 'PREP') {
-        badge.textContent = 'PREP · 준비 카운트';
+        badge.textContent = 'PREP · 5초 준비 카운트';
         badge.className = 'px-3 py-1 rounded-full bg-amber-500 text-black text-xs font-black';
         bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-amber-400 tracking-tight leading-none';
         bar.className = 'h-full bg-amber-400 transition-all duration-300';
@@ -1424,7 +1612,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         badge.className = 'px-3 py-1 rounded-full bg-[#ff5500] text-white text-xs font-black animate-pulse';
         bigTime.className = 'font-mono text-7xl sm:text-8xl font-black text-[#ff5500] tracking-tight leading-none';
         bar.className = 'h-full bg-[#ff5500] transition-all duration-300';
-        subText.textContent = `${tabataState.currentRound}라운드 전력 수행 중! 코어와 호흡 유지!`;
+        subText.textContent = `${tabataState.currentRound}라운드 수행 중! 힙 힌지와 코어 복압 유지!`;
       } else if (tabataState.phase === 'REST') {
         badge.textContent = '💨 REST · 호흡 정리';
         badge.className = 'px-3 py-1 rounded-full bg-emerald-500 text-black text-xs font-black';
@@ -1467,7 +1655,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 7. 메인 렌더링 & 일지 조작
+    // 8. 메인 렌더링 & 일지 조작 (마지막 세트 완료 시 타이머 미노출 적용)
     // =========================================================================
     function renderAll() {
       const entry = getOrCreateDateEntry(appState.selectedDate);
@@ -1479,8 +1667,10 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
       document.getElementById('headerCurrentWeight').textContent = `${curW.toFixed(1)}kg`;
       document.getElementById('headerTargetWeightText').textContent = `${goalW.toFixed(1)}kg`;
-      document.getElementById('headerRemainWeight').textContent = `(${remain > 0 ? '-' + remain + 'kg' : '달성!'})`;
+      document.getElementById('headerRemainWeight').textContent = `(${remain > 0 ? '-' + remain : '달성!'})`;
       document.getElementById('headerKcalBadge').textContent = `🔥 ${summary.totalKcal}kcal`;
+
+      syncBuzzerSelectorUI();
 
       document.getElementById('selectedDateInput').value = appState.selectedDate;
       const daysKor = ['일', '월', '화', '수', '목', '금', '토'];
@@ -1600,9 +1790,12 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           `;
         }
 
-        const setsHtml = (ex.sets || []).map((s, sIdx) => `
+        const totalSetsCount = (ex.sets || []).length;
+        const setsHtml = (ex.sets || []).map((s, sIdx) => {
+          const isLastSet = sIdx === totalSetsCount - 1;
+          return `
           <div class="flex items-center justify-between gap-1 p-1.5 rounded-xl border transition-all ${s.done ? 'bg-orange-950/25 border-[#ff5500]/60' : 'bg-zinc-950 border-zinc-800'}">
-            <div class="w-6 h-6 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${s.done ? 'bg-[#ff5500] text-white' : 'bg-zinc-800 text-zinc-400'}">
+            <div class="w-6 h-6 rounded-lg flex items-center justify-center font-black text-xs shrink-0 ${s.done ? 'bg-[#ff5500] text-white' : 'bg-zinc-800 text-zinc-400'}" title="${isLastSet ? '마지막 세트 (완료 시 타이머 생략)' : ''}">
               ${sIdx + 1}
             </div>
 
@@ -1624,7 +1817,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
               <i class="fa-solid fa-check"></i>
             </button>
           </div>
-        `).join('');
+        `}).join('');
 
         return `
           <div class="bw-card p-3 space-y-2">
@@ -1678,17 +1871,24 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 8. 운동일지 핸들러
+    // 9. 운동일지 핸들러 (마지막 세트 체크 시 타이머 미노출!)
     // =========================================================================
     function toggleSetDone(exIdx, sIdx) {
       const exercises = getCurrentExercises();
       const ex = exercises[exIdx];
       if (!ex || !ex.sets[sIdx]) return;
+
       ex.sets[sIdx].done = !ex.sets[sIdx].done;
       saveAppState();
       renderAll();
-      if (ex.sets[sIdx].done) {
-        startRestTimer(Number(ex.rest) || 90, `${ex.name} (${sIdx + 1}세트 완료)`);
+
+      // 마지막 세트가 아닐 때만 휴식 타이머 팝업 실행 (마지막 세트는 종목 종료이므로 타이머 노출 안 함)
+      const isLastSet = sIdx === ex.sets.length - 1;
+      if (ex.sets[sIdx].done && !isLastSet) {
+        startRestTimer(Number(ex.rest) || 90, `${ex.name} (${sIdx + 1}/${ex.sets.length}세트 완료)`);
+      } else if (ex.sets[sIdx].done && isLastSet) {
+        // 만약 이전 세트 타이머가 돌고 있었다면 마지막 세트 완료 시 깔끔하게 닫아줌
+        skipRestTimer();
       }
     }
 
@@ -1820,7 +2020,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 9. 하루 운동 종료 & 다음 볼륨 분석 모달
+    // 10. 하루 운동 종료 & 다음 볼륨 분석 모달
     // =========================================================================
     let lastGeneratedRecommendations = [];
 
@@ -2006,7 +2206,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 10. 날짜 이동 및 하단 5탭 전환
+    // 11. 날짜 이동 및 하단 5탭 전환
     // =========================================================================
     function selectProgramDay(dayKey) {
       const entry = getOrCreateDateEntry(appState.selectedDate);
