@@ -175,7 +175,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             </button>
             <div class="flex items-center bg-zinc-900 border border-zinc-700 rounded-lg px-2 py-1">
               <input id="selectedDateInput" type="date" onchange="onDateInputChanged(this.value)" class="bg-transparent text-white font-black text-xs focus:outline-none" />
-              <span id="selectedDayOfWeek" class="text-orange-400 font-black text-xs ml-1">(수)</span>
+              <span id="selectedDayOfWeek" class="text-orange-400 font-black text-xs ml-1">(일)</span>
             </div>
             <button onclick="shiftSelectedDate(1)" class="stepper-btn w-8 h-8 rounded-lg flex items-center justify-center">
               <i class="fa-solid fa-chevron-right text-xs"></i>
@@ -220,7 +220,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         <input id="dailyNoteInput" type="text" oninput="onDailyBodyMetricChange()" placeholder="오늘 컨디션, 등 상부 자극, 유산소 메모..." class="w-full bg-zinc-900/90 border border-zinc-800 rounded-xl px-3 py-1.5 text-xs text-white placeholder-zinc-500 focus:outline-none focus:border-orange-500" />
       </div>
 
-      <!-- 프로그램 선택 & 요약 카드 -->
+      <!-- 프로그램 선택 & 실제 운동시간 측정 & 요약 카드 -->
       <div class="bw-card p-3 space-y-2.5">
         <div class="grid grid-cols-2 gap-1.5">
           <button id="day-btn-A" onclick="selectProgramDay('A')" class="p-2 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
@@ -249,19 +249,46 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
           <button id="day-btn-REST" onclick="selectProgramDay('REST')" class="p-2 rounded-xl border border-zinc-800 bg-zinc-900 text-left transition-all">
             <div class="flex items-center justify-between">
-              <span class="font-black text-xs text-zinc-400">유산소 / 휴식</span>
-              <span id="badge-day-REST" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">유산소/체중</span>
+              <span class="font-black text-xs text-emerald-400">유산소 & 팔·어깨</span>
+              <span id="badge-day-REST" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">케이블+유산소</span>
             </div>
-            <div class="text-[11px] font-extrabold text-white mt-0.5 truncate">유산소 단독 / 타바타</div>
+            <div class="text-[11px] font-extrabold text-white mt-0.5 truncate">케이블 원스톱 & 스텝밀</div>
           </button>
         </div>
 
+        <!-- ⏱️ 실제 운동 시간 측정 스톱워치 바 (신규 추가) -->
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2.5 flex items-center justify-between gap-2 flex-wrap">
+          <div class="flex items-center gap-2">
+            <div id="workoutTimerDot" class="w-2.5 h-2.5 rounded-full bg-zinc-600 shrink-0"></div>
+            <div>
+              <div class="text-[10px] text-zinc-400 font-bold">
+                실제 운동시간 <span class="text-zinc-500">(예상 <span id="estDurationText">약 26분</span>)</span>
+              </div>
+              <div class="flex items-baseline gap-1.5">
+                <span id="actualWorkoutTimeDisplay" class="font-mono text-lg font-black text-white tracking-tight">00:00</span>
+                <span id="workoutTimerStatusBadge" class="text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold">대기 (첫 세트 체크 시 자동시작)</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-1">
+            <button id="workoutTimerToggleBtn" onclick="toggleActualWorkoutTimer()" class="px-2.5 py-1.5 rounded-lg bg-[#ff5500] text-white text-[11px] font-black flex items-center gap-1">
+              <i class="fa-solid fa-play"></i> 시작
+            </button>
+            <button onclick="adjustActualWorkoutMinutes(-1)" class="stepper-btn px-1.5 py-1.5 rounded-lg text-[10px] font-bold" title="1분 감소">-1분</button>
+            <button onclick="adjustActualWorkoutMinutes(1)" class="stepper-btn px-1.5 py-1.5 rounded-lg text-[10px] font-bold" title="1분 추가">+1분</button>
+            <button onclick="resetActualWorkoutTimer()" class="px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 text-[10px] font-bold" title="운동시간 0으로 초기화">
+              <i class="fa-solid fa-rotate-left"></i>
+            </button>
+          </div>
+        </div>
+
         <!-- 볼륨 & 칼로리 요약 및 컨트롤 -->
-        <div class="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-zinc-800">
+        <div class="flex flex-wrap items-center justify-between gap-2 pt-1.5 border-t border-zinc-800">
           <div class="flex items-center gap-2.5">
             <div>
               <div class="text-[10px] text-zinc-400 font-bold">
-                예상 <span id="estDurationText" class="text-white">약 26분</span> · 달성 <span id="completionPercentText" class="text-[#ff5500] font-black">0%</span>
+                달성률 <span id="completionPercentText" class="text-[#ff5500] font-black">0%</span>
               </div>
               <div class="text-base font-black text-white"><span id="totalVolumeText">0</span> <span class="text-xs text-zinc-400">kg</span></div>
             </div>
@@ -295,17 +322,37 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         </button>
       </div>
 
-      <!-- 종목 & 고칼로리 근력 & 유산소 원터치 추가 바 -->
+      <!-- 종목 & 케이블 팔/어깨 & 유산소 원터치 추가 바 -->
       <div class="bw-card p-3 space-y-2">
         <div class="flex items-center justify-between">
           <span class="text-xs font-black text-white flex items-center gap-1.5">
-            <span class="w-2 h-2 rounded-full bg-[#ff5500]"></span> 유산소 & 고칼로리 근력운동 원터치 추가
+            <span class="w-2 h-2 rounded-full bg-[#ff5500]"></span> 케이블 팔·어깨 원스톱 & 유산소 추가
           </span>
           <button onclick="switchMainTab('tabata')" class="text-[11px] text-orange-400 font-black underline">
             ⏱️ 타바타 타이머 열기 →
           </button>
         </div>
 
+        <!-- 케이블 팔·어깨 원터치 프리셋 버튼 줄 -->
+        <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-zinc-800/80">
+          <button onclick="addCableArmShoulderCombo()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-[11px] font-black flex items-center gap-1 shadow">
+            ⚡ + 팔·어깨 케이블 3종 한방에 추가
+          </button>
+          <button onclick="addHighCaloriePreset('cable_tricep_oh')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">
+            💪 + 케이블 오버헤드(삼두)
+          </button>
+          <button onclick="addHighCaloriePreset('cable_bicep_curl')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">
+            💪 + 케이블 컬(이두)
+          </button>
+          <button onclick="addHighCaloriePreset('cable_upright_delt')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">
+            🎯 + 케이블 아래→위 당기기(삼각근)
+          </button>
+          <button onclick="addHighCaloriePreset('reverse_fly')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">
+            🦅 + 리버스 플라이(후면)
+          </button>
+        </div>
+
+        <!-- 유산소 및 대근육 추가 버튼 줄 -->
         <div class="flex flex-wrap gap-1.5">
           <button onclick="addCardioExercise('stair')" class="px-2.5 py-1.5 rounded-lg bg-[#ff5500] text-white text-[11px] font-black flex items-center gap-1">
             <i class="fa-solid fa-fire"></i> + 천국의 계단
@@ -320,13 +367,10 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             🔥 + 케틀벨 스윙
           </button>
           <button onclick="addHighCaloriePreset('barbell_squat')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">
-            🦵 + 바벨 스쿼트
+            🦵 + 스쿼트
           </button>
           <button onclick="addHighCaloriePreset('conv_deadlift')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">
             ⚡ + 데드리프트
-          </button>
-          <button onclick="addHighCaloriePreset('db_thruster')" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">
-            💥 + 쓰러스터
           </button>
           <button onclick="addCustomWeightExercise()" class="px-2.5 py-1.5 rounded-lg bg-white text-black text-[11px] font-black">
             + 직접 추가
@@ -344,7 +388,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
             <button onclick="changeCalendarMonth(-1)" class="stepper-btn w-8 h-8 rounded-lg"><i class="fa-solid fa-chevron-left text-xs"></i></button>
-            <h2 id="calendarMonthTitle" class="text-base font-black text-white">2026년 10월</h2>
+            <h2 id="calendarMonthTitle" class="text-base font-black text-white">2026년 11월</h2>
             <button onclick="changeCalendarMonth(1)" class="stepper-btn w-8 h-8 rounded-lg"><i class="fa-solid fa-chevron-right text-xs"></i></button>
           </div>
           <div class="text-xs text-zinc-400 font-bold">
@@ -414,7 +458,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           </span>
         </div>
 
-        <!-- 초대형 카운트다운 숫자 -->
         <div class="py-2">
           <div id="tabataBigTime" class="font-mono text-7xl sm:text-8xl font-black text-white tracking-tight leading-none">
             00:30
@@ -424,12 +467,10 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           </div>
         </div>
 
-        <!-- 진행 프로그레스 바 -->
         <div class="w-full h-3 bg-zinc-900 rounded-full overflow-hidden border border-zinc-800">
           <div id="tabataProgressBar" class="h-full bg-[#ff5500] transition-all duration-300" style="width: 100%"></div>
         </div>
 
-        <!-- 시작 / 일시정지 / 초기화 컨트롤 버튼 -->
         <div class="grid grid-cols-3 gap-2 pt-1">
           <button id="tabataStartPauseBtn" onclick="toggleTabataStartPause()" class="col-span-2 py-3.5 rounded-xl orange-btn text-base font-black flex items-center justify-center gap-2 shadow-lg">
             <i class="fa-solid fa-play"></i> 타바타 시작
@@ -442,7 +483,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
       <!-- 버저 사운드 선택 & 시간 커스텀 조절 -->
       <div class="bw-card p-3.5 space-y-3">
-        <!-- 버저음 5종 선택 및 미리듣기 -->
         <div class="space-y-1.5 pb-2.5 border-b border-zinc-800">
           <div class="flex items-center justify-between">
             <span class="text-xs font-black text-white">🔊 타이머 버저음 선택 (클릭 시 소리 미리듣기)</span>
@@ -653,7 +693,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     </div>
   </nav>
 
-  <!-- ==================== 플로팅 자동 휴식 타이머 팝업 (하단 탭바 위) ==================== -->
+  <!-- ==================== 플로팅 자동 휴식 타이머 팝업 ==================== -->
   <div id="restTimerFloatingPopup" class="hidden fixed bottom-20 left-1/2 -translate-x-1/2 z-50 w-[94%] max-w-md floating-popup">
     <div class="bg-[#0c0c0f]/95 backdrop-blur-xl border-2 border-[#ff5500] rounded-2xl p-3 shadow-2xl shadow-orange-600/30">
       <div class="flex items-center justify-between gap-2">
@@ -697,7 +737,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         </button>
       </div>
 
-      <div id="analysisSummaryHeader" class="grid grid-cols-2 sm:grid-cols-4 gap-2"></div>
+      <div id="analysisSummaryHeader" class="grid grid-cols-2 sm:grid-cols-5 gap-2"></div>
 
       <div class="space-y-2">
         <div class="text-xs font-black text-orange-400">종목별 수행 분석 및 다음 세션 추천</div>
@@ -760,15 +800,15 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 2. 운동 데이터베이스
+    // 2. 운동 데이터베이스 (케이블 팔·어깨 원스톱 종목 추가)
     // =========================================================================
     const CARDIO_TYPES = {
       stair: {
         key: 'stair',
         name: '천국의 계단 (스텝밀)',
         unitLabel: '속도(단)',
-        defaultLevel: 7,
-        defaultMinutes: 10,
+        defaultLevel: 10,
+        defaultMinutes: 20,
         desc: '하체 대근육과 둔근을 사용해 분당 칼로리 소모가 가장 높은 끝판왕 유산소'
       },
       mountain: {
@@ -798,6 +838,62 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     };
 
     const HIGH_CALORIE_STRENGTH_PRESETS = {
+      cable_tricep_oh: {
+        id: 'cb_tricep',
+        type: 'weight',
+        name: '케이블 오버헤드 익스텐션 (삼두)',
+        targetReps: '10~12회',
+        rpe: '8.5',
+        rest: 60,
+        videoKey: 'ohp',
+        sets: [
+          { weight: 57, reps: 12, done: false },
+          { weight: 57, reps: 12, done: false },
+          { weight: 57, reps: 12, done: false }
+        ]
+      },
+      cable_bicep_curl: {
+        id: 'cb_bicep',
+        type: 'weight',
+        name: '케이블 컬 (이두)',
+        targetReps: '10~12회',
+        rpe: '8.5',
+        rest: 60,
+        videoKey: 'widerow',
+        sets: [
+          { weight: 65, reps: 12, done: false },
+          { weight: 65, reps: 12, done: false },
+          { weight: 65, reps: 12, done: false }
+        ]
+      },
+      cable_upright_delt: {
+        id: 'cb_delt_up',
+        type: 'weight',
+        name: '케이블 아래에서 위로 당기기 (삼각근)',
+        targetReps: '12~15회',
+        rpe: '8.5',
+        rest: 60,
+        videoKey: 'facepull',
+        sets: [
+          { weight: 57, reps: 15, done: false },
+          { weight: 57, reps: 15, done: false },
+          { weight: 65, reps: 15, done: false }
+        ]
+      },
+      reverse_fly: {
+        id: 'hc_rev_fly',
+        type: 'weight',
+        name: '리버스 플라이 (어깨 후면)',
+        targetReps: '12~15회',
+        rpe: '8.5',
+        rest: 60,
+        videoKey: 'facepull',
+        sets: [
+          { weight: 40, reps: 15, done: false },
+          { weight: 40, reps: 15, done: false },
+          { weight: 40, reps: 15, done: false }
+        ]
+      },
       kettlebell_swing: {
         id: 'hc_kb_swing',
         type: 'weight',
@@ -817,15 +913,15 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         id: 'hc_bb_squat',
         type: 'weight',
         highCalorieFactor: 1.45,
-        name: '🦵 바벨 백 스쿼트 (하체/코어)',
+        name: '🦵 스쿼트 머신 / 바벨 스쿼트',
         targetReps: '8~10회',
         rpe: '8',
         rest: 90,
         videoKey: 'squat',
         sets: [
-          { weight: 70, reps: 8, done: false },
-          { weight: 70, reps: 8, done: false },
-          { weight: 70, reps: 8, done: false }
+          { weight: 55, reps: 10, done: false },
+          { weight: 55, reps: 10, done: false },
+          { weight: 55, reps: 10, done: false }
         ]
       },
       conv_deadlift: {
@@ -842,21 +938,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           { weight: 80, reps: 6, done: false },
           { weight: 80, reps: 6, done: false }
         ]
-      },
-      db_thruster: {
-        id: 'hc_thruster',
-        type: 'weight',
-        highCalorieFactor: 1.60,
-        name: '💥 덤벨 쓰러스터 (하체+어깨 복합)',
-        targetReps: '10~12회',
-        rpe: '8.5',
-        rest: 75,
-        videoKey: 'ohp',
-        sets: [
-          { weight: 24, reps: 12, done: false },
-          { weight: 24, reps: 12, done: false },
-          { weight: 24, reps: 12, done: false }
-        ]
       }
     };
 
@@ -871,7 +952,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         ]
       },
       squat: {
-        title: '레그프레스 / 스쿼트 (하체 대근육 & 칼로리 연소)',
+        title: '스쿼트 머신 / 레그프레스 (하체 대근육 & 칼로리 연소)',
         anatomyId: 'cuUPtfanAFQ',
         coachingId: 'QuBKlgaZdfI',
         points: [
@@ -897,7 +978,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         ]
       },
       latpulldown: {
-        title: '와이드 그립 랫 풀다운 (V-테이퍼 프레임)',
+        title: '와이드 그립 랫 풀다운 / 시티드 로우 (V-테이퍼 프레임)',
         anatomyId: 'S481pmnNTYY',
         coachingId: 'vL_HLxYJOYE',
         points: [
@@ -905,7 +986,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         ]
       },
       ohp: {
-        title: '오버헤드 프레스 (어깨 프레임)',
+        title: '오버헤드 프레스 & 케이블 삼두 익스텐션',
         anatomyId: '4LBVP2Oe7fg',
         coachingId: 'abFW83mxZ78',
         points: [
@@ -913,11 +994,11 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         ]
       },
       facepull: {
-        title: '케이블 페이스풀 (후면삼각근 & 등상부)',
+        title: '케이블 삼각근 & 후면 어깨 고립',
         anatomyId: 'bcaNXuEKPCI',
         coachingId: 'vy9V2snzwMc',
         points: [
-          '로프를 미간 쪽으로 당기며 엄지손가락을 뒤로 외회전시켜 후면 어깨와 중하부 승모근을 수축합니다.'
+          '승모근이 과도하게 으쓱거리지 않도록 어깨를 눌러준 뒤 팔꿈치를 리드하여 끌어올립니다.'
         ]
       }
     };
@@ -926,54 +1007,61 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       return {
         A: [
           {
-            id: 'a1', type: 'weight', name: '체스트 서포티드 와이드 로우', targetReps: '8~10회', rpe: '8', rest: 90, videoKey: 'widerow',
+            id: 'a1', type: 'weight', name: '체스트 서포티드 와이드 로우', targetReps: '10~12회', rpe: '8', rest: 90, videoKey: 'widerow',
             sets: [
-              { weight: 40, reps: 8, done: false },
-              { weight: 40, reps: 8, done: false },
+              { weight: 35, reps: 10, done: false },
+              { weight: 35, reps: 10, done: false },
               { weight: 35, reps: 10, done: false }
             ]
           },
           {
-            id: 'a2', type: 'weight', name: '레그프레스 (대사량 폭발)', targetReps: '10~12회', rpe: '8', rest: 90, videoKey: 'squat',
+            id: 'a2', type: 'weight', name: '스쿼트 머신', targetReps: '8~10회', rpe: '8', rest: 90, videoKey: 'squat',
             sets: [
-              { weight: 170, reps: 12, done: false },
-              { weight: 170, reps: 12, done: false },
-              { weight: 170, reps: 12, done: false }
+              { weight: 55, reps: 10, done: false },
+              { weight: 55, reps: 10, done: false },
+              { weight: 55, reps: 10, done: false },
+              { weight: 55, reps: 10, done: false }
             ]
           },
           {
-            id: 'a3', type: 'weight', name: '30° 인클라인 프레스', targetReps: '10~12회', rpe: '8.5', rest: 60, videoKey: 'incline',
+            id: 'a3', type: 'weight', name: '30° 인클라인 프레스', targetReps: '9~12회', rpe: '8.5', rest: 60, videoKey: 'incline',
             sets: [
-              { weight: 38, reps: 10, done: false },
-              { weight: 35, reps: 10, done: false },
-              { weight: 32, reps: 12, done: false }
+              { weight: 36, reps: 9, done: false },
+              { weight: 36, reps: 9, done: false },
+              { weight: 36, reps: 9, done: false }
             ]
+          },
+          {
+            id: 'a_cardio', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 8, minutes: 20, done: false
           }
         ],
         B: [
           {
             id: 'b1', type: 'weight', name: '루마니안 데드리프트 (RDL)', targetReps: '8~10회', rpe: '8', rest: 90, videoKey: 'rdl',
             sets: [
-              { weight: 60, reps: 8, done: false },
-              { weight: 60, reps: 8, done: false },
-              { weight: 60, reps: 8, done: false }
+              { weight: 60, reps: 10, done: false },
+              { weight: 60, reps: 10, done: false },
+              { weight: 60, reps: 10, done: false }
             ]
           },
           {
-            id: 'b2', type: 'weight', name: '와이드 그립 랫 풀다운', targetReps: '8~10회', rpe: '8', rest: 75, videoKey: 'latpulldown',
+            id: 'b2', type: 'weight', name: '오버헤드 숄더 프레스', targetReps: '7~10회', rpe: '8.5', rest: 75, videoKey: 'ohp',
             sets: [
-              { weight: 50, reps: 10, done: false },
-              { weight: 50, reps: 10, done: false },
-              { weight: 50, reps: 10, done: false }
+              { weight: 40, reps: 7, done: false },
+              { weight: 40, reps: 7, done: false },
+              { weight: 40, reps: 7, done: false }
             ]
           },
           {
-            id: 'b3', type: 'weight', name: '오버헤드 숄더 프레스', targetReps: '8~10회', rpe: '8', rest: 75, videoKey: 'ohp',
+            id: 'b3', type: 'weight', name: '시티드 로우 머신', targetReps: '8~10회', rpe: '8', rest: 75, videoKey: 'latpulldown',
             sets: [
-              { weight: 35, reps: 10, done: false },
-              { weight: 35, reps: 10, done: false },
-              { weight: 35, reps: 10, done: false }
+              { weight: 47, reps: 10, done: false },
+              { weight: 47, reps: 10, done: false },
+              { weight: 47, reps: 10, done: false }
             ]
+          },
+          {
+            id: 'b_cardio', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 8, minutes: 20, done: false
           }
         ],
         C: [
@@ -986,30 +1074,73 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             ]
           },
           {
-            id: 'c2', type: 'weight', name: '고블릿 스쿼트 / 핵스쿼트', targetReps: '10~12회', rpe: '8', rest: 90, videoKey: 'squat',
+            id: 'c2', type: 'weight', name: '스쿼트 머신 / 핵스쿼트', targetReps: '10~12회', rpe: '8', rest: 90, videoKey: 'squat',
             sets: [
-              { weight: 80, reps: 10, done: false },
-              { weight: 80, reps: 10, done: false },
-              { weight: 80, reps: 10, done: false }
+              { weight: 55, reps: 10, done: false },
+              { weight: 55, reps: 10, done: false },
+              { weight: 55, reps: 10, done: false }
             ]
           },
           {
-            id: 'c3', type: 'weight', name: '케이블 페이스풀 & 사레레', targetReps: '12~15회', rpe: '8.5', rest: 60, videoKey: 'facepull',
+            id: 'c3', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~15회', rpe: '8.5', rest: 60, videoKey: 'facepull',
             sets: [
-              { weight: 25, reps: 15, done: false },
-              { weight: 25, reps: 15, done: false },
-              { weight: 25, reps: 15, done: false }
+              { weight: 40, reps: 15, done: false },
+              { weight: 40, reps: 15, done: false },
+              { weight: 40, reps: 15, done: false }
             ]
           }
         ],
+        // 유산소 데이 (REST): 오늘 수행한 케이블 팔·어깨 원스톱 + 천국의 계단 기본 탑재!
         REST: [
+          {
+            id: 'rest_cb_1',
+            type: 'weight',
+            name: '케이블 오버헤드 익스텐션 (삼두)',
+            targetReps: '10~12회',
+            rpe: '8.5',
+            rest: 60,
+            videoKey: 'ohp',
+            sets: [
+              { weight: 57, reps: 12, done: false },
+              { weight: 57, reps: 12, done: false },
+              { weight: 57, reps: 12, done: false }
+            ]
+          },
+          {
+            id: 'rest_cb_2',
+            type: 'weight',
+            name: '케이블 컬 (이두)',
+            targetReps: '10~12회',
+            rpe: '8.5',
+            rest: 60,
+            videoKey: 'widerow',
+            sets: [
+              { weight: 65, reps: 12, done: false },
+              { weight: 65, reps: 12, done: false },
+              { weight: 65, reps: 12, done: false }
+            ]
+          },
+          {
+            id: 'rest_cb_3',
+            type: 'weight',
+            name: '케이블 아래에서 위로 당기기 (삼각근)',
+            targetReps: '12~15회',
+            rpe: '8.5',
+            rest: 60,
+            videoKey: 'facepull',
+            sets: [
+              { weight: 57, reps: 15, done: false },
+              { weight: 57, reps: 15, done: false },
+              { weight: 65, reps: 15, done: false }
+            ]
+          },
           {
             id: 'rest_cardio_1',
             type: 'cardio',
             cardioType: 'stair',
             name: '천국의 계단 (스텝밀)',
-            level: 7,
-            minutes: 15,
+            level: 10,
+            minutes: 20,
             done: false
           }
         ]
@@ -1017,7 +1148,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 3. 상태 관리 (기존 LocalStorage 완벽 호환)
+    // 3. 상태 관리 (기존 LocalStorage 완벽 호환 + 실제 운동시간 저장)
     // =========================================================================
     const STORAGE_KEY = 'vtaper_black_orange_v1';
 
@@ -1029,11 +1160,11 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         smm: 36.5,
         pbf: 25.5
       },
-      selectedDate: '2026-10-28',
+      selectedDate: '2026-11-08',
       calendarYear: 2026,
-      calendarMonth: 10,
+      calendarMonth: 11,
       soundEnabled: true,
-      buzzerType: 'gong', // gong | horn | arcade | siren | chime
+      buzzerType: 'gong',
       customTemplates: null,
       logsByDate: {}
     };
@@ -1053,6 +1184,12 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     function getTemplates() {
       if (!appState.customTemplates) {
         appState.customTemplates = getDefaultTemplates();
+      } else {
+        // 기존 백업에 REST가 천국의 계단 1개뿐이었다면 케이블+유산소 템플릿으로 업그레이드
+        const def = getDefaultTemplates();
+        if (!appState.customTemplates.REST || appState.customTemplates.REST.length <= 1) {
+          appState.customTemplates.REST = cloneDeep(def.REST);
+        }
       }
       return appState.customTemplates;
     }
@@ -1087,6 +1224,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           weight: 88.8,
           waist: 92.5,
           note: '',
+          actualWorkoutSeconds: 0,
           programsByDay: {
             A: cloneDeep(templates.A),
             B: cloneDeep(templates.B),
@@ -1096,6 +1234,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         };
       }
       const entry = appState.logsByDate[dateStr];
+      if (typeof entry.actualWorkoutSeconds !== 'number') {
+        entry.actualWorkoutSeconds = 0;
+      }
       if (!entry.programsByDay) {
         const templates = getTemplates();
         entry.programsByDay = {
@@ -1118,7 +1259,105 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 4. 칼로리 및 볼륨 계산
+    // 4. 실제 운동시간 측정 스톱워치 (Actual Workout Duration Tracker)
+    // =========================================================================
+    let actualWorkoutInterval = null;
+    let isActualWorkoutRunning = false;
+
+    function formatDurationHMS(totalSec) {
+      const s = Math.max(0, Math.floor(Number(totalSec) || 0));
+      const hrs = Math.floor(s / 3600);
+      const mins = Math.floor((s % 3600) / 60);
+      const secs = s % 60;
+      if (hrs > 0) {
+        return `${String(hrs).padStart(2, '0')}:${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+      }
+      return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
+    }
+
+    function formatDurationKorean(totalSec) {
+      const s = Math.max(0, Math.floor(Number(totalSec) || 0));
+      if (s === 0) return '미측정';
+      const mins = Math.floor(s / 60);
+      const secs = s % 60;
+      return mins > 0 ? `${mins}분 ${secs}초` : `${secs}초`;
+    }
+
+    function startActualWorkoutTimer() {
+      if (isActualWorkoutRunning) return;
+      isActualWorkoutRunning = true;
+      if (actualWorkoutInterval) clearInterval(actualWorkoutInterval);
+      actualWorkoutInterval = setInterval(() => {
+        const entry = getOrCreateDateEntry(appState.selectedDate);
+        entry.actualWorkoutSeconds = (Number(entry.actualWorkoutSeconds) || 0) + 1;
+        // 5초마다 로컬스토리지 자동 세이브
+        if (entry.actualWorkoutSeconds % 5 === 0) saveAppState();
+        updateActualWorkoutTimerUI();
+      }, 1000);
+      updateActualWorkoutTimerUI();
+    }
+
+    function pauseActualWorkoutTimer() {
+      isActualWorkoutRunning = false;
+      if (actualWorkoutInterval) {
+        clearInterval(actualWorkoutInterval);
+        actualWorkoutInterval = null;
+      }
+      saveAppState();
+      updateActualWorkoutTimerUI();
+    }
+
+    function toggleActualWorkoutTimer() {
+      if (isActualWorkoutRunning) {
+        pauseActualWorkoutTimer();
+      } else {
+        startActualWorkoutTimer();
+      }
+    }
+
+    function adjustActualWorkoutMinutes(deltaMins) {
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+      entry.actualWorkoutSeconds = Math.max(0, (Number(entry.actualWorkoutSeconds) || 0) + deltaMins * 60);
+      saveAppState();
+      updateActualWorkoutTimerUI();
+    }
+
+    function resetActualWorkoutTimer() {
+      if (!confirm('오늘 측정된 실제 운동시간을 00:00으로 초기화할까요?')) return;
+      pauseActualWorkoutTimer();
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+      entry.actualWorkoutSeconds = 0;
+      saveAppState();
+      updateActualWorkoutTimerUI();
+    }
+
+    function updateActualWorkoutTimerUI() {
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+      const sec = Number(entry.actualWorkoutSeconds) || 0;
+      const disp = document.getElementById('actualWorkoutTimeDisplay');
+      const dot = document.getElementById('workoutTimerDot');
+      const badge = document.getElementById('workoutTimerStatusBadge');
+      const btn = document.getElementById('workoutTimerToggleBtn');
+
+      if (disp) disp.textContent = formatDurationHMS(sec);
+
+      if (isActualWorkoutRunning) {
+        dot.className = 'w-2.5 h-2.5 rounded-full bg-[#ff5500] animate-ping shrink-0';
+        badge.textContent = '🔥 운동 시간 측정 중';
+        badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-orange-950 border border-orange-500/40 text-orange-300 font-black';
+        btn.innerHTML = '<i class="fa-solid fa-pause"></i> 일시정지';
+        btn.className = 'px-2.5 py-1.5 rounded-lg bg-zinc-800 border border-orange-500 text-orange-300 text-[11px] font-black flex items-center gap-1';
+      } else {
+        dot.className = sec > 0 ? 'w-2.5 h-2.5 rounded-full bg-emerald-400 shrink-0' : 'w-2.5 h-2.5 rounded-full bg-zinc-600 shrink-0';
+        badge.textContent = sec > 0 ? '일시정지됨 (기록 보관중)' : '대기 (첫 세트 체크 시 자동시작)';
+        badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold';
+        btn.innerHTML = sec > 0 ? '<i class="fa-solid fa-play"></i> 이어하기' : '<i class="fa-solid fa-play"></i> 시작';
+        btn.className = 'px-2.5 py-1.5 rounded-lg bg-[#ff5500] text-white text-[11px] font-black flex items-center gap-1';
+      }
+    }
+
+    // =========================================================================
+    // 5. 칼로리 및 볼륨 계산
     // =========================================================================
     function getExerciseBurnedKcal(ex, bodyWeightKg, onlyDone = true) {
       const bw = Number(bodyWeightKg) || 88.8;
@@ -1154,7 +1393,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     function calculateDaySummary(dateStr) {
       const entry = appState.logsByDate[dateStr];
       if (!entry || !entry.programsByDay) {
-        return { totalVol: 0, weightKcal: 0, cardioKcal: 0, totalKcal: 0, doneSets: 0, totalSets: 0, percent: 0, estMins: 0 };
+        return { totalVol: 0, weightKcal: 0, cardioKcal: 0, totalKcal: 0, doneSets: 0, totalSets: 0, percent: 0, estMins: 0, actualSec: 0 };
       }
       const exList = entry.programsByDay[entry.program || 'A'] || [];
       const bw = Number(entry.weight) || 88.8;
@@ -1182,11 +1421,21 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
       const percent = totalSets > 0 ? Math.round((doneSets / totalSets) * 100) : 0;
       const estMins = Math.max(5, Math.round(estSeconds / 60));
-      return { totalVol, weightKcal, cardioKcal, totalKcal: weightKcal + cardioKcal, doneSets, totalSets, percent, estMins };
+      return {
+        totalVol,
+        weightKcal,
+        cardioKcal,
+        totalKcal: weightKcal + cardioKcal,
+        doneSets,
+        totalSets,
+        percent,
+        estMins,
+        actualSec: Number(entry.actualWorkoutSeconds) || 0
+      };
     }
 
     // =========================================================================
-    // 5. 오디오 신디사이저 (5초 전 카운트다운 틱 & 5종 커스텀 버저음)
+    // 6. 오디오 신디사이저 (5초 전 카운트다운 틱 & 5종 커스텀 버저음)
     // =========================================================================
     let sharedAudioCtx = null;
 
@@ -1200,14 +1449,12 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       return sharedAudioCtx;
     }
 
-    // 종료 5초 전 카운트다운 틱 사운드 (5, 4, 3, 2, 1초마다 또렷한 피치 상승)
     function playCountdownTick(secLeft) {
       if (!appState.soundEnabled) return;
       try {
         const ctx = getAudioCtx();
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
-        // 5초->1초로 갈수록 약간씩 높아지는 긴장감 있는 비프음
         const pitchMap = { 5: 620, 4: 660, 3: 720, 2: 790, 1: 880 };
         osc.type = 'triangle';
         osc.frequency.setValueAtTime(pitchMap[secLeft] || 700, ctx.currentTime);
@@ -1220,7 +1467,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       } catch (e) {}
     }
 
-    // 5종 메인 버저 사운드 재생기
     function playBuzzerSound(presetOverride = null) {
       if (!appState.soundEnabled) return;
       const type = presetOverride || appState.buzzerType || 'gong';
@@ -1229,7 +1475,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         const now = ctx.currentTime;
 
         if (type === 'gong') {
-          // 1. 복싱 링 공소리 (배음 합성 금속성 벨)
           [220, 330, 554, 880, 1180].forEach((freq, idx) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -1243,7 +1488,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             osc.stop(now + 1.2);
           });
         } else if (type === 'horn') {
-          // 2. 체육관 전자 버저 (강렬한 톱니파 농구장/복싱장 버저 2연타)
           [0, 0.34].forEach(offset => {
             [145, 149, 290].forEach(freq => {
               const osc = ctx.createOscillator();
@@ -1259,7 +1503,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             });
           });
         } else if (type === 'arcade') {
-          // 3. 8비트 아케이드 (경쾌한 스퀘어파 3단 상승음)
           const notes = [587.33, 783.99, 1046.50, 1318.51];
           notes.forEach((freq, idx) => {
             const osc = ctx.createOscillator();
@@ -1274,7 +1517,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             osc.stop(now + idx * 0.11 + 0.11);
           });
         } else if (type === 'siren') {
-          // 4. 크로스핏 사이렌 (주파수 스윕 업-다운 2회)
           [0, 0.38].forEach(offset => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -1290,7 +1532,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
             osc.stop(now + offset + 0.37);
           });
         } else {
-          // 5. 크리스탈 차임 (맑은 메이저 트라이어드 화음 벨)
           [523.25, 659.25, 783.99, 1046.50].forEach((freq, idx) => {
             const osc = ctx.createOscillator();
             const gain = ctx.createGain();
@@ -1332,7 +1573,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 6. 플로팅 휴식 타이머 (5초 전 카운트다운 + 종료 시 팝업 자동 닫힘)
+    // 7. 플로팅 휴식 타이머 (5초 전 카운트다운 + 종료 시 팝업 자동 닫힘)
     // =========================================================================
     let timerInterval = null;
     let timerTotalSec = 60;
@@ -1359,12 +1600,10 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         timerRemainSec -= 1;
         updateTimerUI();
 
-        // 종료 5초 전부터 1초까지 카운트다운 알림음 재생
         if (timerRemainSec > 0 && timerRemainSec <= 5) {
           playCountdownTick(timerRemainSec);
         }
 
-        // 시간 종료 시 버저음 재생 후 자동으로 플로팅 팝업 닫기
         if (timerRemainSec <= 0) {
           clearInterval(timerInterval);
           timerInterval = null;
@@ -1382,7 +1621,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       document.getElementById('headerTimerDisplay').textContent = str;
       const countdownEl = document.getElementById('popupTimerCountdown');
       countdownEl.textContent = str;
-      // 5초 이하일 때 숫자 오렌지색 강조
       if (timerRemainSec > 0 && timerRemainSec <= 5) {
         countdownEl.className = 'font-mono text-3xl font-black text-[#ff5500] tracking-tight animate-pulse';
       } else {
@@ -1427,14 +1665,14 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 7. 전용 타바타(TABATA) 타이머 엔진 (5초 전 카운트다운 + 선택 버저음 연동)
+    // 8. 전용 타바타(TABATA) 타이머 엔진
     // =========================================================================
     let tabataState = {
       workSec: 30,
       restSec: 30,
       rounds: 12,
       currentRound: 1,
-      phase: 'IDLE', // IDLE | PREP | WORK | REST | DONE
+      phase: 'IDLE',
       remainSec: 30,
       phaseTotalSec: 30,
       running: false,
@@ -1527,7 +1765,6 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       tabataState.intervalId = setInterval(() => {
         tabataState.remainSec -= 1;
 
-        // 종료 5초 전부터 카운트다운 알림음 재생
         if (tabataState.remainSec > 0 && tabataState.remainSec <= 5) {
           playCountdownTick(tabataState.remainSec);
         }
@@ -1655,7 +1892,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 8. 메인 렌더링 & 일지 조작 (마지막 세트 완료 시 타이머 미노출 적용)
+    // 9. 메인 렌더링 & 일지 조작
     // =========================================================================
     function renderAll() {
       const entry = getOrCreateDateEntry(appState.selectedDate);
@@ -1671,6 +1908,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       document.getElementById('headerKcalBadge').textContent = `🔥 ${summary.totalKcal}kcal`;
 
       syncBuzzerSelectorUI();
+      updateActualWorkoutTimerUI();
 
       document.getElementById('selectedDateInput').value = appState.selectedDate;
       const daysKor = ['일', '월', '화', '수', '목', '금', '토'];
@@ -1703,7 +1941,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           badge.textContent = `${dSets}/${tSets} 완료✓`;
           badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-[#ff5500] text-white font-black';
         } else {
-          badge.textContent = dayKey === 'REST' ? '유산소/체중' : `총 ${tSets}세트`;
+          badge.textContent = dayKey === 'REST' ? `케이블+유산소 (${tSets})` : `총 ${tSets}세트`;
           badge.className = 'text-[10px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-400 font-bold';
         }
       });
@@ -1871,7 +2109,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 9. 운동일지 핸들러 (마지막 세트 체크 시 타이머 미노출!)
+    // 10. 운동일지 핸들러 (첫 세트 체크 시 실제 운동시간 자동 시작 연동)
     // =========================================================================
     function toggleSetDone(exIdx, sIdx) {
       const exercises = getCurrentExercises();
@@ -1879,15 +2117,19 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       if (!ex || !ex.sets[sIdx]) return;
 
       ex.sets[sIdx].done = !ex.sets[sIdx].done;
+
+      // 첫 세트를 완료 체크했을 때 실제 운동 시간 타이머가 꺼져 있다면 자동으로 시작!
+      if (ex.sets[sIdx].done && !isActualWorkoutRunning) {
+        startActualWorkoutTimer();
+      }
+
       saveAppState();
       renderAll();
 
-      // 마지막 세트가 아닐 때만 휴식 타이머 팝업 실행 (마지막 세트는 종목 종료이므로 타이머 노출 안 함)
       const isLastSet = sIdx === ex.sets.length - 1;
       if (ex.sets[sIdx].done && !isLastSet) {
         startRestTimer(Number(ex.rest) || 90, `${ex.name} (${sIdx + 1}/${ex.sets.length}세트 완료)`);
       } else if (ex.sets[sIdx].done && isLastSet) {
-        // 만약 이전 세트 타이머가 돌고 있었다면 마지막 세트 완료 시 깔끔하게 닫아줌
         skipRestTimer();
       }
     }
@@ -1986,6 +2228,9 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     function toggleCardioDone(exIdx) {
       const ex = getCurrentExercises()[exIdx];
       ex.done = !ex.done;
+      if (ex.done && !isActualWorkoutRunning) {
+        startActualWorkoutTimer();
+      }
       saveAppState();
       renderAll();
     }
@@ -1996,6 +2241,18 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       const copy = cloneDeep(preset);
       copy.id = preset.id + '_' + Date.now();
       getCurrentExercises().push(copy);
+      saveAppState();
+      renderAll();
+    }
+
+    // 오늘 수행한 케이블 팔·어깨 3종 세트 한 번에 추가
+    function addCableArmShoulderCombo() {
+      const list = getCurrentExercises();
+      ['cable_tricep_oh', 'cable_bicep_curl', 'cable_upright_delt'].forEach((key, idx) => {
+        const copy = cloneDeep(HIGH_CALORIE_STRENGTH_PRESETS[key]);
+        copy.id = copy.id + '_' + Date.now() + '_' + idx;
+        list.push(copy);
+      });
       saveAppState();
       renderAll();
     }
@@ -2020,7 +2277,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 10. 하루 운동 종료 & 다음 볼륨 분석 모달
+    // 11. 하루 운동 종료 & 다음 볼륨 분석 모달 (실제 운동시간 리포트 포함)
     // =========================================================================
     let lastGeneratedRecommendations = [];
 
@@ -2043,7 +2300,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
           statusColor: 'text-orange-400 border-orange-500/40 bg-orange-950/50',
           todaySummary: `강도 ${curLvl} × ${curMins}분`,
           nextPrescription: `강도 ${curLvl} 고정 × ${nextMins}분`,
-          coachComment: `관절 보호를 위해 강도는 ${curLvl}로 고정하고 시간만 ${nextMins}분으로 늘립니다.`,
+          coachComment: `관절 보호를 위해 강도는 ${curLvl}로 고정하고 시간만 ${nextMins}분으로 유지/관리합니다.`,
           nextData: { level: curLvl, minutes: nextMins }
         };
       }
@@ -2079,14 +2336,24 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         nextPrescription = `전 세트 ${nextW}kg × ${range.min}~${range.max}회`;
         coachComment = `전 세트 목표 상단 횟수 달성! 다음 세션은 ${nextW}kg으로 증량합니다.`;
       } else if (maxW > minW) {
-        nextSets = usedSets.map((s, idx) => {
-          if (idx <= 1) return { weight: maxW, reps: range.min, done: false };
-          return { weight: minW, reps: range.max, done: false };
-        });
-        statusBadge = `📈 상위 중량 세트 확장`;
-        statusColor = 'text-amber-300 border-amber-500/50 bg-amber-950/50';
-        nextPrescription = `1·2세트 ${maxW}kg 고정 / 마지막 세트 ${minW}kg`;
-        coachComment = `다음 세션은 2세트까지 ${maxW}kg을 고정하여 볼륨을 높입니다.`;
+        // 마지막 세트에 증량하여 목표 횟수를 채운 경우 전 세트를 상위 중량으로 확장
+        const lastSet = usedSets[usedSets.length - 1];
+        if (Number(lastSet.weight) === maxW && Number(lastSet.reps) >= range.max) {
+          nextSets = usedSets.map(() => ({ weight: maxW, reps: range.max, done: false }));
+          statusBadge = `📈 전 세트 ${maxW}kg 고정`;
+          statusColor = 'text-emerald-300 border-emerald-500/50 bg-emerald-950/50';
+          nextPrescription = `전 세트 ${maxW}kg 고정 × ${range.min}~${range.max}회`;
+          coachComment = `마지막 세트 ${maxW}kg에서도 목표 횟수를 거뜬히 달성하여 다음엔 전 세트 ${maxW}kg으로 고정합니다.`;
+        } else {
+          nextSets = usedSets.map((s, idx) => {
+            if (idx <= 1) return { weight: maxW, reps: range.min, done: false };
+            return { weight: minW, reps: range.max, done: false };
+          });
+          statusBadge = `📈 상위 중량 세트 확장`;
+          statusColor = 'text-amber-300 border-amber-500/50 bg-amber-950/50';
+          nextPrescription = `1·2세트 ${maxW}kg 고정 / 마지막 세트 ${minW}kg`;
+          coachComment = `다음 세션은 2세트까지 ${maxW}kg을 고정하여 볼륨을 높입니다.`;
+        }
       } else {
         nextSets = usedSets.map(s => ({ weight: s.weight, reps: Math.min(range.max, Number(s.reps) + 1), done: false }));
         statusBadge = `🎯 중량 유지 & 횟수 +1회`;
@@ -2111,9 +2378,15 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function openFinishWorkoutModal() {
+      // 운동 종료 시 실제 운동시간 타이머 자동 일시정지
+      if (isActualWorkoutRunning) {
+        pauseActualWorkoutTimer();
+      }
+
       const entry = getOrCreateDateEntry(appState.selectedDate);
       const summary = calculateDaySummary(appState.selectedDate);
       const exercises = entry.programsByDay[entry.program] || [];
+      const actualTimeText = summary.actualSec > 0 ? formatDurationKorean(summary.actualSec) : `약 ${summary.estMins}분 (예상)`;
 
       lastGeneratedRecommendations = exercises.map(ex => analyzeExerciseProgression(ex));
 
@@ -2125,6 +2398,10 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2">
           <div class="text-[10px] text-zinc-400 font-bold">체중 / 허리</div>
           <div class="text-xs font-black text-[#ff5500] mt-0.5">${Number(entry.weight).toFixed(1)}kg / ${Number(entry.waist).toFixed(1)}cm</div>
+        </div>
+        <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2">
+          <div class="text-[10px] text-zinc-400 font-bold">실제 운동시간</div>
+          <div class="text-xs font-black text-emerald-400 mt-0.5">⏱️ ${actualTimeText}</div>
         </div>
         <div class="bg-zinc-900 border border-zinc-800 rounded-xl p-2">
           <div class="text-[10px] text-zinc-400 font-bold">총 볼륨</div>
@@ -2153,6 +2430,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         `📊 [V-TAPER 운동일지 & 자동 분석 리포트]`,
         `- 일자: ${appState.selectedDate} (프로그램: DAY ${entry.program})`,
         `- 신체: 키 ${appState.profile.height}cm / 체중 ${Number(entry.weight).toFixed(1)}kg (목표 ${appState.profile.targetWeight}kg까지 -${remainKg}kg) / 허리 ${Number(entry.waist).toFixed(1)}cm`,
+        `- 운동 시간: 실제 ${actualTimeText} (예상 약 ${summary.estMins}분)`,
         `- 총 볼륨: ${summary.totalVol.toLocaleString()} kg (${summary.doneSets}/${summary.totalSets}세트 완료)`,
         `- 총 소모 열량: ${summary.totalKcal} kcal (웨이트 ${summary.weightKcal} + 유산소 ${summary.cardioKcal})`,
         entry.note ? `- 메모: ${entry.note}` : null,
@@ -2206,7 +2484,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     // =========================================================================
-    // 11. 날짜 이동 및 하단 5탭 전환
+    // 12. 날짜 이동 및 하단 5탭 전환
     // =========================================================================
     function selectProgramDay(dayKey) {
       const entry = getOrCreateDateEntry(appState.selectedDate);
@@ -2239,7 +2517,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function resetCurrentDayToDefault() {
-      if (!confirm('현재 루틴을 기본 세팅으로 초기화할까요?')) return;
+      if (!confirm('현재 루틴을 최신 기본 세팅으로 초기화할까요?')) return;
       const entry = getOrCreateDateEntry(appState.selectedDate);
       entry.programsByDay[entry.program] = cloneDeep(getDefaultTemplates()[entry.program] || getDefaultTemplates().A);
       saveAppState();
@@ -2247,6 +2525,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function shiftSelectedDate(deltaDays) {
+      pauseActualWorkoutTimer();
       const d = new Date(appState.selectedDate + 'T00:00:00');
       d.setDate(d.getDate() + deltaDays);
       appState.selectedDate = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
@@ -2256,12 +2535,14 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
     function onDateInputChanged(val) {
       if (!val) return;
+      pauseActualWorkoutTimer();
       appState.selectedDate = val;
       saveAppState();
       renderAll();
     }
 
     function jumpToToday() {
+      pauseActualWorkoutTimer();
       appState.selectedDate = getTodayDateString();
       saveAppState();
       renderAll();
@@ -2316,6 +2597,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
 
     function deleteCurrentDateLog() {
       if (!confirm(`${appState.selectedDate} 기록을 삭제할까요?`)) return;
+      pauseActualWorkoutTimer();
       delete appState.logsByDate[appState.selectedDate];
       saveAppState();
       renderAll();
@@ -2389,6 +2671,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
     }
 
     function selectDateFromCalendar(dateStr) {
+      pauseActualWorkoutTimer();
       appState.selectedDate = dateStr;
       saveAppState();
       renderAll();
@@ -2414,12 +2697,13 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
         return;
       }
 
+      const durStr = sum.actualSec > 0 ? `⏱️ ${formatDurationKorean(sum.actualSec)}` : `예상 ${sum.estMins}분`;
       box.innerHTML = `
         <div class="flex items-center justify-between flex-wrap gap-2">
           <div>
             <span class="text-[10px] px-2 py-0.5 rounded bg-[#ff5500] text-white font-black">DAY ${entry.program} 완료</span>
             <h3 class="text-sm font-black text-white mt-1">${dateStr} · ${Number(entry.weight).toFixed(1)}kg / 허리 ${Number(entry.waist).toFixed(1)}cm</h3>
-            <p class="text-xs text-orange-300 font-bold mt-0.5">볼륨 ${sum.totalVol.toLocaleString()}kg · 🔥 ${sum.totalKcal}kcal</p>
+            <p class="text-xs text-orange-300 font-bold mt-0.5">${durStr} · 볼륨 ${sum.totalVol.toLocaleString()}kg · 🔥 ${sum.totalKcal}kcal</p>
           </div>
           <div class="flex items-center gap-1.5">
             <button onclick="switchMainTab('log')" class="px-3 py-2 rounded-xl bg-white text-black text-xs font-black">수정</button>
@@ -2509,7 +2793,7 @@ pub extern "C" fn scale_by_smm(base_weight_x10: i32, smm_x10: i32) -> i32 {
       const base = getDefaultTemplates();
       ['A', 'B', 'C'].forEach(dayKey => {
         (entry.programsByDay[dayKey] || []).forEach((ex, idx) => {
-          if (ex.type === 'weight' && base[dayKey][idx]) {
+          if (ex.type === 'weight' && base[dayKey][idx] && base[dayKey][idx].sets) {
             const baseW = base[dayKey][idx].sets[0].weight;
             const scaledW = rustEngine.scaleBySmm(baseW, smm);
             ex.sets.forEach(s => s.weight = scaledW);
