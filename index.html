@@ -321,6 +321,65 @@
         </div>
       </div>
     </section>
+
+    <!-- TAB 4: 피지컬에셋 & 쇼츠 동작 코칭 (전 종목 영상 + 효과적인 무게/세트 처방) -->
+    <section id="tab-panel-video" class="hidden space-y-3">
+      <div class="bw-card p-3.5 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-[#ff5500] text-white font-black">PHYSICAL ASSET & SHORTS GUIDE</span>
+            <h2 id="videoSectionTitle" class="text-sm font-black text-white mt-1">어퍼백 & 신장성 타격 가이드</h2>
+          </div>
+          <select id="videoExerciseSelect" onchange="selectVideoExercise(this.value)" class="bg-zinc-900 border border-orange-500/50 rounded-xl px-2.5 py-2 text-xs font-black text-white w-full sm:w-auto"></select>
+        </div>
+
+        <!-- 빠른 카테고리 선택 칩 -->
+        <div class="flex items-center gap-1.5 overflow-x-auto pb-1">
+          <button type="button" onclick="selectVideoExercise('widerow')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-orange-300 shrink-0">🦅 어퍼백/로우</button>
+          <button type="button" onclick="selectVideoExercise('arms_tricep')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-emerald-300 shrink-0">💪 삼두(오버헤드)</button>
+          <button type="button" onclick="selectVideoExercise('arms_bicep')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-emerald-300 shrink-0">📐 이두/상완근(60°프리처)</button>
+          <button type="button" onclick="selectVideoExercise('delt_side_rear')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-white shrink-0">🎯 측면/후면삼각근</button>
+          <button type="button" onclick="selectVideoExercise('incline_ohp')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-white shrink-0">🔥 인클라인/OHP</button>
+          <button type="button" onclick="selectVideoExercise('squat_lunge')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-white shrink-0">🦵 스쿼트/하체</button>
+          <button type="button" onclick="selectVideoExercise('rdl_kb')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-white shrink-0">⚡ RDL/케틀벨</button>
+          <button type="button" onclick="selectVideoExercise('wgs_stretch')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-orange-400 shrink-0">🧘 WGS 스트레칭</button>
+          <button type="button" onclick="selectVideoExercise('stair_cardio')" class="px-2.5 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-[11px] font-extrabold text-orange-400 shrink-0">🏃 천국의계단</button>
+        </div>
+
+        <!-- 영상 2단 플레이어: 피지컬에셋/메이저 원리 영상 + 실전 동작 쇼츠 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
+            <div class="px-3 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
+              <span class="text-xs font-black text-orange-400"><i class="fa-brands fa-youtube text-red-500 mr-1"></i> 피지컬에셋 역학 & 루틴 설계</span>
+              <a id="mainVideoExternalLink" href="https://www.youtube.com/@피지컬에셋" target="_blank" class="text-[10px] text-zinc-400 underline">유튜브 앱 열기 ↗</a>
+            </div>
+            <div class="aspect-video w-full bg-black">
+              <iframe id="coachingYoutubeIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
+            <div class="px-3 py-2 bg-zinc-900 border-b border-zinc-800 flex items-center justify-between">
+              <span class="text-xs font-black text-emerald-400"><i class="fa-solid fa-mobile-screen-button mr-1"></i> 핵심 동작 쇼츠 & 해부학 궤적</span>
+              <a id="shortsVideoExternalLink" href="https://www.youtube.com" target="_blank" class="text-[10px] text-zinc-400 underline">쇼츠 원본 열기 ↗</a>
+            </div>
+            <div class="aspect-video w-full bg-black">
+              <iframe id="anatomyYoutubeIframe" class="w-full h-full" src="" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+          </div>
+        </div>
+
+        <!-- 영상에서 설명하는 효과적인 무게/세트/RPE/템포 처방 박스 -->
+        <div class="bw-card-orange p-3 space-y-2">
+          <div class="flex items-center justify-between border-b border-orange-500/30 pb-1.5">
+            <span class="text-xs font-black text-orange-300">📊 영상 기반 과학적 무게·세트·템포 가이드</span>
+            <span id="videoTargetMuscleBadge" class="text-[10px] px-2 py-0.5 rounded bg-orange-950 border border-orange-500/40 text-orange-200 font-black">신장성 근비대 타격</span>
+          </div>
+          <div id="videoRxGrid" class="grid grid-cols-2 sm:grid-cols-4 gap-1.5 text-center"></div>
+          <div id="videoCoachingPointsBox" class="pt-1 text-xs text-zinc-200 space-y-1.5 leading-relaxed"></div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- ==================== 1. 상단 리모컨 전체 제어 팝업 모달 ==================== -->
@@ -387,12 +446,13 @@
     </div>
   </div>
 
-  <!-- 심플 하단 3탭 내비게이션 -->
-  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#070709]/95 backdrop-blur-xl border-t border-zinc-800 px-3 py-1.5">
-    <div class="max-w-2xl mx-auto grid grid-cols-3 gap-2">
+  <!-- 하단 4탭 내비게이션 (운동일지 / 달력·백업 / 타바타 / 유튜브코칭) -->
+  <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#070709]/95 backdrop-blur-xl border-t border-zinc-800 px-2 py-1.5">
+    <div class="max-w-2xl mx-auto grid grid-cols-4 gap-1.5">
       <button type="button" id="tab-btn-log" onclick="switchMainTab('log')" class="bottom-nav-btn bottom-nav-active flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-clipboard-check"></i></div><span class="text-[10px]">운동일지</span></button>
       <button type="button" id="tab-btn-calendar" onclick="switchMainTab('calendar')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-calendar-days"></i></div><span class="text-[10px]">달력/백업</span></button>
       <button type="button" id="tab-btn-tabata" onclick="switchMainTab('tabata')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-stopwatch-20"></i></div><span class="text-[10px]">타바타</span></button>
+      <button type="button" id="tab-btn-video" onclick="switchMainTab('video')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-brands fa-youtube"></i></div><span class="text-[10px]">영상코칭</span></button>
     </div>
   </nav>
 
@@ -440,42 +500,199 @@
     };
 
     const PRESET_EXERCISES = {
-      incline_db_widerow: { id: 'p_inc_db', type: 'weight', name: '인클라인 벤치 덤벨 와이드로우', targetReps: '10~12회', rest: 75, sets: [{weight:14,reps:12,done:false},{weight:14,reps:12,done:false},{weight:14,reps:12,done:false}] },
-      onearm_wide_dbrow: { id: 'p_oa_db', type: 'weight', name: '원암 덤벨 와이드로우 (어퍼백)', targetReps: '10~12회', rest: 60, sets: [{weight:16,reps:12,done:false},{weight:16,reps:12,done:false},{weight:16,reps:12,done:false}] },
-      incline_preacher_hammer: { id: 'p_preacher', type: 'weight', name: '60° 벤치 원암 해머 프리처 컬', targetReps: '10~12회', rest: 60, sets: [{weight:10,reps:12,done:false},{weight:10,reps:12,done:false},{weight:10,reps:12,done:false}] },
-      cable_bicep_curl: { id: 'p_cb_curl', type: 'weight', name: '케이블 컬 (이두)', targetReps: '10~12회', rest: 60, sets: [{weight:65,reps:12,done:false},{weight:65,reps:12,done:false},{weight:65,reps:12,done:false}] },
-      cable_tricep_oh: { id: 'p_cb_tri', type: 'weight', name: '케이블 오버헤드 익스텐션 (삼두)', targetReps: '10~12회', rest: 60, sets: [{weight:57,reps:12,done:false},{weight:57,reps:12,done:false},{weight:57,reps:12,done:false}] },
-      cable_upright_delt: { id: 'p_cb_delt', type: 'weight', name: '케이블 아래에서 위로 당기기 (삼각근)', targetReps: '12~15회', rest: 60, sets: [{weight:57,reps:15,done:false},{weight:57,reps:15,done:false},{weight:65,reps:15,done:false}] },
-      reverse_fly: { id: 'p_rev_fly', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~18회', rest: 60, sets: [{weight:40,reps:15,done:false},{weight:40,reps:15,done:false},{weight:40,reps:15,done:false}] },
-      kettlebell_swing: { id: 'p_kb_sw', type: 'weight', highCalorieFactor: 1.55, name: '케틀벨 스윙', targetReps: '15~20회', rest: 30, sets: [{weight:16,reps:20,done:false},{weight:16,reps:20,done:false},{weight:16,reps:20,done:false}] }
+      kelso_shrug: { id: 'p_kelso', type: 'weight', name: '인클라인 켈소 슈러그 (어퍼백 스위치)', targetReps: '15~20회', rest: 45, videoKey: 'widerow', guideNote: '본운동 전 30% 중량×15~20회 2세트 선행 | 팔 펴고 견갑만 후인·전인', sets: [{weight:20,reps:15,done:false},{weight:20,reps:15,done:false}] },
+      incline_db_widerow: { id: 'p_inc_db', type: 'weight', name: '인클라인 벤치 덤벨 와이드로우', targetReps: '10~12회', rest: 75, videoKey: 'widerow', guideNote: '30~45° 벤치 엎드려 수행 | 팔꿈치 45~60° 벌림 | 이완 시 견갑 3초 신장', sets: [{weight:14,reps:12,done:false},{weight:14,reps:12,done:false},{weight:14,reps:12,done:false}] },
+      onearm_wide_dbrow: { id: 'p_oa_db', type: 'weight', name: '원암 덤벨 와이드로우 (어퍼백)', targetReps: '10~12회', rest: 60, videoKey: 'widerow', guideNote: '일반 로우보다 20~30% 감량 | 팔꿈치 60° 벌려 윗가슴 방향 | 견갑 이완 통제', sets: [{weight:16,reps:12,done:false},{weight:16,reps:12,done:false},{weight:16,reps:12,done:false}] },
+      incline_preacher_hammer: { id: 'p_preacher', type: 'weight', name: '60° 벤치 원암 해머 프리처 컬', targetReps: '10~12회', rest: 60, videoKey: 'arms_bicep', guideNote: '스탠딩보다 30% 감량(8~12kg) | 하단 30° 구간 3초 버티기 | 상단 80%까지만 수축', sets: [{weight:10,reps:12,done:false},{weight:10,reps:12,done:false},{weight:10,reps:12,done:false}] },
+      cable_bicep_curl: { id: 'p_cb_curl', type: 'weight', name: '케이블 컬 / 베이지안 컬 (이두)', targetReps: '10~12회', rest: 60, videoKey: 'arms_bicep', guideNote: '케이블을 등 뒤에 두고 한 발 앞으로 나와 이두 장두 최대 신장 상태에서 시작', sets: [{weight:65,reps:12,done:false},{weight:65,reps:12,done:false},{weight:65,reps:12,done:false}] },
+      cable_tricep_oh: { id: 'p_cb_tri', type: 'weight', name: '케이블 오버헤드 익스텐션 (삼두)', targetReps: '10~12회', rest: 60, videoKey: 'arms_tricep', guideNote: '도르레를 골반~명치 높이 세팅 | 푸시다운 대비 30% 가벼운 무게로 최대 신장 2~3초 버티기', sets: [{weight:57,reps:12,done:false},{weight:57,reps:12,done:false},{weight:57,reps:12,done:false}] },
+      cable_upright_delt: { id: 'p_cb_delt', type: 'weight', name: '케이블 아래에서 위로 당기기 (삼각근)', targetReps: '12~15회', rest: 60, videoKey: 'delt_side_rear', guideNote: '12~15회 고반복 중량 | 승모근 으쓱 금지 | 손목 힘 빼고 팔꿈치를 옆·위로 리드', sets: [{weight:57,reps:15,done:false},{weight:57,reps:15,done:false},{weight:65,reps:15,done:false}] },
+      reverse_fly: { id: 'p_rev_fly', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~18회', rest: 60, videoKey: 'delt_side_rear', guideNote: '12~18회 저중량 고반복 | 날개뼈 고정 후 팔꿈치를 바깥으로 멀리 던지듯 수축·3초 이완', sets: [{weight:40,reps:15,done:false},{weight:40,reps:15,done:false},{weight:40,reps:15,done:false}] },
+      kettlebell_swing: { id: 'p_kb_sw', type: 'weight', highCalorieFactor: 1.55, name: '케틀벨 스윙', targetReps: '15~20회', rest: 30, videoKey: 'rdl_kb', guideNote: '16~20kg 폭발적 힙 힌지(Hip Hinge) | 무릎으로 앉지 말고 둔근 탄성으로 스윙', sets: [{weight:16,reps:20,done:false},{weight:16,reps:20,done:false},{weight:16,reps:20,done:false}] }
+    };
+
+    // 전 종목 유튜브 본편 + 쇼츠 + 영상 내 효과적인 무게/세트/템포 처방 데이터베이스
+    const VIDEO_DB = {
+      widerow: {
+        title: '[피지컬에셋] 어퍼백 두께 (체스트 서포티드 / 와이드 로우 / 켈소 슈러그)',
+        coachingId: 'rFeDq4Pc3a4',
+        anatomyId: 'CVt5qiPqh6Y',
+        targetMuscle: '능형근 · 중부 승모근 · 후면 삼각근',
+        rxWeight: '본세트 8~12RM (스트랩 필수)',
+        rxSets: '3~4세트 × 10~12회 (켈소 15~20회×2)',
+        rxTempo: '이완 3초 (견갑 전인 신장) / 수축 1초',
+        rxRest: '75 ~ 90초',
+        points: [
+          '<strong>[팔꿈치 각도 45~70°]</strong> 팔꿈치를 몸통에 붙이면 광배근만 쓰입니다. 팔꿈치를 45~70도 벌려 명치~윗가슴 방향으로 당겨야 어퍼백(능형근·중부승모)이 꽉 채워집니다.',
+          '<strong>[신장성 이완 통제]</strong> 무게를 놓아줄 때 가슴을 편 채 팔만 뻗지 말고, 몸통은 고정한 채 날개뼈(견갑골)가 흉곽을 따라 앞으로 쭉 뽑히며 좌우로 찢어지는 텐션을 3초간 받아내세요.',
+          '<strong>[사전 활성화 및 대체]</strong> 본운동 전 30% 중량으로 팔을 편 채 견갑만 모으는 <strong>인클라인 켈소 슈러그(15~20회×2세트)</strong>를 선행하면 등 상부 고립감이 폭발합니다. 머신이 없다면 30~45° 인클라인 벤치에 엎드려 양손 덤벨로 대체하세요.'
+        ]
+      },
+      arms_tricep: {
+        title: '[피지컬에셋] 삼두근 1.5배 성장 (케이블 오버헤드 익스텐션)',
+        coachingId: 'WeAfejkAWu4',
+        anatomyId: '4LBVP2Oe7fg',
+        targetMuscle: '상완삼두근 장두 (Long Head 신장성 타격)',
+        rxWeight: '푸시다운 중량 대비 -30% 감량 (관절 무부담)',
+        rxSets: '3세트 × 10~12회 (RPE 8.5)',
+        rxTempo: '최대 신장 하단 구간 2~3초 버티기',
+        rxRest: '60초',
+        points: [
+          '<strong>[마에오 박사 MRI 논문 근거]</strong> 팔을 머리 위로 올리는 오버헤드 익스텐션은 일반 푸시다운보다 삼두근 장두를 1.5배, 전체 삼두 부피를 1.4배 더 크게 성장시킵니다 (30% 가벼운 무게로도 압도적 성장).',
+          '<strong>[도르레 골반~명치 높이 세팅]</strong> 도르레를 바닥이 아닌 골반~명치 높이로 맞춰야 팔꿈치가 완전히 접혀 삼두근이 가장 깊게 늘어나는 지점에서 케이블 줄과 전완이 90도를 이루며 최대 부하가 걸립니다.',
+          '<strong>[팔꿈치 운반각 보호]</strong> 일자 바벨로 양팔을 묶으면 운반각(10~15도) 때문에 팔꿈치 안쪽이 시큰거립니다. 로프를 쓰거나 원암(한 팔)으로 진행해 자연스러운 궤적을 만드세요.'
+        ]
+      },
+      arms_bicep: {
+        title: '[피지컬에셋] 정면 팔 두께 폭발 (60° 벤치 해머 프리처 컬 & 베이지안 컬)',
+        coachingId: 'WeAfejkAWu4',
+        anatomyId: 'g1iIOhGD1x0',
+        targetMuscle: '상완근 (Brachialis) · 상완요골근 · 이두근 장두',
+        rxWeight: '스탠딩 컬 대비 -30% 감량 (덤벨 8~12kg)',
+        rxSets: '3세트 × 10~12회 (하단 통제 가능한 무게)',
+        rxTempo: '마지막 30도 하단 신장 구간 3초 버티기',
+        rxRest: '60초',
+        points: [
+          '<strong>[60° 인클라인 벤치 프리처 셋업]</strong> 서서 하는 해머 컬은 팔을 다 폈을 때 중력 방향과 나란해져 부하가 0이 됩니다. 60도 세운 벤치에 겨드랑이를 밀착하면 팔이 거의 다 펴지는 결정적 신장 구간에서 지렛대 부하가 최대가 됩니다.',
+          '<strong>[골든타임 3초 & 상단 80% 제한]</strong> 팔꿈치가 90도를 지나 다 펴지는 마지막 30도 구간을 3초에 걸쳐 버티며 내리세요. 올라올 때는 수직까지 다 올려 쉬지 말고 80% 지점에서 바로 다시 내려 장력을 유지합니다.',
+          '<strong>[베이지안 케이블 컬]</strong> 도르레를 무릎 높이로 맞추고 등 뒤에 케이블을 둔 채 한 발 앞으로 나와 팔이 몸 뒤로 끌려간 상태에서 컬을 시작하면 이두근 장두까지 최대로 찢어집니다.'
+        ]
+      },
+      delt_side_rear: {
+        title: '[피지컬에셋 & 쇼츠] 측면·후면 삼각근 입체 프레임 (케이블 레이즈 & 리버스 플라이)',
+        coachingId: 'm3UP53yzc0g',
+        anatomyId: 'eyicDo330CI',
+        targetMuscle: '측면 삼각근 · 후면 삼각근',
+        rxWeight: '반동 없는 12~18RM 중저중량',
+        rxSets: '3~4세트 × 12~18회 (고반복 대사 스트레스)',
+        rxTempo: '수축 1초 / 네거티브 3초 제어',
+        rxRest: '60초',
+        points: [
+          '<strong>[케이블 하단→상단 측면 타격]</strong> 덤벨 사레레는 차렷 자세에서 부하가 0이지만, 케이블을 활용하면 팔을 내린 초기 신장 구간부터 측면 삼각근에 팽팽한 장력이 걸립니다.',
+          '<strong>[리버스 플라이 12~18회 원칙]</strong> 후면 삼각근은 무거운 무게로 당기면 승모근과 능형근이 다 뺏어 먹습니다. 12~18회 가능한 중량으로 날개뼈를 고정한 채 팔꿈치로만 큰 호를 그리세요.'
+        ]
+      },
+      incline_ohp: {
+        title: '[피지컬에셋 & 쇼츠] 윗가슴·전면어깨 볼륨 (30° 인클라인 프레스 & OHP & 흉곽호흡)',
+        coachingId: '5A9TzGUb2Jw',
+        anatomyId: '3fl4CowyZWk',
+        targetMuscle: '대흉근 쇄골두(윗가슴) · 전면 삼각근',
+        rxWeight: '인클라인 9~12RM / OHP 7~10RM 고중량',
+        rxSets: '3세트 × 7~12회 (RPE 8~8.5)',
+        rxTempo: '하단 이완 2~3초 / 폭발적 프레스 1초',
+        rxRest: '60 ~ 75초',
+        points: [
+          '<strong>[벤치 각도 30°의 과학]</strong> 인클라인 각도를 45도 이상 세우면 전면 삼각근 개입이 급증합니다. 30도(벤치 2~3칸)로 세팅하고 흉골을 위로 세워야 윗가슴 섬유가 수직으로 타격됩니다.',
+          '<strong>[쇼츠: 코너 해리스 흉곽 확장 호흡]</strong> 어깨가 말려 가슴이 안 열릴 땐 억지로 스트레칭하지 말고, 5초 코 흡기·5초 입 호기로 전면 갈비뼈(흉곽)를 먼저 부풀려 주어야 어깨 충돌 없이 프레스가 가능합니다.'
+        ]
+      },
+      squat_lunge: {
+        title: '[피지컬에셋 & 쇼츠] 하체 근육 2.7배 성장 (스쿼트 머신 & 무릎보호 런지 역학)',
+        coachingId: 'G3V_L2y66E4',
+        anatomyId: 'uU-Z8GYXiLQ',
+        targetMuscle: '대퇴사두근 · 대둔근 (하단 신장 구간)',
+        rxWeight: '8~10RM 중고중량 (점진적 과부하 +5kg 단위)',
+        rxSets: '3~4세트 × 8~10회 (RPE 8)',
+        rxTempo: '바텀 구간 반동 금지 · 2초 통제 하강',
+        rxRest: '90초',
+        points: [
+          '<strong>[깊은 굴곡 신장성 타격]</strong> 스쿼트 머신이나 핵스쿼트 수행 시 허리가 말리지 않는(Butt Wink 직전) 최대 깊이까지 내려가 대퇴사두근과 둔근이 가장 길게 늘어난 바닥 구간을 온전히 소화해야 하체가 빠르게 자랍니다.',
+          '<strong>[쇼츠: 무릎 보호 하체 정렬 3원칙]</strong> ① 발을 외줄타기처럼 일직선으로 두지 말고 골반 너비 유지, ② 상체를 수직으로 세우지 말고 고관절을 접어 살짝 숙이기(힙 힌지), ③ 무릎이 안으로 모이지 않게 두 번째 발가락 방향 유지 후 뒤꿈치로 밀어 올리세요.'
+        ]
+      },
+      rdl_kb: {
+        title: '[피지컬에셋 & 쇼츠] 후면 사슬 대사 폭발 (루마니안 데드리프트 & 케틀벨 스윙)',
+        coachingId: 'JjSpk-ql4yg',
+        anatomyId: 'D7a7a8--tx8',
+        targetMuscle: '햄스트링 · 대둔근 · 척추기립근',
+        rxWeight: 'RDL 8~10RM (60kg+) / 케틀벨 16~20kg',
+        rxSets: 'RDL 3세트×8~10회 / 스윙 20~30초×10~12R',
+        rxTempo: 'RDL 3초 신장 하강 / 스윙 폭발적 힙 스냅',
+        rxRest: 'RDL 90초 / 스윙 인터벌 20~30초',
+        points: [
+          '<strong>[고관절 경첩(Hip Hinge) 분리]</strong> 무릎을 굽혀 앉는 스쿼트가 아니라, 무릎 각도를 살짝만 굽혀 고정한 채 엉덩이를 뒤쪽 벽으로 끝까지 밀어내며 햄스트링이 팽팽하게 당겨지는 신장성 부하를 걸어야 합니다.',
+          '<strong>[케틀벨 스윙 주의점]</strong> 유산소 후반부 피로할 때 허리로 들어 올리지 마세요. 스윙 정점에서 둔근과 복부를 강하게 쥐어짜 요추 과신전을 막아야 허리가 안전합니다.'
+        ]
+      },
+      wgs_stretch: {
+        title: '[피지컬에셋 쇼츠] 세계에서 가장 위대한 스트레칭 (WGS 웜업 & 쿨다운)',
+        coachingId: '2kJFwav4Khs',
+        anatomyId: '3fl4CowyZWk',
+        targetMuscle: '흉추 회전 · 고관절 굴곡/내전근 · 햄스트링',
+        rxWeight: '맨몸 (체중 지지)',
+        rxSets: '운동 전: 좌우 4~5회(2분) / 운동 후: 좌우 2회(3분)',
+        rxTempo: '운동 전: 1~2초 동적 / 운동 후: 20초 정적 호흡',
+        rxRest: '휴식 없이 연속 전환',
+        points: [
+          '<strong>[운동 전 2분 동적 웜업]</strong> 푸시업 플랭크 → 발을 손 바깥으로 런지 → 팔꿈치를 발목 안쪽으로 내리기 → 상체를 크게 회전하며 천장으로 팔 뻗기(날숨) → 엉덩이 뒤로 빼며 무릎 펴고 햄스트링 늘리기를 멈추지 않고 부드럽게 좌우 4~5회 반복합니다.',
+          '<strong>[운동 후 3분 정적 쿨다운]</strong> 본운동과 천국의 계단 직후에는 각 포지션에서 20초씩 멈춰 깊게 호흡하며 짧아진 장요근과 햄스트링 길이를 정상화하고 코르티솔을 낮춥니다.'
+        ]
+      },
+      stair_cardio: {
+        title: '[쇼츠 가이드] 천국의 계단(스텝밀) 무릎 안 아프고 둔근·체지방 태우는 법',
+        coachingId: 'UqGj8R5mXH8',
+        anatomyId: 'n45xuzBGM0w',
+        targetMuscle: '대둔근 · 심폐지구력 · 내장지방 연소',
+        rxWeight: '체중 부하 (손잡이에 매달리지 않기)',
+        rxSets: '웨이트 후 20~22분 / 유산소데이 22분+사이클 20분',
+        rxTempo: '강도(속도) 9 고정 · 일정한 리듬 유지',
+        rxRest: '직후 실내자전거 강도 4로 쿨다운 권장',
+        points: [
+          '<strong>[앞꿈치 금지 · 발바닥 전체/뒤꿈치 리드]</strong> 까치발(앞꿈치)로만 계단을 밟으면 종아리와 무릎 앞쪽(슬개건)만 털립니다. 발바닥 전체를 계단에 올리고 뒤꿈치에 체중을 실어 밀어 올리세요.',
+          '<strong>[상체 15° 전경(힙 힌지)]</strong> 손잡이에 팔을 걸치고 몸을 뒤로 기대면 운동 효과가 반토막 납니다. 손끝은 균형만 잡고 상체를 살짝 앞으로 숙여 엉덩이(둔근) 힘으로 계단을 밟으세요.'
+        ]
+      }
     };
 
     function getDefaultTemplates() {
       return {
         A: [
-          { id: 'a1', type: 'weight', name: '체스트 서포티드 와이드 로우', targetReps: '10~12회', rest: 90, sets: [{weight:35,reps:10,done:false},{weight:35,reps:10,done:false},{weight:35,reps:10,done:false}] },
-          { id: 'a2', type: 'weight', name: '스쿼트 머신', targetReps: '8~10회', rest: 90, sets: [{weight:55,reps:10,done:false},{weight:55,reps:10,done:false},{weight:55,reps:10,done:false},{weight:55,reps:10,done:false}] },
-          { id: 'a3', type: 'weight', name: '30° 인클라인 프레스', targetReps: '9~12회', rest: 60, sets: [{weight:36,reps:9,done:false},{weight:36,reps:9,done:false},{weight:36,reps:9,done:false}] },
-          { id: 'a_cardio', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 20, done: false }
+          { id: 'a1', type: 'weight', name: '체스트 서포티드 와이드 로우', targetReps: '10~12회', rest: 90, videoKey: 'widerow', guideNote: '피지컬에셋: 팔꿈치 45~70° 벌림 | 이완 시 견갑골 3초 신장 통제 | 3세트×10~12회', sets: [{weight:35,reps:10,done:false},{weight:35,reps:10,done:false},{weight:35,reps:10,done:false}] },
+          { id: 'a2', type: 'weight', name: '스쿼트 머신', targetReps: '8~10회', rest: 90, videoKey: 'squat_lunge', guideNote: '피지컬에셋: 허리 말리지 않는 최대 깊이(신장 구간) | 뒤꿈치 밀기 | 4세트×8~10회', sets: [{weight:55,reps:10,done:false},{weight:55,reps:10,done:false},{weight:55,reps:10,done:false},{weight:55,reps:10,done:false}] },
+          { id: 'a3', type: 'weight', name: '30° 인클라인 프레스', targetReps: '9~12회', rest: 60, videoKey: 'incline_ohp', guideNote: '피지컬에셋: 벤치 30° 세팅 | 흉곽 확장 후 하단 2~3초 이완 통제 | 3세트×9~12회', sets: [{weight:36,reps:9,done:false},{weight:36,reps:9,done:false},{weight:36,reps:9,done:false}] },
+          { id: 'a_cardio', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 20, videoKey: 'stair_cardio', done: false }
         ],
         B: [
-          { id: 'b1', type: 'weight', name: '루마니안 데드리프트 (RDL)', targetReps: '8~10회', rest: 90, sets: [{weight:60,reps:10,done:false},{weight:60,reps:10,done:false},{weight:60,reps:10,done:false}] },
-          { id: 'b2', type: 'weight', name: '오버헤드 숄더 프레스 (OHP)', targetReps: '7~10회', rest: 75, sets: [{weight:40,reps:7,done:false},{weight:40,reps:7,done:false},{weight:40,reps:7,done:false}] },
-          { id: 'b3', type: 'weight', name: '시티드 로우 머신', targetReps: '8~10회', rest: 75, sets: [{weight:52,reps:10,done:false},{weight:52,reps:10,done:false},{weight:52,reps:10,done:false}] },
-          { id: 'b_cardio', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 20, done: false }
+          { id: 'b1', type: 'weight', name: '루마니안 데드리프트 (RDL)', targetReps: '8~10회', rest: 90, videoKey: 'rdl_kb', guideNote: '피지컬에셋: 고관절 경첩(힙 힌지)으로 햄스트링 최대 신장 3초 하강 | 3세트×8~10회', sets: [{weight:60,reps:10,done:false},{weight:60,reps:10,done:false},{weight:60,reps:10,done:false}] },
+          { id: 'b2', type: 'weight', name: '오버헤드 숄더 프레스 (OHP)', targetReps: '7~10회', rest: 75, videoKey: 'incline_ohp', guideNote: '코어·둔근 조여 허리 과신전 방지 | 쇄골 위까지 깊은 이완 후 프레스 | 3세트×7~10회', sets: [{weight:40,reps:7,done:false},{weight:40,reps:7,done:false},{weight:40,reps:7,done:false}] },
+          { id: 'b3', type: 'weight', name: '시티드 로우 머신 (와이드 어퍼백)', targetReps: '8~10회', rest: 75, videoKey: 'widerow', guideNote: '피지컬에셋: 팔꿈치 벌려 상부 흉골 타격 | 이완 시 견갑 앞으로 뽑기 | 3세트×8~10회', sets: [{weight:52,reps:10,done:false},{weight:52,reps:10,done:false},{weight:52,reps:10,done:false}] },
+          { id: 'b_cardio', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 20, videoKey: 'stair_cardio', done: false }
         ],
         C: [
-          { id: 'c1', type: 'weight', name: '시티드 케이블 와이드 로우', targetReps: '10~12회', rest: 75, sets: [{weight:45,reps:10,done:false},{weight:45,reps:10,done:false},{weight:45,reps:10,done:false}] },
-          { id: 'c2', type: 'weight', name: '스쿼트 머신', targetReps: '10~12회', rest: 90, sets: [{weight:55,reps:10,done:false},{weight:55,reps:10,done:false},{weight:55,reps:10,done:false}] },
-          { id: 'c3', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~18회', rest: 60, sets: [{weight:40,reps:15,done:false},{weight:40,reps:15,done:false},{weight:40,reps:15,done:false}] }
+          { id: 'c1', type: 'weight', name: '시티드 케이블 와이드 로우', targetReps: '10~12회', rest: 75, videoKey: 'widerow', guideNote: '피지컬에셋: 중부승모·능형근 타깃 | 이완 시 견갑골 좌우 신장 3초 통제 | 3세트×10~12회', sets: [{weight:45,reps:10,done:false},{weight:45,reps:10,done:false},{weight:45,reps:10,done:false}] },
+          { id: 'c2', type: 'weight', name: '스쿼트 머신', targetReps: '10~12회', rest: 90, videoKey: 'squat_lunge', guideNote: '피지컬에셋: 바텀 신장 구간 통제 | 무릎은 발끝 방향 일치 | 3세트×10~12회', sets: [{weight:55,reps:10,done:false},{weight:55,reps:10,done:false},{weight:55,reps:10,done:false}] },
+          { id: 'c3', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~18회', rest: 60, videoKey: 'delt_side_rear', guideNote: '피지컬에셋: 승모 개입 차단용 12~18회 중량 | 팔꿈치를 멀리 보내고 3초 이완 | 3세트', sets: [{weight:40,reps:15,done:false},{weight:40,reps:15,done:false},{weight:40,reps:15,done:false}] }
         ],
         REST: [
-          { id: 'rest_1', type: 'weight', name: '케이블 오버헤드 익스텐션 (삼두)', targetReps: '10~12회', rest: 60, sets: [{weight:57,reps:12,done:false},{weight:57,reps:12,done:false},{weight:57,reps:12,done:false}] },
-          { id: 'rest_2', type: 'weight', name: '케이블 컬 (이두)', targetReps: '10~12회', rest: 60, sets: [{weight:65,reps:12,done:false},{weight:65,reps:12,done:false},{weight:65,reps:12,done:false}] },
-          { id: 'rest_3', type: 'weight', name: '케이블 아래에서 위로 당기기 (삼각근)', targetReps: '12~15회', rest: 60, sets: [{weight:57,reps:15,done:false},{weight:57,reps:15,done:false},{weight:65,reps:15,done:false}] },
-          { id: 'rest_c', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 22, done: false }
+          { id: 'rest_1', type: 'weight', name: '케이블 오버헤드 익스텐션 (삼두)', targetReps: '10~12회', rest: 60, videoKey: 'arms_tricep', guideNote: '피지컬에셋: 도르레 골반높이 | 푸시다운 대비 -30% 무게로 최대 신장 3초 버티기 | 3세트', sets: [{weight:57,reps:12,done:false},{weight:57,reps:12,done:false},{weight:57,reps:12,done:false}] },
+          { id: 'rest_2', type: 'weight', name: '60° 벤치 해머 프리처 컬 / 케이블 컬', targetReps: '10~12회', rest: 60, videoKey: 'arms_bicep', guideNote: '피지컬에셋: 팔 다 펴지는 하단 30° 구간 3초 버티기 | 상단 80%까지만 수축 | 3세트×10~12회', sets: [{weight:65,reps:12,done:false},{weight:65,reps:12,done:false},{weight:65,reps:12,done:false}] },
+          { id: 'rest_3', type: 'weight', name: '케이블 아래에서 위로 당기기 (삼각근)', targetReps: '12~15회', rest: 60, videoKey: 'delt_side_rear', guideNote: '피지컬에셋: 하단 신장 구간부터 측면 삼각근 지속 장력 | 3세트×12~15회', sets: [{weight:57,reps:15,done:false},{weight:57,reps:15,done:false},{weight:65,reps:15,done:false}] },
+          { id: 'rest_c', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 22, videoKey: 'stair_cardio', done: false }
         ]
       };
+    }
+
+    // 종목 이름에 맞춰 자동으로 알맞은 영상 키와 효과적 무게/세트 가이드를 매칭
+    function resolveVideoKeyForExercise(ex) {
+      if (ex.videoKey && VIDEO_DB[ex.videoKey]) return ex.videoKey;
+      if (ex.type === 'cardio') return ex.cardioType === 'tabata' ? 'rdl_kb' : 'stair_cardio';
+      const k = getCanonicalExerciseKey(ex);
+      if (k.includes('row') || k.includes('kelso')) return 'widerow';
+      if (k.includes('tricep')) return 'arms_tricep';
+      if (k.includes('preacher') || k.includes('curl')) return 'arms_bicep';
+      if (k.includes('delt') || k.includes('reverse_fly')) return 'delt_side_rear';
+      if (k.includes('incline_press') || k.includes('ohp')) return 'incline_ohp';
+      if (k.includes('squat')) return 'squat_lunge';
+      if (k.includes('rdl') || k.includes('kb')) return 'rdl_kb';
+      return 'widerow';
+    }
+
+    function resolveGuideNoteForExercise(ex) {
+      if (ex.guideNote) return ex.guideNote;
+      const vk = resolveVideoKeyForExercise(ex);
+      const vItem = VIDEO_DB[vk];
+      if (!vItem) return '';
+      return `권장: ${vItem.rxSets} | ${vItem.rxWeight} | 템포: ${vItem.rxTempo}`;
     }
 
     const STORAGE_KEY = 'vtaper_black_orange_v1';
@@ -959,15 +1176,26 @@
         const dKcal = getExerciseBurnedKcal(ex, bw, true), pKcal = getExerciseBurnedKcal(ex, bw, false);
         const latestRec = findLatestRecordForExercise(ex, appState.selectedDate);
         const latestTag = latestRec && latestRec.fromDate ? `<span class="text-[9px] text-emerald-400 font-bold">최근(${latestRec.fromDate.slice(5)}) 반영</span>` : '';
-        // 4. 각 카드 우측 상단 순서 변경(⬆️⬇️) 버튼
-        const orderControlsHtml = `<div class="flex items-center gap-0.5 shrink-0"><button type="button" onclick="moveExerciseOrder(${exIdx}, -1)" ${exIdx===0?'disabled':''} class="stepper-btn w-6 h-6 rounded text-[10px] flex items-center justify-center ${exIdx===0?'opacity-25':''}" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button><button type="button" onclick="moveExerciseOrder(${exIdx}, 1)" ${exIdx===list.length-1?'disabled':''} class="stepper-btn w-6 h-6 rounded text-[10px] flex items-center justify-center ${exIdx===list.length-1?'opacity-25':''}" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button></div>`;
+        const vKey = resolveVideoKeyForExercise(ex);
+        const guideNote = resolveGuideNoteForExercise(ex);
+        // 4. 각 카드 우측 상단 순서 변경(맨위 / ⬆️ / ⬇️) 버튼 + 유튜브 영상 버튼
+        const orderControlsHtml = `<div class="flex items-center gap-0.5 shrink-0">
+          <button type="button" onclick="openVideoForExercise('${vKey}')" class="px-1.5 h-6 rounded bg-red-600/90 hover:bg-red-600 text-white text-[10px] font-black flex items-center gap-0.5 mr-0.5" title="피지컬에셋 & 쇼츠 동작영상 보기"><i class="fa-brands fa-youtube"></i> 영상</button>
+          ${exIdx > 0 ? `<button type="button" onclick="moveExerciseToTop(${exIdx})" class="stepper-btn px-1.5 h-6 rounded text-[9px] font-black text-orange-300" title="맨 위로 올리기">맨위</button>` : ''}
+          <button type="button" onclick="moveExerciseOrder(${exIdx}, -1)" ${exIdx===0?'disabled':''} class="stepper-btn w-6 h-6 rounded text-[10px] flex items-center justify-center ${exIdx===0?'opacity-25':''}" title="위로 이동"><i class="fa-solid fa-arrow-up"></i></button>
+          <button type="button" onclick="moveExerciseOrder(${exIdx}, 1)" ${exIdx===list.length-1?'disabled':''} class="stepper-btn w-6 h-6 rounded text-[10px] flex items-center justify-center ${exIdx===list.length-1?'opacity-25':''}" title="아래로 이동"><i class="fa-solid fa-arrow-down"></i></button>
+        </div>`;
 
         if (ex.type === 'cardio') {
           const c = CARDIO_TYPES[ex.cardioType] || CARDIO_TYPES.stair;
           return `<div class="bw-card-orange p-3 space-y-2">
-            <div class="flex items-center justify-between gap-1.5">
+            <div class="flex items-center justify-between gap-1.5 flex-wrap">
               <div class="flex items-center gap-1.5"><span class="w-5 h-5 rounded bg-[#ff5500] text-white font-black text-[11px] flex items-center justify-center shrink-0">${exIdx+1}</span><select onchange="changeCardioType(${exIdx},this.value)" class="bg-zinc-900 border border-orange-500/40 rounded-lg px-2 py-1 text-xs font-black text-white"><option value="stair" ${ex.cardioType==='stair'?'selected':''}>🔥 천국의 계단</option><option value="bike" ${ex.cardioType==='bike'?'selected':''}>🚴 실내 자전거</option><option value="mountain" ${ex.cardioType==='mountain'?'selected':''}>⛰️ 마이마운틴</option><option value="tabata" ${ex.cardioType==='tabata'?'selected':''}>⚡ 케틀벨/타바타</option></select></div>
-              <div class="flex items-center gap-1.5"><span class="text-orange-300 text-[11px] font-black">🔥 ${dKcal}/${pKcal}kcal</span>${orderControlsHtml}</div>
+              <div class="flex items-center gap-1"><span class="text-orange-300 text-[10px] font-black">🔥 ${dKcal}/${pKcal}kcal</span>${orderControlsHtml}</div>
+            </div>
+            <div class="px-2 py-1 rounded-lg bg-zinc-950/80 border border-orange-500/20 text-[10px] text-orange-200/90 font-bold flex items-center justify-between">
+              <span>💡 쇼츠 팁: 손잡이 매달리지 않기 · 상체 15° 숙이고 뒤꿈치로 계단 밀기</span>
+              <button type="button" onclick="openVideoForExercise('wgs_stretch')" class="text-emerald-400 underline shrink-0 ml-1">WGS 스트레칭↗</button>
             </div>
             <div class="flex items-center justify-between gap-1 bg-zinc-950 border border-zinc-800 rounded-xl p-2 flex-wrap">
               <div class="flex items-center gap-1"><span class="text-[10px] text-zinc-400">${c.unitLabel}</span><button type="button" onclick="stepCardioValue(${exIdx},'level',-1)" class="stepper-btn w-7 h-7 rounded text-xs">-</button><input type="number" value="${ex.level}" onchange="setCardioValue(${exIdx},'level',this.value)" class="w-9 bg-transparent text-center font-black text-sm text-white" /><button type="button" onclick="stepCardioValue(${exIdx},'level',1)" class="stepper-btn w-7 h-7 rounded text-xs">+</button></div>
@@ -990,6 +1218,10 @@
             <div class="flex items-center gap-1.5 min-w-0 flex-1"><span class="w-5 h-5 rounded bg-white text-black font-black text-[11px] flex items-center justify-center shrink-0">${exIdx+1}</span><input type="text" value="${ex.name}" onchange="updateExerciseMeta(${exIdx},'name',this.value)" class="bg-transparent font-black text-xs text-white w-full truncate focus:outline-none" /></div>
             <div class="flex items-center gap-1 shrink-0"><span class="px-1.5 py-0.5 rounded bg-orange-950 text-orange-300 text-[10px] font-black">🔥 ${dKcal}/${pKcal}kcal</span>${orderControlsHtml}</div>
           </div>
+          ${guideNote ? `<div onclick="openVideoForExercise('${vKey}')" class="px-2.5 py-1 rounded-lg bg-zinc-900/95 border border-orange-500/30 text-[10px] text-orange-200 font-bold cursor-pointer flex items-center justify-between gap-1">
+            <span class="truncate">📌 ${guideNote}</span>
+            <span class="text-orange-400 shrink-0 underline">상세처방▶</span>
+          </div>` : ''}
           <div class="flex items-center justify-between text-[10px] text-zinc-400 pt-1 border-t border-zinc-800 flex-wrap gap-1">
             <div>목표 <input type="text" value="${ex.targetReps||'10~12회'}" onchange="updateExerciseMeta(${exIdx},'targetReps',this.value)" class="w-12 bg-zinc-900 border border-zinc-700 rounded text-center text-white font-bold" /> · 휴식 <input type="number" value="${ex.rest||60}" onchange="updateExerciseMeta(${exIdx},'rest',this.value)" class="w-10 bg-zinc-900 border border-zinc-700 rounded text-center text-white font-bold" />초 ${latestTag}</div>
             <button type="button" onclick="copyFirstSetToAll(${exIdx})" class="px-2 py-0.5 rounded bg-zinc-800 text-zinc-200 font-bold">1세트 전체적용</button>
@@ -998,6 +1230,16 @@
           <div class="flex justify-between pt-0.5"><div class="flex gap-1"><button type="button" onclick="addSetToExercise(${exIdx})" class="px-2 py-1 rounded bg-zinc-900 border border-zinc-700 text-zinc-300 text-[10px] font-bold">+ 세트</button><button type="button" onclick="removeLastSetFromExercise(${exIdx})" class="px-2 py-1 rounded bg-zinc-900 border border-zinc-800 text-zinc-400 text-[10px] font-bold">- 삭제</button></div><button type="button" onclick="removeExercise(${exIdx})" class="text-zinc-500 hover:text-red-400 text-xs px-1"><i class="fa-solid fa-trash-can"></i></button></div>
         </div>`;
       }).join('');
+    }
+
+    function moveExerciseToTop(exIdx) {
+      const list = getCurrentExercises();
+      if (exIdx <= 0 || exIdx >= list.length) return;
+      const [item] = list.splice(exIdx, 1);
+      list.unshift(item);
+      quickModalFocusExIdx = 0;
+      saveAppState(); renderAll();
+      showToast(`⬆️ [${item.name}] 1번 순서로 올렸습니다!`);
     }
 
     function toggleSetDone(exIdx, sIdx) {
@@ -1214,14 +1456,56 @@
     }
 
     function switchMainTab(t) {
-      ['log','calendar','tabata'].forEach(k => {
-        document.getElementById(`tab-panel-${k}`).classList.toggle('hidden', k!==t);
-        document.getElementById(`tab-btn-${k}`).classList.toggle('bottom-nav-active', k===t);
+      ['log','calendar','tabata','video'].forEach(k => {
+        const panel = document.getElementById(`tab-panel-${k}`);
+        const btn = document.getElementById(`tab-btn-${k}`);
+        if (panel) panel.classList.toggle('hidden', k!==t);
+        if (btn) btn.classList.toggle('bottom-nav-active', k===t);
       });
       if (t==='calendar') renderCalendarTab();
       if (t==='tabata') syncTabataInputsAndUI();
+      if (t==='video') initVideoTab();
       window.scrollTo({top:0,behavior:'smooth'});
     }
+
+    function initVideoTab() {
+      const sel = document.getElementById('videoExerciseSelect');
+      if (!sel) return;
+      if (!sel.options.length) {
+        Object.keys(VIDEO_DB).forEach(k => {
+          const o = document.createElement('option');
+          o.value = k; o.textContent = VIDEO_DB[k].title;
+          sel.appendChild(o);
+        });
+      }
+      selectVideoExercise(sel.value || 'widerow');
+    }
+
+    function selectVideoExercise(key) {
+      const item = VIDEO_DB[key] || VIDEO_DB.widerow;
+      const sel = document.getElementById('videoExerciseSelect');
+      if (sel) sel.value = key in VIDEO_DB ? key : 'widerow';
+      document.getElementById('videoSectionTitle').textContent = item.title;
+      document.getElementById('videoTargetMuscleBadge').textContent = item.targetMuscle;
+      document.getElementById('coachingYoutubeIframe').src = `https://www.youtube.com/embed/${item.coachingId}?rel=0`;
+      document.getElementById('anatomyYoutubeIframe').src = `https://www.youtube.com/embed/${item.anatomyId}?rel=0`;
+      document.getElementById('mainVideoExternalLink').href = `https://www.youtube.com/watch?v=${item.coachingId}`;
+      document.getElementById('shortsVideoExternalLink').href = `https://www.youtube.com/watch?v=${item.anatomyId}`;
+
+      document.getElementById('videoRxGrid').innerHTML = `
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2"><div class="text-[10px] text-zinc-400">효과적 무게 설정</div><div class="text-[11px] font-black text-white mt-0.5">${item.rxWeight}</div></div>
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2"><div class="text-[10px] text-zinc-400">권장 세트 · 횟수</div><div class="text-[11px] font-black text-[#ff5500] mt-0.5">${item.rxSets}</div></div>
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2"><div class="text-[10px] text-zinc-400">신장성 템포 제어</div><div class="text-[11px] font-black text-emerald-400 mt-0.5">${item.rxTempo}</div></div>
+        <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2"><div class="text-[10px] text-zinc-400">세트 간 휴식</div><div class="text-[11px] font-black text-white mt-0.5">${item.rxRest}</div></div>
+      `;
+      document.getElementById('videoCoachingPointsBox').innerHTML = item.points.map(p => `<div class="p-2 rounded-lg bg-zinc-950/70 border border-zinc-800/80">• ${p}</div>`).join('');
+    }
+
+    function openVideoForExercise(videoKey) {
+      switchMainTab('video');
+      selectVideoExercise(videoKey || 'widerow');
+    }
+
     function changeCalendarMonth(d) { appState.calendarMonth += d; if(appState.calendarMonth>12){appState.calendarMonth=1;appState.calendarYear++;} if(appState.calendarMonth<1){appState.calendarMonth=12;appState.calendarYear--;} renderCalendarTab(); }
     function renderCalendarTab() {
       const y = appState.calendarYear, m = appState.calendarMonth;
