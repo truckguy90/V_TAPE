@@ -187,6 +187,10 @@
             <button type="button" onclick="openQuickControllerModal()" class="px-2.5 py-1.5 rounded-lg bg-orange-950 border border-orange-500/60 text-orange-300 text-[11px] font-black flex items-center gap-1">
               <i class="fa-solid fa-sliders"></i> 리모컨팝업
             </button>
+            <!-- 5. 전체 종목 리스트 & 유튜브/운동 스마트 매니저 열기 -->
+            <button type="button" onclick="switchMainTab('manager')" class="px-2.5 py-1.5 rounded-lg bg-emerald-950 border border-emerald-500/60 text-emerald-300 text-[11px] font-black flex items-center gap-1">
+              <i class="fa-solid fa-layer-group"></i> 종목/링크관리
+            </button>
             <button type="button" onclick="checkAllSetsInCurrentDay(true)" class="px-2 py-1.5 rounded-lg bg-white text-black text-[11px] font-black">전체완료</button>
             <button type="button" onclick="checkAllSetsInCurrentDay(false)" class="px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-300 text-[11px] font-bold">해제</button>
             <button type="button" onclick="resetCurrentDayToDefault()" class="px-2 py-1.5 rounded-lg bg-zinc-800 border border-zinc-700 text-zinc-400 text-[11px] font-bold" title="코스 기본값 복원"><i class="fa-solid fa-rotate-left"></i></button>
@@ -209,10 +213,10 @@
         </div>
 
         <div class="flex flex-wrap gap-1.5 pb-1.5 border-b border-zinc-800">
-          <button type="button" onclick="addCableArmShoulderCombo()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-[11px] font-black">⚡ + 팔·어깨 3종 한방 추가</button>
-          <button type="button" onclick="addPresetExercise('cable_tricep_oh')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">+ 케이블 오버헤드(삼두)</button>
+          <button type="button" onclick="addCableArmShoulderCombo()" class="px-2.5 py-1.5 rounded-lg bg-emerald-600 text-white text-[11px] font-black">⚡ + 원암 팔·어깨 3종 한방 추가</button>
+          <button type="button" onclick="addPresetExercise('cable_tricep_oh')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">+ 원암 케이블 오버헤드(삼두)</button>
+          <button type="button" onclick="addPresetExercise('cable_bicep_curl')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">+ 원암 케이블 컬(이두)</button>
           <button type="button" onclick="addPresetExercise('incline_preacher_hammer')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">+ 60° 벤치 해머 프리처 컬</button>
-          <button type="button" onclick="addPresetExercise('cable_bicep_curl')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-emerald-500/40 text-emerald-300 text-[11px] font-extrabold">+ 케이블 컬(이두)</button>
           <button type="button" onclick="addPresetExercise('cable_upright_delt')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">+ 케이블 아래→위(삼각근)</button>
           <button type="button" onclick="addPresetExercise('reverse_fly')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-200 text-[11px] font-bold">+ 리버스 플라이(후면)</button>
           <button type="button" onclick="addPresetExercise('incline_db_widerow')" class="px-2 py-1.5 rounded-lg bg-zinc-900 border border-orange-500/40 text-orange-200 text-[11px] font-bold">+ 인클라인 덤벨 와이드로우</button>
@@ -225,16 +229,26 @@
           <button type="button" onclick="addCardioExercise('bike', false)" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-[11px] font-extrabold">+ 실내 자전거</button>
           <button type="button" onclick="addCardioExercise('mountain', false)" class="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-700 text-white text-[11px] font-extrabold">+ 마이마운틴</button>
           <button type="button" onclick="addPresetExercise('kettlebell_swing')" class="px-2.5 py-1.5 rounded-lg bg-orange-950/70 border border-orange-500/40 text-orange-200 text-[11px] font-extrabold">🔥 + 케틀벨 스윙</button>
-          <button type="button" onclick="addCustomWeightExercise()" class="px-2.5 py-1.5 rounded-lg bg-white text-black text-[11px] font-black">+ 직접 입력 추가</button>
+          <button type="button" onclick="addCustomWeightExercise()" class="px-2.5 py-1.5 rounded-lg bg-white text-black text-[11px] font-black">+ 직접 추가</button>
         </div>
       </div>
 
-      <!-- 운동 카드 리스트 (각 카드에 ⬆️⬇️ 순서 변경 버튼 포함) -->
+      <!-- ★ 누락되었던 운동일지 종목 카드 리스트 컨테이너 완벽 복원 ★ -->
       <div id="exerciseListContainer" class="space-y-2.5"></div>
+
+      <!-- 운동일지 탭 하단에서도 바로 지난 운동일지(11/05~11/12)를 원클릭으로 불러올 수 있는 바로가기 보드 -->
+      <div class="bw-card p-3 space-y-2">
+        <div class="flex items-center justify-between">
+          <span class="text-xs font-black text-orange-400">📜 최근 완료한 운동일지 바로가기 (터치 시 즉시 열람)</span>
+          <button type="button" onclick="forceRestoreAllHistoricalLogs()" class="px-2 py-1 rounded bg-zinc-800 border border-zinc-700 text-[10px] text-zinc-300 font-bold">🔄 일지 전체복구</button>
+        </div>
+        <div id="logQuickHistoryBar" class="flex items-center gap-1.5 overflow-x-auto pb-1"></div>
+      </div>
     </section>
 
-    <!-- TAB 2: 달력 & 백업 -->
+    <!-- TAB 2: 달력 & 이전 운동일지 히스토리 & 백업 -->
     <section id="tab-panel-calendar" class="hidden space-y-3">
+      <!-- 달력 그리드 -->
       <div class="bw-card p-3.5 space-y-3">
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2">
@@ -248,6 +262,17 @@
           <div class="text-red-400">일</div><div>월</div><div>화</div><div>수</div><div>목</div><div>금</div><div class="text-blue-400">토</div>
         </div>
         <div id="calendarGridContainer" class="grid grid-cols-7 gap-1.5"></div>
+      </div>
+
+      <!-- 이전 운동일지 전체 히스토리 보드 (한눈에 확인 & 바로 이동) -->
+      <div class="bw-card p-3.5 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <h3 class="text-sm font-black text-white">📜 완료된 운동일지 히스토리 (클릭 시 해당 일지로 이동)</h3>
+          <button type="button" onclick="forceRestoreAllHistoricalLogs()" class="px-2.5 py-1 rounded-lg bg-orange-950 border border-orange-500/50 text-orange-300 text-[10px] font-black">
+            🔄 누락된 과거 일지 자동복구
+          </button>
+        </div>
+        <div id="workoutHistoryTimelineBox" class="space-y-2"></div>
       </div>
 
       <div class="bw-card p-3.5 space-y-2">
@@ -380,6 +405,88 @@
         </div>
       </div>
     </section>
+
+    <!-- TAB 5: 스마트 종목/유튜브 추가 & 전체 리스트 볼륨/세트 통합 매니저 -->
+    <section id="tab-panel-manager" class="hidden space-y-3">
+      <!-- 1. 유튜브 링크 or 운동프로그램 스마트 파서 & 자동 추가 -->
+      <div class="bw-card-orange p-3.5 space-y-2.5">
+        <div class="flex items-center justify-between">
+          <div>
+            <span class="text-[10px] px-2 py-0.5 rounded bg-[#ff5500] text-white font-black">SMART AUTO-BUILDER</span>
+            <h2 class="text-sm font-black text-white mt-1">🔗 유튜브 링크 / 운동프로그램 스마트 자동 추가</h2>
+          </div>
+          <span class="text-[10px] text-orange-300 font-bold">앱 자체 즉시 반영</span>
+        </div>
+        <p class="text-[11px] text-zinc-300 leading-relaxed">
+          마음에 드는 <strong>유튜브/쇼츠 링크</strong>나 <strong>운동 이름·루틴 텍스트</strong>를 넣으면 앱이 부위별 최적 무게·세트·신장성 템포와 영상을 자동 매칭하여 원하는 코스에 즉시 등록합니다.
+        </p>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          <div>
+            <label class="text-[10px] text-zinc-400 font-bold">운동명 또는 루틴 설명 (필수)</label>
+            <input id="smartAddNameInput" type="text" placeholder="예: 원암 케이블 랫풀다운 / 덤벨 숄더프레스 20kg 10회" oninput="previewSmartAutoMatch()" class="w-full mt-0.5 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs font-extrabold text-white focus:outline-none focus:border-orange-500" />
+          </div>
+          <div>
+            <label class="text-[10px] text-zinc-400 font-bold">유튜브 / 쇼츠 링크 (선택 - 입력 시 전용 영상 등록)</label>
+            <input id="smartAddYoutubeInput" type="text" placeholder="https://youtube.com/shorts/... 또는 비워두면 자동매칭" oninput="previewSmartAutoMatch()" class="w-full mt-0.5 bg-zinc-950 border border-zinc-700 rounded-xl px-3 py-2 text-xs text-emerald-300 focus:outline-none focus:border-orange-500" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-4 gap-1.5">
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2">
+            <label class="text-[10px] text-zinc-400 font-bold">배치 코스</label>
+            <select id="smartAddCourseSelect" class="w-full bg-transparent text-xs font-black text-[#ff5500] mt-0.5 focus:outline-none">
+              <option value="CURRENT">현재 열린 일지</option>
+              <option value="REST">유산소 & 팔·어깨 (REST)</option>
+              <option value="A">DAY A 코스</option>
+              <option value="B">DAY B 코스</option>
+              <option value="C">DAY C 코스</option>
+              <option value="ALL_PRESET">프리셋 보관함만</option>
+            </select>
+          </div>
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2">
+            <label class="text-[10px] text-zinc-400 font-bold">시작 무게(kg)</label>
+            <input id="smartAddWeightInput" type="number" step="0.5" value="35" class="w-full bg-transparent text-xs font-black text-white mt-0.5 focus:outline-none" />
+          </div>
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2">
+            <label class="text-[10px] text-zinc-400 font-bold">목표 횟수(회)</label>
+            <input id="smartAddRepsInput" type="number" value="12" class="w-full bg-transparent text-xs font-black text-[#ff5500] mt-0.5 focus:outline-none" />
+          </div>
+          <div class="bg-zinc-950 border border-zinc-800 rounded-xl p-2">
+            <label class="text-[10px] text-zinc-400 font-bold">세트 수</label>
+            <input id="smartAddSetsCountInput" type="number" value="3" class="w-full bg-transparent text-xs font-black text-white mt-0.5 focus:outline-none" />
+          </div>
+        </div>
+
+        <!-- 자동 분석된 최적 운동법 & 영상 매칭 프리뷰 -->
+        <div id="smartMatchPreviewBox" class="p-2.5 rounded-xl bg-zinc-950 border border-zinc-800 text-[11px] text-zinc-300 space-y-1">
+          <div class="text-orange-300 font-black">🤖 운동 이름을 입력하면 최적 운동법·템포·영상이 자동 설계됩니다.</div>
+        </div>
+
+        <button type="button" onclick="executeSmartAddExercise()" class="w-full py-2.5 rounded-xl orange-btn text-xs font-black shadow-lg">
+          ➕ 최적 운동법 + 영상 매칭하여 앱에 즉시 추가 및 저장
+        </button>
+      </div>
+
+      <!-- 2. 현재 추가된 전체 리스트 한눈에 보기 & 볼륨/세트/무게 일괄 수정 -->
+      <div class="bw-card p-3.5 space-y-3">
+        <div class="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h3 class="text-sm font-black text-white">📋 전체 등록 종목 리스트 & 볼륨·세트 통합 편집</h3>
+            <p class="text-[10px] text-zinc-400">여기서 무게·횟수·세트를 수정하면 마스터 DB와 모든 코스에 즉시 반영됩니다.</p>
+          </div>
+          <div class="flex items-center gap-1">
+            <button type="button" onclick="filterManagerCourse('ALL')" id="mgr-filter-ALL" class="px-2.5 py-1 rounded-lg bg-[#ff5500] text-white text-[11px] font-black">전체종목</button>
+            <button type="button" onclick="filterManagerCourse('A')" id="mgr-filter-A" class="px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-[11px] font-bold">A코스</button>
+            <button type="button" onclick="filterManagerCourse('B')" id="mgr-filter-B" class="px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-[11px] font-bold">B코스</button>
+            <button type="button" onclick="filterManagerCourse('C')" id="mgr-filter-C" class="px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-[11px] font-bold">C코스</button>
+            <button type="button" onclick="filterManagerCourse('REST')" id="mgr-filter-REST" class="px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-[11px] font-bold">팔/유산소</button>
+          </div>
+        </div>
+
+        <div id="masterExerciseListContainer" class="space-y-2"></div>
+      </div>
+    </section>
   </main>
 
   <!-- ==================== 1. 상단 리모컨 전체 제어 팝업 모달 ==================== -->
@@ -445,14 +552,14 @@
       </div>
     </div>
   </div>
-
-  <!-- 하단 4탭 내비게이션 (운동일지 / 달력·백업 / 타바타 / 유튜브코칭) -->
+  <!-- 하단 5탭 내비게이션 (운동일지 / 전체관리·추가 / 달력·백업 / 타바타 / 유튜브코칭) -->
   <nav class="fixed bottom-0 left-0 right-0 z-40 bg-[#070709]/95 backdrop-blur-xl border-t border-zinc-800 px-2 py-1.5">
-    <div class="max-w-2xl mx-auto grid grid-cols-4 gap-1.5">
-      <button type="button" id="tab-btn-log" onclick="switchMainTab('log')" class="bottom-nav-btn bottom-nav-active flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-clipboard-check"></i></div><span class="text-[10px]">운동일지</span></button>
-      <button type="button" id="tab-btn-calendar" onclick="switchMainTab('calendar')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-calendar-days"></i></div><span class="text-[10px]">달력/백업</span></button>
-      <button type="button" id="tab-btn-tabata" onclick="switchMainTab('tabata')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-stopwatch-20"></i></div><span class="text-[10px]">타바타</span></button>
-      <button type="button" id="tab-btn-video" onclick="switchMainTab('video')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-9 h-7 rounded-lg flex items-center justify-center"><i class="fa-brands fa-youtube"></i></div><span class="text-[10px]">영상코칭</span></button>
+    <div class="max-w-2xl mx-auto grid grid-cols-5 gap-1">
+      <button type="button" id="tab-btn-log" onclick="switchMainTab('log')" class="bottom-nav-btn bottom-nav-active flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-8 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-clipboard-check"></i></div><span class="text-[10px]">운동일지</span></button>
+      <button type="button" id="tab-btn-manager" onclick="switchMainTab('manager')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-8 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-layer-group"></i></div><span class="text-[10px]">종목/추가</span></button>
+      <button type="button" id="tab-btn-calendar" onclick="switchMainTab('calendar')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-8 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-calendar-days"></i></div><span class="text-[10px]">달력/백업</span></button>
+      <button type="button" id="tab-btn-tabata" onclick="switchMainTab('tabata')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-8 h-7 rounded-lg flex items-center justify-center"><i class="fa-solid fa-stopwatch-20"></i></div><span class="text-[10px]">타바타</span></button>
+      <button type="button" id="tab-btn-video" onclick="switchMainTab('video')" class="bottom-nav-btn flex flex-col items-center py-1 rounded-xl"><div class="nav-icon-wrap w-8 h-7 rounded-lg flex items-center justify-center"><i class="fa-brands fa-youtube"></i></div><span class="text-[10px]">영상코칭</span></button>
     </div>
   </nav>
 
@@ -504,9 +611,9 @@
       incline_db_widerow: { id: 'p_inc_db', type: 'weight', name: '인클라인 벤치 덤벨 와이드로우', targetReps: '10~12회', rest: 75, videoKey: 'widerow', guideNote: '30~45° 벤치 엎드려 수행 | 팔꿈치 45~60° 벌림 | 이완 시 견갑 3초 신장', sets: [{weight:14,reps:12,done:false},{weight:14,reps:12,done:false},{weight:14,reps:12,done:false}] },
       onearm_wide_dbrow: { id: 'p_oa_db', type: 'weight', name: '원암 덤벨 와이드로우 (어퍼백)', targetReps: '10~12회', rest: 60, videoKey: 'widerow', guideNote: '일반 로우보다 20~30% 감량 | 팔꿈치 60° 벌려 윗가슴 방향 | 견갑 이완 통제', sets: [{weight:16,reps:12,done:false},{weight:16,reps:12,done:false},{weight:16,reps:12,done:false}] },
       incline_preacher_hammer: { id: 'p_preacher', type: 'weight', name: '60° 벤치 원암 해머 프리처 컬', targetReps: '10~12회', rest: 60, videoKey: 'arms_bicep', guideNote: '스탠딩보다 30% 감량(8~12kg) | 하단 30° 구간 3초 버티기 | 상단 80%까지만 수축', sets: [{weight:10,reps:12,done:false},{weight:10,reps:12,done:false},{weight:10,reps:12,done:false}] },
-      cable_bicep_curl: { id: 'p_cb_curl', type: 'weight', name: '케이블 컬 / 베이지안 컬 (이두)', targetReps: '10~12회', rest: 60, videoKey: 'arms_bicep', guideNote: '케이블을 등 뒤에 두고 한 발 앞으로 나와 이두 장두 최대 신장 상태에서 시작', sets: [{weight:65,reps:12,done:false},{weight:65,reps:12,done:false},{weight:65,reps:12,done:false}] },
-      cable_tricep_oh: { id: 'p_cb_tri', type: 'weight', name: '케이블 오버헤드 익스텐션 (삼두)', targetReps: '10~12회', rest: 60, videoKey: 'arms_tricep', guideNote: '도르레를 골반~명치 높이 세팅 | 푸시다운 대비 30% 가벼운 무게로 최대 신장 2~3초 버티기', sets: [{weight:57,reps:12,done:false},{weight:57,reps:12,done:false},{weight:57,reps:12,done:false}] },
-      cable_upright_delt: { id: 'p_cb_delt', type: 'weight', name: '케이블 아래에서 위로 당기기 (삼각근)', targetReps: '12~15회', rest: 60, videoKey: 'delt_side_rear', guideNote: '12~15회 고반복 중량 | 승모근 으쓱 금지 | 손목 힘 빼고 팔꿈치를 옆·위로 리드', sets: [{weight:57,reps:15,done:false},{weight:57,reps:15,done:false},{weight:65,reps:15,done:false}] },
+      cable_bicep_curl: { id: 'p_cb_curl', type: 'weight', name: '원암 케이블 컬 (이두)', targetReps: '9~10회', rest: 60, videoKey: 'arms_bicep', guideNote: '원암 진행 | 케이블을 등 뒤에 두고 한 발 앞으로 나와 이두 장두 최대 신장 상태에서 시작', sets: [{weight:35,reps:9,done:false},{weight:35,reps:9,done:false},{weight:35,reps:9,done:false}] },
+      cable_tricep_oh: { id: 'p_cb_tri', type: 'weight', name: '원암 케이블 오버헤드 익스텐션(삼두)', targetReps: '8~10회', rest: 60, videoKey: 'arms_tricep', guideNote: '원암 진행(운반각 보호) | 도르레 골반높이 | 최대 신장 하단 2~3초 버티기', sets: [{weight:37.5,reps:8,done:false},{weight:37.5,reps:8,done:false},{weight:37.5,reps:8,done:false}] },
+      cable_upright_delt: { id: 'p_cb_delt', type: 'weight', name: '케이블..아래에서 위로 쭉 당기는거 (삼각근)', targetReps: '8~10회', rest: 60, videoKey: 'delt_side_rear', guideNote: '원암/케이블 진행 | 승모근 으쓱 금지 | 손목 힘 빼고 팔꿈치를 옆·위로 리드', sets: [{weight:82.5,reps:8,done:false},{weight:82.5,reps:8,done:false},{weight:82.5,reps:8,done:false}] },
       reverse_fly: { id: 'p_rev_fly', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~18회', rest: 60, videoKey: 'delt_side_rear', guideNote: '12~18회 저중량 고반복 | 날개뼈 고정 후 팔꿈치를 바깥으로 멀리 던지듯 수축·3초 이완', sets: [{weight:40,reps:15,done:false},{weight:40,reps:15,done:false},{weight:40,reps:15,done:false}] },
       kettlebell_swing: { id: 'p_kb_sw', type: 'weight', highCalorieFactor: 1.55, name: '케틀벨 스윙', targetReps: '15~20회', rest: 30, videoKey: 'rdl_kb', guideNote: '16~20kg 폭발적 힙 힌지(Hip Hinge) | 무릎으로 앉지 말고 둔근 탄성으로 스윙', sets: [{weight:16,reps:20,done:false},{weight:16,reps:20,done:false},{weight:16,reps:20,done:false}] }
     };
@@ -664,10 +771,11 @@
           { id: 'c3', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~18회', rest: 60, videoKey: 'delt_side_rear', guideNote: '피지컬에셋: 승모 개입 차단용 12~18회 중량 | 팔꿈치를 멀리 보내고 3초 이완 | 3세트', sets: [{weight:40,reps:15,done:false},{weight:40,reps:15,done:false},{weight:40,reps:15,done:false}] }
         ],
         REST: [
-          { id: 'rest_1', type: 'weight', name: '케이블 오버헤드 익스텐션 (삼두)', targetReps: '10~12회', rest: 60, videoKey: 'arms_tricep', guideNote: '피지컬에셋: 도르레 골반높이 | 푸시다운 대비 -30% 무게로 최대 신장 3초 버티기 | 3세트', sets: [{weight:57,reps:12,done:false},{weight:57,reps:12,done:false},{weight:57,reps:12,done:false}] },
-          { id: 'rest_2', type: 'weight', name: '60° 벤치 해머 프리처 컬 / 케이블 컬', targetReps: '10~12회', rest: 60, videoKey: 'arms_bicep', guideNote: '피지컬에셋: 팔 다 펴지는 하단 30° 구간 3초 버티기 | 상단 80%까지만 수축 | 3세트×10~12회', sets: [{weight:65,reps:12,done:false},{weight:65,reps:12,done:false},{weight:65,reps:12,done:false}] },
-          { id: 'rest_3', type: 'weight', name: '케이블 아래에서 위로 당기기 (삼각근)', targetReps: '12~15회', rest: 60, videoKey: 'delt_side_rear', guideNote: '피지컬에셋: 하단 신장 구간부터 측면 삼각근 지속 장력 | 3세트×12~15회', sets: [{weight:57,reps:15,done:false},{weight:57,reps:15,done:false},{weight:65,reps:15,done:false}] },
-          { id: 'rest_c', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 22, videoKey: 'stair_cardio', done: false }
+          { id: 'rest_c1', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 7, minutes: 20, videoKey: 'stair_cardio', done: false },
+          { id: 'rest_c2', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 7, minutes: 16, videoKey: 'stair_cardio', done: false },
+          { id: 'rest_1', type: 'weight', name: '원암 케이블 오버헤드 익스텐션(삼두)', targetReps: '8~10회', rest: 60, videoKey: 'arms_tricep', guideNote: '원암 진행(운반각 보호) | 도르레 골반높이 | 최대 신장 2~3초 버티기 | 37.5kg 처방', sets: [{weight:37.5,reps:8,done:false},{weight:37.5,reps:8,done:false},{weight:37.5,reps:8,done:false}] },
+          { id: 'rest_2', type: 'weight', name: '원암 케이블 컬 (이두)', targetReps: '9~10회', rest: 60, videoKey: 'arms_bicep', guideNote: '원암 진행 | 하단 30° 신장 구간 3초 버티기 | 35kg×9~10회 처방', sets: [{weight:35,reps:9,done:false},{weight:35,reps:9,done:false},{weight:35,reps:9,done:false}] },
+          { id: 'rest_3', type: 'weight', name: '케이블..아래에서 위로 쭉 당기는거 (삼각근)', targetReps: '8~10회', rest: 60, videoKey: 'delt_side_rear', guideNote: '하단 신장 구간부터 측면 삼각근 지속 장력 | 82.5kg×8~10회 처방', sets: [{weight:82.5,reps:8,done:false},{weight:82.5,reps:8,done:false},{weight:82.5,reps:8,done:false}] }
         ]
       };
     }
@@ -703,6 +811,9 @@
       calendarMonth: 11,
       soundEnabled: true,
       customTemplates: null,
+      customVideoDB: {},
+      customPresetsList: [],
+      seededHistoryV2: false,
       exerciseMasterDB: {},
       logsByDate: {}
     };
@@ -711,14 +822,265 @@
       const n = new Date();
       return `${n.getFullYear()}-${String(n.getMonth() + 1).padStart(2, '0')}-${String(n.getDate()).padStart(2, '0')}`;
     }
-    function cloneDeep(o) { return JSON.parse(JSON.stringify(o)); }
+
+    function cloneDeep(o) {
+      return JSON.parse(JSON.stringify(o));
+    }
 
     function getTemplates() {
       if (!appState.customTemplates) appState.customTemplates = getDefaultTemplates();
+      else if (!appState.customTemplates.REST || appState.customTemplates.REST.length <= 1) {
+        appState.customTemplates.REST = cloneDeep(getDefaultTemplates().REST);
+      }
       return appState.customTemplates;
     }
 
-    // 2. 코스에 상관없이 과거 모든 날짜 기록 및 마스터 DB에서 해당 종목의 가장 최근 수행 무게/횟수를 검색
+    // 미리보기(Preview) 샌드박스 및 구버전 키까지 모두 스캔하여 이전 운동일지 유실 방지
+    function loadAppState() {
+      try {
+        const candidateKeys = [STORAGE_KEY, 'vtaper_pro_v1', 'vtaper_state', 'vtaper_logs'];
+        for (const k of candidateKeys) {
+          const raw = localStorage.getItem(k);
+          if (raw) {
+            const parsed = JSON.parse(raw);
+            if (parsed && typeof parsed === 'object') {
+              const existingLogs = appState.logsByDate || {};
+              appState = Object.assign(appState, parsed);
+              appState.logsByDate = Object.assign({}, existingLogs, parsed.logsByDate || {});
+              break;
+            }
+          }
+        }
+      } catch (e) {}
+    }
+
+    // 과거 운동일지(DAY A, DAY B, DAY C, 11/10 유산소, 11/12 원암 케이블+유산소)가 비어있거나 덮어씌워진 경우 완벽 복원
+    function ensureSeededWorkoutHistory(forceRestore = false) {
+      if (!appState.exerciseMasterDB) appState.exerciseMasterDB = {};
+      if (!appState.customVideoDB) appState.customVideoDB = {};
+      if (!appState.customPresetsList) appState.customPresetsList = [];
+      if (!appState.logsByDate) appState.logsByDate = {};
+      Object.assign(VIDEO_DB, appState.customVideoDB);
+
+      const t = getTemplates();
+
+      const hasDoneSetsInDate = (dStr) => {
+        const log = appState.logsByDate[dStr];
+        if (!log || !log.programsByDay) return false;
+        const pList = log.programsByDay[log.program || 'A'] || [];
+        return pList.some(ex => ex.type === 'cardio' ? ex.done : (ex.sets || []).some(s => s.done));
+      };
+
+      // 1) 2026-11-05 (DAY A 기준 완료 기록 복원)
+      if (forceRestore || !hasDoneSetsInDate('2026-11-05')) {
+        appState.logsByDate['2026-11-05'] = {
+          program: 'A', locked: false, weight: 89.2, waist: 93.0, note: 'DAY A 어퍼백(와이드로우) & 스쿼트 머신 & 인클라인 완주', actualWorkoutSeconds: 2520,
+          programsByDay: {
+            A: [
+              { id: 'h05_1', type: 'weight', name: '체스트 서포티드 와이드 로우', targetReps: '10~12회', rest: 90, videoKey: 'widerow', sets: [{weight:35,reps:10,done:true},{weight:35,reps:10,done:true},{weight:35,reps:10,done:true}] },
+              { id: 'h05_2', type: 'weight', name: '스쿼트 머신', targetReps: '8~10회', rest: 90, videoKey: 'squat_lunge', sets: [{weight:55,reps:10,done:true},{weight:55,reps:10,done:true},{weight:55,reps:10,done:true},{weight:55,reps:10,done:true}] },
+              { id: 'h05_3', type: 'weight', name: '30° 인클라인 프레스', targetReps: '9~12회', rest: 60, videoKey: 'incline_ohp', sets: [{weight:36,reps:9,done:true},{weight:36,reps:9,done:true},{weight:36,reps:9,done:true}] },
+              { id: 'h05_4', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 8, minutes: 20, videoKey: 'stair_cardio', done: true }
+            ],
+            B: cloneDeep(t.B), C: cloneDeep(t.C), REST: cloneDeep(t.REST)
+          }
+        };
+      }
+
+      // 2) 2026-11-07 (DAY B 기준 완료 기록 복원)
+      if (forceRestore || !hasDoneSetsInDate('2026-11-07')) {
+        appState.logsByDate['2026-11-07'] = {
+          program: 'B', locked: false, weight: 89.0, waist: 92.8, note: 'DAY B RDL 60kg & OHP 40kg & 시티드로우 완주', actualWorkoutSeconds: 2640,
+          programsByDay: {
+            A: cloneDeep(t.A),
+            B: [
+              { id: 'h07_1', type: 'weight', name: '루마니안 데드리프트 (RDL)', targetReps: '8~10회', rest: 90, videoKey: 'rdl_kb', sets: [{weight:60,reps:10,done:true},{weight:60,reps:10,done:true},{weight:60,reps:10,done:true}] },
+              { id: 'h07_2', type: 'weight', name: '오버헤드 숄더 프레스 (OHP)', targetReps: '7~10회', rest: 75, videoKey: 'incline_ohp', sets: [{weight:40,reps:7,done:true},{weight:40,reps:7,done:true},{weight:40,reps:7,done:true}] },
+              { id: 'h07_3', type: 'weight', name: '시티드 로우 머신 (와이드 어퍼백)', targetReps: '8~10회', rest: 75, videoKey: 'widerow', sets: [{weight:52,reps:10,done:true},{weight:52,reps:10,done:true},{weight:52,reps:10,done:true}] },
+              { id: 'h07_4', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 20, videoKey: 'stair_cardio', done: true }
+            ],
+            C: cloneDeep(t.C), REST: cloneDeep(t.REST)
+          }
+        };
+      }
+
+      // 3) 2026-11-09 (DAY C 기준 완료 기록 복원)
+      if (forceRestore || !hasDoneSetsInDate('2026-11-09')) {
+        appState.logsByDate['2026-11-09'] = {
+          program: 'C', locked: false, weight: 88.9, waist: 92.6, note: 'DAY C 케이블 와이드 로우 & 스쿼트 & 리버스 플라이 15회 완주', actualWorkoutSeconds: 2410,
+          programsByDay: {
+            A: cloneDeep(t.A), B: cloneDeep(t.B),
+            C: [
+              { id: 'h09_1', type: 'weight', name: '시티드 케이블 와이드 로우', targetReps: '10~12회', rest: 75, videoKey: 'widerow', sets: [{weight:45,reps:10,done:true},{weight:45,reps:10,done:true},{weight:45,reps:10,done:true}] },
+              { id: 'h09_2', type: 'weight', name: '스쿼트 머신', targetReps: '10~12회', rest: 90, videoKey: 'squat_lunge', sets: [{weight:55,reps:10,done:true},{weight:55,reps:10,done:true},{weight:55,reps:10,done:true}] },
+              { id: 'h09_3', type: 'weight', name: '리버스 플라이 (어깨 후면)', targetReps: '12~18회', rest: 60, videoKey: 'delt_side_rear', sets: [{weight:40,reps:15,done:true},{weight:40,reps:15,done:true},{weight:40,reps:15,done:true}] }
+            ],
+            REST: cloneDeep(t.REST)
+          }
+        };
+      }
+
+      // 4) 2026-11-10 (유산소 전용 데이 50분 35초 / 700kcal 완주 기록)
+      if (forceRestore || !hasDoneSetsInDate('2026-11-10')) {
+        appState.logsByDate['2026-11-10'] = {
+          program: 'REST', locked: false, weight: 88.8, waist: 92.5, note: '천국의계단 22분 + 사이클 20분 + 16kg 케틀벨 인터벌 8분 (700kcal 완주)', actualWorkoutSeconds: 3035,
+          programsByDay: {
+            A: cloneDeep(t.A), B: cloneDeep(t.B), C: cloneDeep(t.C),
+            REST: [
+              { id: 's10_1', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 9, minutes: 22, done: true },
+              { id: 's10_2', type: 'cardio', cardioType: 'bike', name: '실내 자전거 (사이클)', level: 4, minutes: 20, done: true },
+              { id: 's10_3', type: 'cardio', cardioType: 'tabata', name: '16kg 케틀벨 고밀도 인터벌 (20/20×12R)', level: 9, minutes: 8, done: true }
+            ]
+          }
+        };
+      }
+
+      // 5) 2026-11-12 (실제 38분 27초 = 2307초, 총 볼륨 5,130kg, 11/11세트 완료)
+      if (forceRestore || !hasDoneSetsInDate('2026-11-12')) {
+        const exist12 = appState.logsByDate['2026-11-12'] || {};
+        const existProgs12 = exist12.programsByDay || { A: cloneDeep(t.A), B: cloneDeep(t.B), C: cloneDeep(t.C) };
+        existProgs12.REST = [
+          { id: 'log1112_1', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 7, minutes: 20, videoKey: 'stair_cardio', done: true },
+          { id: 'log1112_2', type: 'cardio', cardioType: 'stair', name: '천국의 계단 (스텝밀)', level: 7, minutes: 14, videoKey: 'stair_cardio', done: true },
+          {
+            id: 'log1112_3', type: 'weight', name: '원암 케이블 오버헤드 익스텐션(삼두)', targetReps: '8~10회', rest: 60, videoKey: 'arms_tricep',
+            guideNote: '원암 진행(운반각 보호) | 11/12 35kg×12회 완주 → 다음 처방: 37.5kg × 8~10회',
+            sets: [{ weight: 35, reps: 12, done: true }, { weight: 35, reps: 12, done: true }, { weight: 35, reps: 12, done: true }]
+          },
+          {
+            id: 'log1112_4', type: 'weight', name: '원암 케이블 컬 (이두)', targetReps: '8~10회', rest: 60, videoKey: 'arms_bicep',
+            guideNote: '원암 진행 | 11/12 35kg×8회 완주 → 다음 처방: 35kg 유지 × 9~10회',
+            sets: [{ weight: 35, reps: 8, done: true }, { weight: 35, reps: 8, done: true }, { weight: 35, reps: 8, done: true }]
+          },
+          {
+            id: 'log1112_5', type: 'weight', name: '케이블..아래에서 위로 쭉 당기는거 (삼각근)', targetReps: '8~10회', rest: 60, videoKey: 'delt_side_rear',
+            guideNote: '11/12 최고 80kg×15회 완주 → 다음 처방: 82.5kg × 8~10회',
+            sets: [{ weight: 57, reps: 15, done: true }, { weight: 65, reps: 15, done: true }, { weight: 80, reps: 15, done: true }]
+          }
+        ];
+
+        appState.logsByDate['2026-11-12'] = {
+          program: 'REST',
+          locked: false,
+          weight: 88.8,
+          waist: 92.5,
+          note: '케이블 시리즈는 다 원암으러 진행할것, 케이블 익스텐션 마지막.세트때 죽을뻔함,',
+          actualWorkoutSeconds: 2307,
+          programsByDay: existProgs12
+        };
+      }
+
+      // 모든 과거 운동일지를 전수 스캔하여 종목별 다음 세션 자동 처방 무게를 마스터 DB에 자동 구축
+      rebuildMasterDBFromAllWorkoutLogs();
+      appState.seededHistoryV2 = true;
+      saveAppState();
+    }
+
+    // 운동일지 기록으로부터 종목별 다음 목표 무게·횟수를 자동 계산(점진적 과부하)하는 핵심 함수
+    function computeNextPrescriptionSetsFromLogItem(item) {
+      if (!item) return null;
+      if (item.type === 'cardio') {
+        const curMins = Number(item.minutes) || 15;
+        const curLvl = Number(item.level) || 7;
+        return {
+          type: 'cardio',
+          level: curLvl,
+          minutes: curMins < 20 ? curMins + 2 : curMins,
+          ruleBadge: curMins < 20 ? `시간 +2분 증량` : `강도 ${curLvl}×${curMins}분 유지`
+        };
+      }
+      const doneSets = (item.sets || []).filter(s => s.done);
+      const usedSets = doneSets.length ? doneSets : (item.sets || []);
+      if (!usedSets.length) return null;
+
+      const nums = String(item.targetReps || '8~10').match(/\d+/g);
+      const minT = nums ? Number(nums[0]) : 8;
+      const maxT = nums && nums[1] ? Number(nums[1]) : minT;
+      const isLower = /스쿼트|레그프레스|데드리프트|rdl/i.test(item.name);
+      const inc = isLower ? 5.0 : 2.5;
+
+      const maxW = Math.max(...usedSets.map(s => Number(s.weight) || 0));
+      const minR = Math.min(...usedSets.map(s => Number(s.reps) || 0));
+
+      let nextSets = [];
+      let ruleBadge = '';
+      if (minR >= maxT) {
+        const nextW = Math.round((maxW + inc) * 10) / 10;
+        nextSets = usedSets.map(() => ({ weight: nextW, reps: minT, done: false }));
+        ruleBadge = `목표달성 +${inc}kg 증량(${nextW}kg×${minT}회)`;
+      } else {
+        const nextR = Math.min(maxT, minR + 1);
+        nextSets = usedSets.map(s => ({ weight: maxW, reps: Math.min(maxT, (Number(s.reps) || minR) + 1), done: false }));
+        ruleBadge = `${maxW}kg 유지 · 횟수 +1회(${nextR}회)`;
+      }
+      return { type: 'weight', sets: nextSets, lastMaxW: maxW, lastMinR: minR, ruleBadge };
+    }
+
+    // 전체 운동일지(logsByDate)를 날짜순으로 스캔하여 각 종목의 가장 최근 완료 기록 기반 자동 무게 세팅 DB 구축
+    function rebuildMasterDBFromAllWorkoutLogs() {
+      if (!appState.exerciseMasterDB) appState.exerciseMasterDB = {};
+      const sortedDates = Object.keys(appState.logsByDate || {}).sort();
+      sortedDates.forEach(dStr => {
+        const dayLog = appState.logsByDate[dStr];
+        if (!dayLog || !dayLog.programsByDay) return;
+        const progs = ['A', 'B', 'C', 'REST'];
+        progs.forEach(pKey => {
+          const exList = dayLog.programsByDay[pKey] || [];
+          exList.forEach(ex => {
+            const isCompleted = ex.type === 'cardio' ? ex.done : (ex.sets || []).some(s => s.done);
+            if (!isCompleted) return;
+            const cKey = getCanonicalExerciseKey(ex);
+            const nextRx = computeNextPrescriptionSetsFromLogItem(ex);
+            if (!nextRx) return;
+            if (nextRx.type === 'cardio') {
+              appState.exerciseMasterDB[cKey] = {
+                type: 'cardio',
+                level: nextRx.level,
+                minutes: nextRx.minutes,
+                fromDate: dStr,
+                ruleBadge: nextRx.ruleBadge,
+                updatedAt: dStr
+              };
+            } else {
+              appState.exerciseMasterDB[cKey] = {
+                type: 'weight',
+                sets: cloneDeep(nextRx.sets),
+                fromDate: dStr,
+                ruleBadge: nextRx.ruleBadge,
+                updatedAt: dStr
+              };
+            }
+          });
+        });
+      });
+
+      // 기본 템플릿(A/B/C/REST)에도 종목별 최신 처방 무게를 동기화
+      const tmpl = getTemplates();
+      ['A', 'B', 'C', 'REST'].forEach(dayKey => {
+        (tmpl[dayKey] || []).forEach(ex => {
+          const cKey = getCanonicalExerciseKey(ex);
+          const mRec = appState.exerciseMasterDB[cKey];
+          if (!mRec) return;
+          if (ex.type === 'cardio' && mRec.type === 'cardio') {
+            ex.level = mRec.level;
+            ex.minutes = mRec.minutes;
+          } else if (ex.type === 'weight' && mRec.sets && mRec.sets.length) {
+            ex.sets = cloneDeep(mRec.sets);
+          }
+        });
+      });
+    }
+
+    function forceRestoreAllHistoricalLogs() {
+      ensureSeededWorkoutHistory(true);
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+      applyLatestPerExerciseToList(entry.programsByDay[entry.program], appState.selectedDate);
+      renderAll();
+      renderCalendarTab();
+      showToast('✅ 이전 운동일지(11/05~11/12) 복구 및 종목별 자동 무게 세팅 완료!');
+    }
+
+    // 2. 코스에 상관없이 과거 모든 날짜 운동일지를 검색하여 해당 종목의 다음 처방 무게/횟수를 자동 반환
     function findLatestRecordForExercise(ex, beforeDateStr) {
       const targetKey = getCanonicalExerciseKey(ex);
       const dates = Object.keys(appState.logsByDate || {}).filter(d => d < beforeDateStr).sort().reverse();
@@ -731,58 +1093,66 @@
           for (const item of list) {
             if (getCanonicalExerciseKey(item) === targetKey) {
               if (item.type === 'cardio' && item.done) {
-                return { type: 'cardio', level: item.level, minutes: item.minutes, fromDate: d };
+                const rx = computeNextPrescriptionSetsFromLogItem(item);
+                return { type: 'cardio', level: rx.level, minutes: rx.minutes, fromDate: d, ruleBadge: rx.ruleBadge };
               } else if (item.type === 'weight' && (item.sets || []).some(s => s.done)) {
-                return { type: 'weight', sets: item.sets.map(s => ({ weight: s.weight, reps: s.reps, done: false })), fromDate: d };
+                const rx = computeNextPrescriptionSetsFromLogItem(item);
+                return { type: 'weight', sets: cloneDeep(rx.sets), fromDate: d, ruleBadge: rx.ruleBadge };
               }
             }
           }
         }
       }
-      if (appState.exerciseMasterDB && appState.exerciseMasterDB[targetKey]) {
-        return cloneDeep(appState.exerciseMasterDB[targetKey]);
+      const masterRec = appState.exerciseMasterDB && appState.exerciseMasterDB[targetKey] ? appState.exerciseMasterDB[targetKey] : null;
+      if (masterRec) {
+        return Object.assign(cloneDeep(masterRec), {
+          fromDate: masterRec.fromDate || masterRec.updatedAt || '마스터DB',
+          ruleBadge: masterRec.ruleBadge || '처방 무게 적용'
+        });
       }
       return null;
     }
 
-    function applyLatestPerExerciseToList(exList, refDateStr) {
-      let cnt = 0;
-      (exList || []).forEach(ex => {
-        const alreadyStarted = ex.type === 'cardio' ? ex.done : (ex.sets || []).some(s => s.done);
-        if (alreadyStarted) return;
-        const latest = findLatestRecordForExercise(ex, refDateStr);
-        if (latest) {
-          if (ex.type === 'cardio' && latest.type === 'cardio') {
-            ex.level = latest.level; ex.minutes = latest.minutes; cnt++;
-          } else if (ex.type === 'weight' && latest.sets && latest.sets.length > 0) {
-            ex.sets = latest.sets.map(s => ({ weight: s.weight, reps: s.reps, done: false })); cnt++;
-          }
+    function applyLatestPerExerciseToList(exList, dateStr) {
+      if (!Array.isArray(exList)) return;
+      exList.forEach(ex => {
+        const hasDone = ex.type === 'cardio' ? ex.done : (ex.sets || []).some(s => s.done);
+        if (hasDone) return;
+        const latest = findLatestRecordForExercise(ex, dateStr);
+        if (!latest) return;
+        if (ex.type === 'cardio' && latest.type === 'cardio') {
+          ex.level = latest.level;
+          ex.minutes = latest.minutes;
+          ex.autoSetInfo = `${latest.fromDate.slice(5)} 일지기반 (${latest.ruleBadge || '자동세팅'})`;
+        } else if (ex.type === 'weight' && latest.sets && latest.sets.length > 0) {
+          ex.sets = latest.sets.map(s => ({ weight: s.weight, reps: s.reps, done: false }));
+          ex.autoSetInfo = `${latest.fromDate.slice(5)} 일지기반 → ${latest.ruleBadge || '자동세팅'}`;
         }
       });
-      return cnt;
     }
 
     function recordExerciseToMasterDB(ex) {
+      if (!ex) return;
       if (!appState.exerciseMasterDB) appState.exerciseMasterDB = {};
       const key = getCanonicalExerciseKey(ex);
+      const rx = computeNextPrescriptionSetsFromLogItem(ex);
+      if (!rx) return;
       if (ex.type === 'cardio') {
-        appState.exerciseMasterDB[key] = { type: 'cardio', level: ex.level, minutes: ex.minutes, updatedAt: appState.selectedDate };
-      } else if (ex.sets && ex.sets.length > 0) {
-        appState.exerciseMasterDB[key] = { type: 'weight', sets: ex.sets.map(s => ({ weight: s.weight, reps: s.reps, done: false })), updatedAt: appState.selectedDate };
+        appState.exerciseMasterDB[key] = {
+          type: 'cardio', level: rx.level, minutes: rx.minutes,
+          fromDate: appState.selectedDate, ruleBadge: rx.ruleBadge, updatedAt: appState.selectedDate
+        };
+      } else if (ex.type === 'weight' && rx.sets && rx.sets.length > 0) {
+        appState.exerciseMasterDB[key] = {
+          type: 'weight',
+          sets: cloneDeep(rx.sets),
+          fromDate: appState.selectedDate,
+          ruleBadge: rx.ruleBadge,
+          updatedAt: appState.selectedDate
+        };
       }
     }
 
-    function loadAppState() {
-      try {
-        const raw = localStorage.getItem(STORAGE_KEY);
-        if (raw) {
-          appState = Object.assign(appState, JSON.parse(raw));
-          if (!appState.exerciseMasterDB) appState.exerciseMasterDB = {};
-        } else {
-          appState.selectedDate = getTodayDateString();
-        }
-      } catch (e) {}
-    }
     function saveAppState() { try { localStorage.setItem(STORAGE_KEY, JSON.stringify(appState)); } catch (e) {} }
 
     function getOrCreateDateEntry(dateStr) {
@@ -1166,6 +1536,27 @@
       renderTopActiveHud();
       renderQuickControllerModal();
       renderExerciseCards();
+      renderLogQuickHistoryBar();
+    }
+
+    function renderLogQuickHistoryBar() {
+      const bar = document.getElementById('logQuickHistoryBar');
+      if (!bar) return;
+      const dates = Object.keys(appState.logsByDate || {}).sort().reverse();
+      const completed = dates.filter(d => calculateDaySummary(d).doneSets > 0);
+      if (!completed.length) {
+        bar.innerHTML = `<span class="text-[11px] text-zinc-500">완료된 일지가 없습니다. 우측 [일지 전체복구]를 눌러주세요.</span>`;
+        return;
+      }
+      bar.innerHTML = completed.map(d => {
+        const log = appState.logsByDate[d];
+        const sum = calculateDaySummary(d);
+        const isCur = d === appState.selectedDate;
+        return `<button type="button" onclick="appState.selectedDate='${d}';saveAppState();renderAll();" class="px-2.5 py-1.5 rounded-xl border text-left shrink-0 transition-all ${isCur ? 'bg-[#ff5500] text-white border-[#ff5500] font-black' : 'bg-zinc-900 text-zinc-200 border-zinc-700 font-bold'}">
+          <div class="text-[10px]">${d.slice(5)} (DAY ${log.program})</div>
+          <div class="text-[9px] ${isCur ? 'text-orange-100' : 'text-orange-400'}">${sum.totalVol.toLocaleString()}kg · 🔥${sum.totalKcal}kcal</div>
+        </button>`;
+      }).join('');
     }
 
     function renderExerciseCards() {
@@ -1175,7 +1566,8 @@
       box.innerHTML = list.map((ex, exIdx) => {
         const dKcal = getExerciseBurnedKcal(ex, bw, true), pKcal = getExerciseBurnedKcal(ex, bw, false);
         const latestRec = findLatestRecordForExercise(ex, appState.selectedDate);
-        const latestTag = latestRec && latestRec.fromDate ? `<span class="text-[9px] text-emerald-400 font-bold">최근(${latestRec.fromDate.slice(5)}) 반영</span>` : '';
+        const badgeText = ex.autoSetInfo || (latestRec && latestRec.fromDate ? `${latestRec.fromDate.slice(5)} 일지 → ${latestRec.ruleBadge || '자동세팅'}` : '');
+        const latestTag = badgeText ? `<span class="px-1.5 py-0.5 rounded bg-emerald-950/90 border border-emerald-500/40 text-[9px] text-emerald-300 font-black">⚡ ${badgeText}</span>` : '';
         const vKey = resolveVideoKeyForExercise(ex);
         const guideNote = resolveGuideNoteForExercise(ex);
         // 4. 각 카드 우측 상단 순서 변경(맨위 / ⬆️ / ⬇️) 버튼 + 유튜브 영상 버튼
@@ -1456,16 +1848,416 @@
     }
 
     function switchMainTab(t) {
-      ['log','calendar','tabata','video'].forEach(k => {
+      ['log','manager','calendar','tabata','video'].forEach(k => {
         const panel = document.getElementById(`tab-panel-${k}`);
         const btn = document.getElementById(`tab-btn-${k}`);
         if (panel) panel.classList.toggle('hidden', k!==t);
         if (btn) btn.classList.toggle('bottom-nav-active', k===t);
       });
+      if (t==='manager') { previewSmartAutoMatch(); renderMasterExerciseManager(); }
       if (t==='calendar') renderCalendarTab();
       if (t==='tabata') syncTabataInputsAndUI();
       if (t==='video') initVideoTab();
       window.scrollTo({top:0,behavior:'smooth'});
+    }
+
+    // ==================== 5. 유튜브 링크 / 운동프로그램 스마트 파서 & 통합 매니저 ====================
+    function extractYoutubeVideoId(urlStr) {
+      if (!urlStr) return null;
+      const s = String(urlStr).trim();
+      const shortMatch = s.match(/youtube\.com\/shorts\/([a-zA-Z0-9_-]{6,})/i);
+      if (shortMatch) return shortMatch[1];
+      const watchMatch = s.match(/[?&]v=([a-zA-Z0-9_-]{6,})/i);
+      if (watchMatch) return watchMatch[1];
+      const youtuMatch = s.match(/youtu\.be\/([a-zA-Z0-9_-]{6,})/i);
+      if (youtuMatch) return youtuMatch[1];
+      const embedMatch = s.match(/youtube\.com\/embed\/([a-zA-Z0-9_-]{6,})/i);
+      if (embedMatch) return embedMatch[1];
+      return null;
+    }
+
+    function autoDesignBiomechanicsFromText(rawName, ytId) {
+      const n = String(rawName || '').toLowerCase();
+      let baseKey = 'widerow';
+      let targetMuscle = '등 상부 (어퍼백 · 능형근 · 승모근)';
+      let rxTempo = '이완 3초 (신장성 통제) / 수축 1초';
+      let rxRest = 75;
+      let guideNote = '피지컬에셋 원칙: 최대 신장(늘어난) 구간에서 2~3초 버티며 장력 유지';
+
+      if (/삼두|익스텐션|푸시다운|스컬크러셔|딥스/.test(n)) {
+        baseKey = 'arms_tricep';
+        targetMuscle = '상완삼두근 장두 (신장성 타격)';
+        rxTempo = '최대 신장 하단 2~3초 버티기';
+        rxRest = 60;
+        guideNote = '원암 진행 권장(운반각 보호) | 팔꿈치 접힌 최대 신장 지점 3초 버티기';
+      } else if (/이두|컬|상완근|프리처|해머|전완/.test(n)) {
+        baseKey = 'arms_bicep';
+        targetMuscle = '상완근 · 상완이두근 · 상완요골근';
+        rxTempo = '하단 30° 신장 구간 3초 네거티브';
+        rxRest = 60;
+        guideNote = '원암 진행 권장 | 팔 다 펴지는 하단 30도 구간 3초 통제 · 상단 80% 제한';
+      } else if (/삼각근|사레레|레터럴|리버스|후면|업라이트|페이스풀/.test(n)) {
+        baseKey = 'delt_side_rear';
+        targetMuscle = '측면 · 후면 삼각근 (프레임 확장)';
+        rxTempo = '수축 1초 / 네거티브 3초 제어';
+        rxRest = 60;
+        guideNote = '승모근 개입 차단 | 손목 힘 빼고 팔꿈치를 멀리 보내며 3초 이완 제어';
+      } else if (/벤치|인클라인|체스트|프레스|가슴|오버헤드프레스|ohp|밀리터리|숄더프레스/.test(n)) {
+        baseKey = 'incline_ohp';
+        targetMuscle = '상부 대흉근 · 전면 삼각근';
+        rxTempo = '하단 2~3초 신장 / 폭발적 프레스';
+        rxRest = 75;
+        guideNote = '흉곽 확장 호흡 세팅 | 어깨 으쓱 방지 및 하단 신장 구간 통제';
+      } else if (/스쿼트|런지|레그프레스|하체|핵스쿼트|레그익스텐션/.test(n)) {
+        baseKey = 'squat_lunge';
+        targetMuscle = '대퇴사두근 · 대둔근';
+        rxTempo = '2~3초 통제 하강 / 뒤꿈치 밀기';
+        rxRest = 90;
+        guideNote = '골반 너비 유지 + 상체 살짝 힙 힌지 + 바텀 신장 구간 반동 금지';
+      } else if (/데드|rdl|케틀벨|스윙|힙쓰러스트|햄스트링|레그컬/.test(n)) {
+        baseKey = 'rdl_kb';
+        targetMuscle = '햄스트링 · 대둔근 (후면 사슬)';
+        rxTempo = '고관절 경첩(힙 힌지) 3초 신장';
+        rxRest = 90;
+        guideNote = '무릎 고정 후 엉덩이를 뒤로 밀어 햄스트링 최대 신장 텐션 유지';
+      } else if (/계단|스텝밀|유산소|사이클|자전거|마운틴|러닝/.test(n)) {
+        baseKey = 'stair_cardio';
+        targetMuscle = '심폐지구력 · 대둔근 · 체지방 연소';
+        rxTempo = '상체 15° 전경 + 뒤꿈치 리드';
+        rxRest = 0;
+        guideNote = '손잡이에 매달리지 말고 상체 살짝 숙여 둔근 힘으로 페달/계단 밟기';
+      } else if (/스트레칭|웜업|모빌리티|흉추|골반/.test(n)) {
+        baseKey = 'wgs_stretch';
+        targetMuscle = '흉추 · 고관절 · 햄스트링 가동성';
+        rxTempo = '운동전 2초 동적 / 운동후 20초 정적';
+        rxRest = 0;
+        guideNote = 'WGS 프로토콜: 운동 전 동적 활성화, 운동 후 정적 이완 호흡';
+      }
+
+      return { baseKey, targetMuscle, rxTempo, rxRest, guideNote, ytId };
+    }
+
+    function previewSmartAutoMatch() {
+      const rawName = (document.getElementById('smartAddNameInput')?.value || '').trim();
+      const rawYt = (document.getElementById('smartAddYoutubeInput')?.value || '').trim();
+      const box = document.getElementById('smartMatchPreviewBox');
+      if (!box) return;
+
+      // 텍스트 안에 무게(kg)나 횟수(회)가 적혀 있으면 자동 추출
+      const weightMatch = rawName.match(/(\d+(?:\.\d+)?)\s*kg/i);
+      const repsMatch = rawName.match(/(\d+)\s*회/);
+      if (weightMatch && document.getElementById('smartAddWeightInput')) {
+        document.getElementById('smartAddWeightInput').value = weightMatch[1];
+      }
+      if (repsMatch && document.getElementById('smartAddRepsInput')) {
+        document.getElementById('smartAddRepsInput').value = repsMatch[1];
+      }
+
+      const ytId = extractYoutubeVideoId(rawYt) || extractYoutubeVideoId(rawName);
+      const design = autoDesignBiomechanicsFromText(rawName || '신규 웨이트 종목', ytId);
+      const fallbackVideo = VIDEO_DB[design.baseKey] || VIDEO_DB.widerow;
+
+      box.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="font-black text-orange-400">🎯 자동 타깃 분석: ${design.targetMuscle}</span>
+          <span class="px-2 py-0.5 rounded bg-zinc-900 border border-zinc-700 text-[10px] text-emerald-300 font-bold">${ytId ? `유튜브 ID (${ytId}) 직접 연동` : `피지컬에셋 [${design.baseKey}] 영상 자동매칭`}</span>
+        </div>
+        <div class="text-zinc-200">• <strong>자동 처방 가이드:</strong> ${design.guideNote}</div>
+        <div class="text-zinc-400">• <strong>권장 템포/휴식:</strong> ${design.rxTempo} · 휴식 ${design.rxRest}초 (${fallbackVideo.rxWeight})</div>
+      `;
+    }
+
+    function executeSmartAddExercise() {
+      const rawName = (document.getElementById('smartAddNameInput')?.value || '').trim();
+      const rawYt = (document.getElementById('smartAddYoutubeInput')?.value || '').trim();
+      if (!rawName && !rawYt) {
+        showToast('⚠️ 운동 이름이나 유튜브 링크를 입력해 주세요!');
+        return;
+      }
+
+      const courseTarget = document.getElementById('smartAddCourseSelect')?.value || 'CURRENT';
+      const w = Math.max(0, Number(document.getElementById('smartAddWeightInput')?.value) || 35);
+      const r = Math.max(1, Number(document.getElementById('smartAddRepsInput')?.value) || 12);
+      const sCount = Math.max(1, Math.min(10, Number(document.getElementById('smartAddSetsCountInput')?.value) || 3));
+
+      const ytId = extractYoutubeVideoId(rawYt) || extractYoutubeVideoId(rawName);
+      const cleanName = rawName.replace(/https?:\/\/\S+/g, '').trim() || `유튜브 커스텀 운동 (${ytId})`;
+      const design = autoDesignBiomechanicsFromText(cleanName, ytId);
+
+      let finalVideoKey = design.baseKey;
+      // 유튜브 링크가 입력된 경우 VIDEO_DB에 전용 항목으로 영구 등록
+      if (ytId) {
+        finalVideoKey = 'custom_yt_' + Date.now();
+        const baseV = VIDEO_DB[design.baseKey] || VIDEO_DB.widerow;
+        const customVideoEntry = {
+          title: `[커스텀 영상] ${cleanName}`,
+          coachingId: ytId,
+          anatomyId: baseV.coachingId || ytId,
+          targetMuscle: design.targetMuscle,
+          rxWeight: `${w}kg × ${r}회 기준 점진적 과부하`,
+          rxSets: `${sCount}세트 × ${r}회`,
+          rxTempo: design.rxTempo,
+          rxRest: `${design.rxRest}초`,
+          points: [
+            `<strong>[사용자 등록 유튜브/쇼츠 동작]</strong> 입력하신 영상(${ytId})과 피지컬에셋 역학 가이드가 결합되었습니다.`,
+            `<strong>[핵심 수행 포인트]</strong> ${design.guideNote}`
+          ]
+        };
+        VIDEO_DB[finalVideoKey] = customVideoEntry;
+        if (!appState.customVideoDB) appState.customVideoDB = {};
+        appState.customVideoDB[finalVideoKey] = customVideoEntry;
+        const sel = document.getElementById('videoExerciseSelect');
+        if (sel) { sel.innerHTML = ''; initVideoTab(); }
+      }
+
+      const newSets = Array.from({ length: sCount }, () => ({ weight: w, reps: r, done: false }));
+      const newExObj = {
+        id: 'smart_' + Date.now(),
+        type: 'weight',
+        name: cleanName,
+        targetReps: `${Math.max(1, r - 2)}~${r}회`,
+        rest: design.rxRest,
+        videoKey: finalVideoKey,
+        guideNote: `${design.guideNote} | ${sCount}세트×${r}회`,
+        sets: newSets
+      };
+
+      // 마스터 DB 및 커스텀 프리셋에 등록
+      recordExerciseToMasterDB(newExObj);
+      if (!appState.customPresetsList) appState.customPresetsList = [];
+      appState.customPresetsList.push(cloneDeep(newExObj));
+
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+      const tmpl = getTemplates();
+
+      if (courseTarget === 'CURRENT') {
+        getCurrentExercises().push(cloneDeep(newExObj));
+      } else if (['A', 'B', 'C', 'REST'].includes(courseTarget)) {
+        tmpl[courseTarget].push(cloneDeep(newExObj));
+        if (!entry.programsByDay[courseTarget]) entry.programsByDay[courseTarget] = cloneDeep(tmpl[courseTarget]);
+        else entry.programsByDay[courseTarget].push(cloneDeep(newExObj));
+      }
+
+      document.getElementById('smartAddNameInput').value = '';
+      document.getElementById('smartAddYoutubeInput').value = '';
+      saveAppState();
+      renderAll();
+      renderMasterExerciseManager();
+      showToast(`✅ [${cleanName}] 종목과 영상이 성공적으로 추가되었습니다!`);
+    }
+
+    let managerFilterCourse = 'ALL';
+    function filterManagerCourse(courseKey) {
+      managerFilterCourse = courseKey;
+      ['ALL', 'A', 'B', 'C', 'REST'].forEach(k => {
+        const btn = document.getElementById(`mgr-filter-${k}`);
+        if (!btn) return;
+        btn.className = k === courseKey
+          ? 'px-2.5 py-1 rounded-lg bg-[#ff5500] text-white text-[11px] font-black'
+          : 'px-2 py-1 rounded-lg bg-zinc-900 border border-zinc-700 text-zinc-300 text-[11px] font-bold';
+      });
+      renderMasterExerciseManager();
+    }
+
+    // 모든 코스(A/B/C/REST) + 현재 일지 + 프리셋의 종목을 하나로 모아 볼륨/세트/무게를 한눈에 확인 및 수정
+    function collectAllUniqueExercisesForManager() {
+      const map = new Map();
+      const tmpl = getTemplates();
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+
+      const registerItem = (ex, badgeLabel) => {
+        const cKey = getCanonicalExerciseKey(ex);
+        if (!map.has(cKey)) {
+          const latest = findLatestRecordForExercise(ex, '9999-12-31');
+          const copy = cloneDeep(ex);
+          if (latest) {
+            if (copy.type === 'cardio' && latest.type === 'cardio') {
+              copy.level = latest.level; copy.minutes = latest.minutes;
+            } else if (copy.type === 'weight' && latest.sets && latest.sets.length) {
+              copy.sets = cloneDeep(latest.sets);
+            }
+          }
+          map.set(cKey, { canonicalKey: cKey, ex: copy, courses: new Set([badgeLabel]) });
+        } else {
+          map.get(cKey).courses.add(badgeLabel);
+        }
+      };
+
+      ['A', 'B', 'C', 'REST'].forEach(dayKey => {
+        if (managerFilterCourse !== 'ALL' && managerFilterCourse !== dayKey) return;
+        (tmpl[dayKey] || []).forEach(ex => registerItem(ex, `DAY ${dayKey}`));
+        (entry.programsByDay[dayKey] || []).forEach(ex => registerItem(ex, `DAY ${dayKey}`));
+      });
+
+      if (managerFilterCourse === 'ALL') {
+        Object.values(PRESET_EXERCISES).forEach(ex => registerItem(ex, '프리셋'));
+        (appState.customPresetsList || []).forEach(ex => registerItem(ex, '커스텀추가'));
+      }
+
+      return Array.from(map.values());
+    }
+
+    function renderMasterExerciseManager() {
+      const container = document.getElementById('masterExerciseListContainer');
+      if (!container) return;
+      const items = collectAllUniqueExercisesForManager();
+
+      if (!items.length) {
+        container.innerHTML = `<div class="p-4 text-center text-xs text-zinc-400">해당 코스에 등록된 종목이 없습니다.</div>`;
+        return;
+      }
+
+      container.innerHTML = items.map((item, idx) => {
+        const { canonicalKey, ex, courses } = item;
+        const courseBadges = Array.from(courses).map(c => `<span class="px-1.5 py-0.5 rounded bg-zinc-800 text-orange-300 text-[9px] font-black">${c}</span>`).join(' ');
+        const vKey = resolveVideoKeyForExercise(ex);
+
+        if (ex.type === 'cardio') {
+          return `
+            <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-between flex-wrap gap-2">
+              <div class="space-y-0.5">
+                <div class="flex items-center gap-1.5">${courseBadges}<span class="text-xs font-black text-white">${ex.name}</span></div>
+                <div class="text-[10px] text-zinc-400">현재 마스터 설정: 강도 ${ex.level} × ${ex.minutes}분</div>
+              </div>
+              <div class="flex items-center gap-1.5">
+                <span class="text-[10px] text-zinc-400">강도</span>
+                <input type="number" value="${ex.level}" onchange="updateMasterExerciseCardio('${canonicalKey}', 'level', this.value)" class="w-11 bg-zinc-900 border border-zinc-700 rounded-lg text-center text-xs font-black text-white py-1" />
+                <span class="text-[10px] text-zinc-400">시간(분)</span>
+                <input type="number" value="${ex.minutes}" onchange="updateMasterExerciseCardio('${canonicalKey}', 'minutes', this.value)" class="w-12 bg-zinc-900 border border-zinc-700 rounded-lg text-center text-xs font-black text-[#ff5500] py-1" />
+                <button type="button" onclick="pushMasterExerciseToCurrentDay('${canonicalKey}')" class="px-2 py-1 rounded-lg bg-zinc-800 hover:bg-[#ff5500] text-white text-[10px] font-black">+오늘일지추가</button>
+              </div>
+            </div>`;
+        }
+
+        const sets = ex.sets || [{ weight: 35, reps: 10 }];
+        const repW = sets[0].weight;
+        const repR = sets[0].reps;
+        const setCnt = sets.length;
+        const totalVol = sets.reduce((acc, s) => acc + Math.round((Number(s.weight) || 0) * (Number(s.reps) || 0)), 0);
+
+        return `
+          <div class="p-3 rounded-xl bg-zinc-950 border border-zinc-800 space-y-2">
+            <div class="flex items-center justify-between gap-2 flex-wrap">
+              <div class="space-y-0.5 min-w-0">
+                <div class="flex items-center gap-1 flex-wrap">${courseBadges}<span class="text-xs font-black text-white">${idx + 1}. ${ex.name}</span></div>
+                <div class="text-[10px] text-zinc-400 truncate">${resolveGuideNoteForExercise(ex)}</div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0">
+                <span class="px-2 py-0.5 rounded bg-orange-950/80 border border-orange-500/40 text-orange-300 text-[10px] font-black">총 볼륨 ${totalVol.toLocaleString()}kg</span>
+                <button type="button" onclick="openVideoForExercise('${vKey}')" class="px-2 py-0.5 rounded bg-red-600 text-white text-[10px] font-black"><i class="fa-brands fa-youtube"></i> 영상</button>
+                <button type="button" onclick="pushMasterExerciseToCurrentDay('${canonicalKey}')" class="px-2 py-0.5 rounded bg-emerald-700 text-white text-[10px] font-black">+오늘추가</button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-3 gap-1.5 pt-1 border-t border-zinc-900">
+              <div class="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1">
+                <span class="text-[10px] text-zinc-400 font-bold">무게(kg)</span>
+                <div class="flex items-center gap-1">
+                  <button type="button" onclick="stepMasterExerciseSpec('${canonicalKey}', 'weight', -2.5)" class="stepper-btn w-5 h-5 rounded text-[10px]">-</button>
+                  <input type="number" step="0.5" value="${repW}" onchange="setMasterExerciseSpec('${canonicalKey}', 'weight', this.value)" class="w-11 bg-transparent text-center font-black text-xs text-white" />
+                  <button type="button" onclick="stepMasterExerciseSpec('${canonicalKey}', 'weight', 2.5)" class="stepper-btn w-5 h-5 rounded text-[10px]">+</button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1">
+                <span class="text-[10px] text-zinc-400 font-bold">횟수(회)</span>
+                <div class="flex items-center gap-1">
+                  <button type="button" onclick="stepMasterExerciseSpec('${canonicalKey}', 'reps', -1)" class="stepper-btn w-5 h-5 rounded text-[10px]">-</button>
+                  <input type="number" value="${repR}" onchange="setMasterExerciseSpec('${canonicalKey}', 'reps', this.value)" class="w-9 bg-transparent text-center font-black text-xs text-[#ff5500]" />
+                  <button type="button" onclick="stepMasterExerciseSpec('${canonicalKey}', 'reps', 1)" class="stepper-btn w-5 h-5 rounded text-[10px]">+</button>
+                </div>
+              </div>
+              <div class="flex items-center justify-between bg-zinc-900 border border-zinc-800 rounded-lg px-2 py-1">
+                <span class="text-[10px] text-zinc-400 font-bold">세트수</span>
+                <div class="flex items-center gap-1">
+                  <button type="button" onclick="stepMasterExerciseSpec('${canonicalKey}', 'sets', -1)" class="stepper-btn w-5 h-5 rounded text-[10px]">-</button>
+                  <span class="w-7 text-center font-black text-xs text-emerald-400">${setCnt}</span>
+                  <button type="button" onclick="stepMasterExerciseSpec('${canonicalKey}', 'sets', 1)" class="stepper-btn w-5 h-5 rounded text-[10px]">+</button>
+                </div>
+              </div>
+            </div>
+          </div>`;
+      }).join('');
+    }
+
+    function propagateMasterSpecChange(canonicalKey, newWeight, newReps, newSetCount) {
+      if (!appState.exerciseMasterDB) appState.exerciseMasterDB = {};
+      const newSets = Array.from({ length: newSetCount }, () => ({ weight: newWeight, reps: newReps, done: false }));
+      appState.exerciseMasterDB[canonicalKey] = { type: 'weight', sets: cloneDeep(newSets), updatedAt: appState.selectedDate };
+
+      const tmpl = getTemplates();
+      ['A', 'B', 'C', 'REST'].forEach(dayKey => {
+        (tmpl[dayKey] || []).forEach(ex => {
+          if (getCanonicalExerciseKey(ex) === canonicalKey && ex.type === 'weight') {
+            ex.sets = cloneDeep(newSets);
+          }
+        });
+      });
+
+      const entry = getOrCreateDateEntry(appState.selectedDate);
+      ['A', 'B', 'C', 'REST'].forEach(dayKey => {
+        (entry.programsByDay[dayKey] || []).forEach(ex => {
+          if (getCanonicalExerciseKey(ex) === canonicalKey && ex.type === 'weight') {
+            ex.sets = ex.sets.length === newSetCount
+              ? ex.sets.map(s => ({ weight: newWeight, reps: newReps, done: s.done }))
+              : cloneDeep(newSets);
+          }
+        });
+      });
+
+      saveAppState();
+      renderAll();
+      renderMasterExerciseManager();
+    }
+
+    function stepMasterExerciseSpec(canonicalKey, field, delta) {
+      const items = collectAllUniqueExercisesForManager();
+      const target = items.find(i => i.canonicalKey === canonicalKey);
+      if (!target || target.ex.type !== 'weight') return;
+      const sets = target.ex.sets || [{ weight: 35, reps: 10 }];
+      let w = Number(sets[0].weight) || 35;
+      let r = Number(sets[0].reps) || 10;
+      let c = sets.length || 3;
+      if (field === 'weight') w = Math.max(0, Math.round((w + delta) * 10) / 10);
+      if (field === 'reps') r = Math.max(1, Math.round(r + delta));
+      if (field === 'sets') c = Math.max(1, Math.min(10, c + delta));
+      propagateMasterSpecChange(canonicalKey, w, r, c);
+      showToast(`⚡ 볼륨/세트 설정이 모든 코스에 동기화되었습니다.`);
+    }
+
+    function setMasterExerciseSpec(canonicalKey, field, val) {
+      const items = collectAllUniqueExercisesForManager();
+      const target = items.find(i => i.canonicalKey === canonicalKey);
+      if (!target || target.ex.type !== 'weight') return;
+      const sets = target.ex.sets || [{ weight: 35, reps: 10 }];
+      let w = Number(sets[0].weight) || 35;
+      let r = Number(sets[0].reps) || 10;
+      let c = sets.length || 3;
+      if (field === 'weight') w = Math.max(0, Number(val) || 0);
+      if (field === 'reps') r = Math.max(1, Math.round(Number(val) || 1));
+      propagateMasterSpecChange(canonicalKey, w, r, c);
+      showToast(`⚡ 볼륨/세트 설정이 모든 코스에 동기화되었습니다.`);
+    }
+
+    function updateMasterExerciseCardio(canonicalKey, field, val) {
+      const num = Math.max(1, Number(val) || 1);
+      if (!appState.exerciseMasterDB[canonicalKey]) appState.exerciseMasterDB[canonicalKey] = { type: 'cardio', level: 7, minutes: 20 };
+      appState.exerciseMasterDB[canonicalKey][field] = num;
+      appState.exerciseMasterDB[canonicalKey].updatedAt = appState.selectedDate;
+      saveAppState(); renderAll(); renderMasterExerciseManager();
+      showToast('⚡ 유산소 기본 설정이 업데이트되었습니다.');
+    }
+
+    function pushMasterExerciseToCurrentDay(canonicalKey) {
+      const items = collectAllUniqueExercisesForManager();
+      const target = items.find(i => i.canonicalKey === canonicalKey);
+      if (!target) return;
+      const copy = cloneDeep(target.ex);
+      copy.id = 'mgr_add_' + Date.now();
+      if (copy.type === 'cardio') copy.done = false;
+      else (copy.sets || []).forEach(s => s.done = false);
+      getCurrentExercises().push(copy);
+      saveAppState(); renderAll();
+      showToast(`➕ [${copy.name}] 오늘 일지에 추가되었습니다!`);
     }
 
     function initVideoTab() {
@@ -1521,12 +2313,45 @@
         </button>`;
       }
       document.getElementById('monthlyWorkoutDaysCount').textContent = `${cnt}일`;
+      renderWorkoutHistoryTimeline();
+    }
+
+    function renderWorkoutHistoryTimeline() {
+      const box = document.getElementById('workoutHistoryTimelineBox');
+      if (!box) return;
+      const dates = Object.keys(appState.logsByDate || {}).sort().reverse();
+      const completedDates = dates.filter(d => calculateDaySummary(d).doneSets > 0);
+      if (!completedDates.length) {
+        box.innerHTML = `<div class="p-3 text-center text-xs text-zinc-500">저장된 완료 일지가 없습니다. 상단 [누락된 과거 일지 자동복구] 버튼을 눌러주세요.</div>`;
+        return;
+      }
+      box.innerHTML = completedDates.map(dStr => {
+        const log = appState.logsByDate[dStr];
+        const sum = calculateDaySummary(dStr);
+        const pList = log.programsByDay[log.program || 'A'] || [];
+        const exNames = pList.map(ex => ex.type === 'cardio' ? `${ex.name}(${ex.minutes}분)` : `${ex.name}(${(ex.sets||[])[0]?.weight||0}kg)`).join(' · ');
+        const durText = sum.actualSec > 0 ? formatDurationKorean(sum.actualSec) : `약 ${sum.estMins}분`;
+        return `
+          <div onclick="appState.selectedDate='${dStr}';saveAppState();renderAll();switchMainTab('log');" class="p-2.5 rounded-xl bg-zinc-950 border ${dStr===appState.selectedDate?'border-[#ff5500]':'border-zinc-800'} hover:border-orange-500/60 cursor-pointer space-y-1 transition-all">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-1.5">
+                <span class="px-2 py-0.5 rounded bg-[#ff5500] text-white text-[10px] font-black">DAY ${log.program}</span>
+                <span class="text-xs font-black text-white">${dStr}</span>
+                <span class="text-[10px] text-zinc-400">(${Number(log.weight||88.8).toFixed(1)}kg / 허리 ${Number(log.waist||92.5).toFixed(1)}cm)</span>
+              </div>
+              <span class="text-[11px] font-black text-orange-400">⏱️ ${durText} · ${sum.totalVol.toLocaleString()}kg · 🔥${sum.totalKcal}kcal</span>
+            </div>
+            <div class="text-[11px] text-zinc-300 truncate">${exNames}</div>
+            ${log.note ? `<div class="text-[10px] text-emerald-400 truncate">📝 ${log.note}</div>` : ''}
+          </div>`;
+      }).join('');
     }
     function exportJsonBackup() { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(appState,null,2)],{type:'application/json'})); a.download = `vtaper_${appState.selectedDate}.json`; a.click(); }
     function importJsonBackup(ev) { const f = ev.target.files[0]; if(!f) return; const r = new FileReader(); r.onload = e => { try{appState=Object.assign(appState,JSON.parse(e.target.result));saveAppState();renderAll();showToast('복원 완료!');}catch(err){showToast('오류');} }; r.readAsText(f); }
 
     window.addEventListener('DOMContentLoaded', () => {
       loadAppState();
+      ensureSeededWorkoutHistory();
       const e = getOrCreateDateEntry(appState.selectedDate);
       applyLatestPerExerciseToList(e.programsByDay[e.program], appState.selectedDate);
       renderAll();
